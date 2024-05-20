@@ -36,6 +36,7 @@ class DevelopmentCardsDeck;
 
 namespace ariel {
     class Player {
+
     private:
         std::string name;
         int VictoryPoints;
@@ -47,6 +48,15 @@ namespace ariel {
         std::vector <UrbanEntity> usedUrbanEntities;
         std::vector <Road> usedRoads;
         int resources[5];
+
+        friend class DevelopmentCard;
+        friend class VictoryPoint;
+        friend class Knight;
+        friend class Monopole;
+        friend class RoadsBuild;
+        friend class YearOfPlenty;
+
+
 
     public:
         Player(std::string name);

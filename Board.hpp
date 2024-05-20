@@ -8,10 +8,10 @@
 #include <string>
 #include "Resources.hpp" //todo: pay attention for loop include!
 
-#define UpEdge 0
+#define RightEdge 0
 #define UpRightEdge 1
 #define UpLeftEdge 2
-#define DownEdge 3
+#define LeftEdge 3
 #define DownRightEdge 4
 #define DownLeftEdge 5
 

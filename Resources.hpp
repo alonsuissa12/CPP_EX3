@@ -81,28 +81,41 @@ namespace ariel {
         std::string name;
     public:
         virtual void playCard(Player &p) = 0;
-
     };
 
     class VictoryPoint : public DevelopmentCard {
     public:
         VictoryPoint(std::string name);
+
+        void playCard(Player &p) override;
     };
 
     class Knight : public DevelopmentCard {
+    public:
+        Knight();
 
+        void playCard(Player &p) override;
     };
 
     class Monopole : public DevelopmentCard {
+    public:
+        Monopole();
 
+        void playCard(Player &p) override;
     };
 
     class RoadsBuild : public DevelopmentCard {
+    public:
+        RoadsBuild();
 
+        void playCard(Player &p) override;
     };
 
     class YearOfPlenty : public DevelopmentCard {
+    public:
+        YearOfPlenty();
 
+        void playCard(Player &p) override;
     };
 
 
