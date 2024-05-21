@@ -5,37 +5,67 @@
 #ifndef CPP_EX3_24_MAIN_RESOURCES_H
 #define CPP_EX3_24_MAIN_RESOURCES_H
 
-#include "Board.hpp" //todo: pay attention for loop include!
+//#include "Board.hpp" //todo: pay attention for loop include!
 #include "Player.hpp"
 #include <string>
 #include <vector>
+#include <stdexcept>
+
+#define RightEdge 0
+#define UpRightEdge 1
+#define UpLeftEdge 2
+#define LeftEdge 3
+#define DownLeftEdge 4
+#define DownRightEdge 5
+
+#define DownRightVertex 0
+#define UpRightVertex 1
+#define UpVertex 2
+#define UpLeftVertex 3
+#define DownLeftVertex 4
+#define DownVertex 5
+
 
 
 #define SETTLEMENT 2
 #define CITY 1
 
 namespace ariel {
+
+    class DevelopmentCard;
+
+    class Settlement;
+
+    class City;
+
+    class Road;
+
+    class UrbanEntity;
+
+    class Player;
+
+    class DevelopmentCardsDeck;
+    class Tile;
+    class Board;
+
     class Road {
     private:
-        Player *owner;
-        Tile &neighborTile1; //todo: not sure if needed
-        Tile &neighborTile2; //todo: not sure if needed
-        Road &prevRoadEdge1;
-        Road &prevRoadEdge2;
-        Road &nextRoadEdge1;
-        Road &nextRoadEdge2;
+        std::string ownerName;
+        Tile *neighborTile1;
+        Tile *neighborTile2;
+
     public:
-        Road(Player owner, Tile &n1, Tile &n2);
+        Road(std::string owner);
 
-        void updateNextRoad(Road &r);
+        void place( Tile &n1, Tile &n2);
 
-        void updatePrevRoad(Road &r);
+        std::string getOwnerName();
 
     };
 
     class UrbanEntity {
     public:
-        virtual Player &getOwner() = 0;
+        virtual std::string getOwner() = 0;
 
         virtual int getNumOfResources() = 0;
 
@@ -52,27 +82,39 @@ namespace ariel {
     class Settlement : public UrbanEntity {
     private:
         int type;
-        Player &owner;
+        std::string ownerName;
         int numOfResources;
         int numOfVictoryPoints;
         Tile &neighborTile1;
         Tile &neighborTile2;
         Tile &neighborTile3;
     public:
-        Settlement(Player &owner);
+        Settlement(std::string owner);
+        Tile & getNeighbor(int num) override;
+        std::string getOwner() override;
+        int getNumOfResources() override;
+        int getNumOfVictoryPoints() override;
+        int getType() override;
+        void place(Tile &n1, Tile &n2, Tile &n3) override;
     };
 
     class City : public UrbanEntity {
     private:
         int type;
-        Player &owner;
+        std::string ownerName;
         int numOfResources;
         int numOfVictoryPoints;
         Tile &neighborTile1;
         Tile &neighborTile2;
         Tile &neighborTile3;
     public:
-        City(Player &owner);
+        City(std::string);
+        Tile & getNeighbor(int num) override;
+        std::string getOwner() override;
+        int getNumOfResources() override;
+        int getNumOfVictoryPoints() override;
+        int getType() override;
+        void place(Tile &n1, Tile &n2, Tile &n3) override;
 
     };
 
@@ -130,6 +172,49 @@ namespace ariel {
         DevelopmentCard *draw();
 
     };
+
+    class Tile { //todo: add ports?
+    private:
+        bool isSea;
+        bool isDesert;
+        int number;
+        std::string resource;
+        Tile *neighbors[6];
+        UrbanEntity *UrbanEntities[6];
+        Road * roads[6];
+    private:
+        Settlement &removeSettlement(Settlement &settlement);
+
+    public:
+        Tile(int dieNum, std::string resource, bool issea = false, bool isDesert = false);
+
+        void UpdateNeighbor(Tile &neighbor);
+
+        void placeUrbanEntity(UrbanEntity &UrbanEntity);
+
+        void placeRoad(Road *road, int side);
+
+        Tile& getNeighbor(int side);
+
+        ariel::Road * getRoad(int side);
+
+        UrbanEntity * getUrbanEntity(int side);
+
+        bool equalTo(Tile other );
+
+
+
+    };
+
+    class Board {
+    private:
+        Tile *tiles[37];
+    public:
+        Board();
+
+        void printBoard();
+    };
+
 }
 
 #endif //CPP_EX3_24_MAIN_RESOURCES_H

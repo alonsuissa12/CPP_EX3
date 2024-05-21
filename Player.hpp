@@ -19,34 +19,35 @@
 #include <vector>
 
 
-class DevelopmentCard;
-
-class Settlement;
-
-class City;
-
-class Road;
-
-class UrbanEntity;
-
-class Tile;
-
-class DevelopmentCardsDeck;
-
 
 namespace ariel {
+    class DevelopmentCard;
+
+    class Settlement;
+
+    class City;
+
+    class Road;
+
+    class UrbanEntity;
+
+    class Tile;
+
+    class DevelopmentCardsDeck;
+
+
     class Player {
 
     private:
         std::string name;
         int VictoryPoints;
         int numOfKnights;
-        std::vector <DevelopmentCard> developmentCards;
-        std::vector <Settlement> unusedSettlements;
-        std::vector <City> unusedCities;
-        std::vector <Road> unusedRoads;
-        std::vector <UrbanEntity> usedUrbanEntities;
-        std::vector <Road> usedRoads;
+        std::vector <DevelopmentCard*> developmentCards;
+        std::vector <Settlement*> unusedSettlements;
+        std::vector <City*> unusedCities;
+        std::vector <Road*> unusedRoads;
+        std::vector <UrbanEntity*> usedUrbanEntities;
+        std::vector <Road*> usedRoads;
         int resources[5];
 
         friend class DevelopmentCard;

@@ -5,7 +5,7 @@ CXXFLAGS=-std=c++14 -Werror -Wsign-conversion
 VALGRIND_FLAGS=-v --leak-check=full --show-leak-kinds=all --error-exitcode=99
 
 SOURCES=Board.cpp Catan.cpp Player.cpp Resources.cpp
-OBJECTS=Board.o Catan.o Player.o Resources.o
+OBJECTS=Resources.o Board.o Catan.o Player.o
 
 .PHONY: all clean run valgrind tidy catan
 
