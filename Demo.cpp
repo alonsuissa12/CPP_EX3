@@ -8,7 +8,6 @@
 #include <vector>
 #include "Catan.hpp"
 #include "Player.hpp"
-#include "Board.hpp"
 using namespace std;
 using namespace ariel;
 

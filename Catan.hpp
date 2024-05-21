@@ -5,7 +5,6 @@
 #ifndef CPP_EX3_24_MAIN_CATAN_H
 #define CPP_EX3_24_MAIN_CATAN_H
 #include "Player.hpp"
-#include "Board.hpp"
 #include "Resources.hpp"
 #include <vector>
 

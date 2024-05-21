@@ -4,8 +4,8 @@ CXX=g++
 CXXFLAGS=-std=c++14 -Werror -Wsign-conversion
 VALGRIND_FLAGS=-v --leak-check=full --show-leak-kinds=all --error-exitcode=99
 
-SOURCES=Board.cpp Catan.cpp Player.cpp Resources.cpp
-OBJECTS=Resources.o Board.o Catan.o Player.o
+SOURCES= Catan.cpp Player.cpp Resources.cpp
+OBJECTS=Resources.o Catan.o Player.o
 
 .PHONY: all clean run valgrind tidy catan
 
@@ -26,9 +26,6 @@ tidy:
 valgrind: demo #test
 	valgrind --tool=memcheck $(VALGRIND_FLAGS) ./demo 2>&1 | { egrep "lost| at " || true; }
 	valgrind --tool=memcheck $(VALGRIND_FLAGS) ./test 2>&1 | { egrep "lost| at " || true; }
-
-Board.o: Board.cpp
-	$(CXX) -std=c++14 -Werror -Wsign-conversion -c Board.cpp -o Board.o
 
 Catan.o: Catan.cpp
 	$(CXX) -std=c++14 -Werror -Wsign-conversion -c Catan.cpp -o Catan.o
