@@ -64,7 +64,7 @@ namespace ariel {
     public:
         Road(std::string owner);
 
-        void place( Tile &n1, Tile &n2); //todo: add case start game
+        void place( Tile &n1, Tile &n2);
 
         std::string getOwnerName();
 
@@ -101,13 +101,13 @@ namespace ariel {
     class Settlement : public UrbanEntity {
     public:
         explicit Settlement(Player *);
-        void place(Tile &n1, Tile &n2, Tile &n3, bool start = false) override;
+        void place(Tile &n1, Tile &n2, Tile &n3, bool start) override;
     };
 
     class City : public UrbanEntity {
     public:
         explicit City(ariel::Player *);
-        void place(Tile &n1, Tile &n2, Tile &n3, bool start = false) override;
+        void place(Tile &n1, Tile &n2, Tile &n3, bool start ) override;
     };
 
     class DevelopmentCard {

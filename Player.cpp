@@ -6,7 +6,12 @@
 
 namespace ariel{
 
-
+    bool operator==(const Player& p1, const Player & p2){
+        return (&p1 == &p2);
+    }
+    bool operator!=(const Player& p1, const Player & p2){
+        return !(p1 == p2);
+    }
 
 
 }

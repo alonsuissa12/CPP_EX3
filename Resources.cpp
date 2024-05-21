@@ -108,7 +108,7 @@ namespace ariel {
     int UrbanEntity::getType() { return type; }
 
     //placing the settlement in the location
-    void Settlement::place(Tile &n1, Tile &n2, Tile &n3, bool start) {
+    void Settlement::place(Tile &n1, Tile &n2, Tile &n3, bool start = false) {
         //find the edges that connect the tiles
         int edgeSideOfN1ToN2 = edgeSide(n1, n2);
         int edgeSideOfN2ToN1 = edgeSide(n2, n1);
@@ -166,7 +166,7 @@ namespace ariel {
     }
 
     //placing the city in the location
-    void City::place(Tile &n1, Tile &n2, Tile &n3, bool start) {
+    void City::place(Tile &n1, Tile &n2, Tile &n3, bool start = false) {
         //find the edges that connect the tiles
         int edgeSideOfN1ToN2 = edgeSide(n1, n2);
         int edgeSideOfN2ToN1 = edgeSide(n2, n1);

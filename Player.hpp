@@ -36,7 +36,7 @@ namespace ariel {
     class DevelopmentCardsDeck;
 
 
-    class Player { //todo: operator overloading to == and !=
+    class Player {
 
     private:
         std::string name;
@@ -99,11 +99,12 @@ namespace ariel {
 
         std::string getName();
 
-
-
         void endTurn();
 
     };
+
+    bool operator==(const Player& p1, const Player & p2);
+    bool operator!=(const Player& p1, const Player & p2);
 
 }
 #endif //CPP_EX3_24_MAIN_PLAYER_H
