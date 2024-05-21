@@ -10,6 +10,10 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
+#include <random>
+#include <ctime>
+#include <algorithm>
+#include <iostream>
 
 #define RightEdge 0
 #define UpRightEdge 1
@@ -154,7 +158,7 @@ namespace ariel {
     };
 
 
-    class DevelopmentCardsDeck {
+    class DevelopmentCardsDeck { //todo: delete
     private:
         std::vector <DevelopmentCard> deck;
 
@@ -173,15 +177,15 @@ namespace ariel {
         int number;
         std::string resource;
         Tile *neighbors[6];
-        UrbanEntity *UrbanEntities[6];
+        UrbanEntity *urbanEntities[6];
         Road * roads[6];
     private:
         Settlement &removeSettlement(Settlement &settlement);
 
     public:
-        Tile(int dieNum, std::string resource, bool issea = false, bool isDesert = false);
+        Tile(int dieNum, std::string resource, bool issea, bool isDesert);
 
-        void UpdateNeighbor(Tile &neighbor);
+        void UpdateNeighbor(Tile &neighbor,int side);
 
         void placeUrbanEntity(UrbanEntity *UrbanEntity,int side);
 
@@ -189,11 +193,9 @@ namespace ariel {
 
         Tile& getNeighbor(int side);
 
-        ariel::Road * getRoad(int side);
+        Road * getRoad(int side);
 
         UrbanEntity * getUrbanEntity(int side);
-
-        bool equalTo(Tile other );
 
 
 
@@ -201,12 +203,15 @@ namespace ariel {
 
     class Board {
     private:
-        Tile *tiles[37];
+        std::vector<Tile *>tiles;
     public:
         Board();
 
         void printBoard();
     };
+
+    bool operator==(const Tile& t1, const Tile & t2);
+    bool operator!=(const Tile& t1, const Tile & t2);
 
 }
 
