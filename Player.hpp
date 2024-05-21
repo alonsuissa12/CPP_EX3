@@ -36,7 +36,7 @@ namespace ariel {
     class DevelopmentCardsDeck;
 
 
-    class Player {
+    class Player { //todo: operator overloading to == and !=
 
     private:
         std::string name;
@@ -60,6 +60,8 @@ namespace ariel {
 
 
     public:
+        Player();
+
         Player(std::string name);
 
         int rollDice();
@@ -94,6 +96,10 @@ namespace ariel {
         void useResources(int brick, int iron, int wheat, int wood, int wool);
 
         int getVictoryPoints();
+
+        std::string getName();
+
+
 
         void endTurn();
 

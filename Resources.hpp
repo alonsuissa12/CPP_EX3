@@ -25,10 +25,14 @@
 #define DownLeftVertex 4
 #define DownVertex 5
 
+#define RightTile 0
+#define LeftTile 1
+#define DownTile 2
 
 
-#define SETTLEMENT 2
-#define CITY 1
+
+#define SETTLEMENT 1
+#define CITY 2
 
 namespace ariel {
 
@@ -48,6 +52,9 @@ namespace ariel {
     class Tile;
     class Board;
 
+    //find the edge side from n1 to n2
+    int edgeSide(Tile&,Tile&);
+
     class Road {
     private:
         std::string ownerName;
@@ -57,77 +64,63 @@ namespace ariel {
     public:
         Road(std::string owner);
 
-        void place( Tile &n1, Tile &n2);
+        void place( Tile &n1, Tile &n2); //todo: add case start game
 
         std::string getOwnerName();
 
     };
 
     class UrbanEntity {
+    protected:
+        int type;
+        ariel::Player * owner;
+        int numOfResources;
+        int numOfVictoryPoints;
+        Tile *neighborTileRight;
+        Tile *neighborTileLeft;
+        Tile *neighborTileDown;
     public:
-        virtual std::string getOwner() = 0;
+        Player *getOwner();
 
-        virtual int getNumOfResources() = 0;
+        std::string getOwnerName();
 
-        virtual int getNumOfVictoryPoints() = 0;
+        int getNumOfResources();
 
-        virtual Tile &getNeighbor(int num) = 0;
+        int getNumOfVictoryPoints() ;
 
-        virtual void place(Tile &n1, Tile &n2, Tile &n3) = 0;
+        Tile *getNeighbor(int num);
 
-        virtual int getType() = 0;
+        int getType();
+
+        virtual void place(Tile &n1, Tile &n2, Tile &n3,bool start = false) = 0;
+
+
 
     };
 
     class Settlement : public UrbanEntity {
-    private:
-        int type;
-        std::string ownerName;
-        int numOfResources;
-        int numOfVictoryPoints;
-        Tile &neighborTile1;
-        Tile &neighborTile2;
-        Tile &neighborTile3;
     public:
-        Settlement(std::string owner);
-        Tile & getNeighbor(int num) override;
-        std::string getOwner() override;
-        int getNumOfResources() override;
-        int getNumOfVictoryPoints() override;
-        int getType() override;
-        void place(Tile &n1, Tile &n2, Tile &n3) override;
+        explicit Settlement(Player *);
+        void place(Tile &n1, Tile &n2, Tile &n3, bool start = false) override;
     };
 
     class City : public UrbanEntity {
-    private:
-        int type;
-        std::string ownerName;
-        int numOfResources;
-        int numOfVictoryPoints;
-        Tile &neighborTile1;
-        Tile &neighborTile2;
-        Tile &neighborTile3;
     public:
-        City(std::string);
-        Tile & getNeighbor(int num) override;
-        std::string getOwner() override;
-        int getNumOfResources() override;
-        int getNumOfVictoryPoints() override;
-        int getType() override;
-        void place(Tile &n1, Tile &n2, Tile &n3) override;
-
+        explicit City(ariel::Player *);
+        void place(Tile &n1, Tile &n2, Tile &n3, bool start = false) override;
     };
 
-    class DevelopmentCard { //todo: make it interface and create inheriting types
+    class DevelopmentCard {
     protected:
         std::string name;
     public:
         virtual void playCard(Player &p) = 0;
+
     };
 
     class VictoryPoint : public DevelopmentCard {
     public:
-        VictoryPoint(std::string name);
+        VictoryPoint();
 
         void playCard(Player &p) override;
     };
@@ -190,7 +183,7 @@ namespace ariel {
 
         void UpdateNeighbor(Tile &neighbor);
 
-        void placeUrbanEntity(UrbanEntity &UrbanEntity);
+        void placeUrbanEntity(UrbanEntity *UrbanEntity,int side);
 
         void placeRoad(Road *road, int side);
 
