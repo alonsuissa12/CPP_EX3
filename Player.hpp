@@ -18,8 +18,9 @@
 #include <vector>
 
 
-
 namespace ariel {
+    class Catan;
+
     class DevelopmentCard;
 
     class Settlement;
@@ -38,61 +39,72 @@ namespace ariel {
     class Player {
 
     private:
+        static int playerNum;
         std::string name;
+        Catan *gameManager;
         int VictoryPoints;
         int numOfKnights;
-        std::vector <DevelopmentCard*> developmentCards;
-        std::vector <Settlement*> unusedSettlements;
-        std::vector <City*> unusedCities;
-        std::vector <Road*> unusedRoads;
-        std::vector <UrbanEntity*> usedUrbanEntities;
-        std::vector <Road*> usedRoads;
+        std::vector<DevelopmentCard *> developmentCards;
+        std::vector<Settlement *> unusedSettlements;
+        std::vector<City *> unusedCities;
+        std::vector<Road *> unusedRoads;
+        std::vector<UrbanEntity *> usedUrbanEntities;
+        std::vector<Road *> usedRoads;
         int resources[5];
 
         friend class DevelopmentCard;
+
         friend class VictoryPoint;
+
         friend class Knight;
+
         friend class Monopole;
+
         friend class RoadsBuild;
+
         friend class YearOfPlenty;
 
-
+        friend class Catan;
 
     public:
-        Player();
+        Player(Catan *gm);
 
-        Player(std::string name);
+        Player(Catan *gm, std::string name);
 
         int rollDice();
 
-        void placeRoad(int numTile1, std::string resourceTile1, int numTile2, std::string resourceTile2);
+        int placeRoad(int numTile1, int resourceTile1, int numTile2, int resourceTile2);
 
-        void placeRoad(Tile &t1, Tile t2);
+        int placeRoad(int numTile1, std::string resourceTile1, int numTile2, std::string resourceTile2);
 
-        void
-        placeSettlement(int numTile1, std::string resourceTile1, int numTile2, std::string resourceTile2, int numTile3,
-                        std::string resourceTile3);
+        int placeRoad(Tile *t1, Tile *t2);
 
-        void placeSettlement(Tile &t1, Tile t2, Tile t3);
 
-        void placeCity(int numTile1, std::string resourceTile1, int numTile2, std::string resourceTile2, int numTile3,
+        int placeSettlement(int numTile1, std::string resourceTile1, int numTile2, std::string resourceTile2, int numTile3,
+                        std::string resourceTile3,bool start);
+
+        int placeSettlement(Tile *t1, Tile *t2, Tile *t3,bool start);
+
+        int placeSettlement(int numTile1, int resourceTile1, int numTile2, int resourceTile2,int numTile3, int resourceTile3,bool start);
+
+        int placeCity(int numTile1, std::string resourceTile1, int numTile2, std::string resourceTile2, int numTile3,
                        std::string resourceTile3);
 
-        void placeCity(Tile &t1, Tile t2, Tile t3);
+        int placeCity(Tile &t1, Tile t2, Tile t3);
 
-        void buyDevelopmentCard(DevelopmentCardsDeck);
+        int buyDevelopmentCard(DevelopmentCardsDeck);
 
         std::vector <DevelopmentCard> getDevelopmentCards();
 
-        void useDevelopmentCard(DevelopmentCard *dc);
+        int useDevelopmentCard(DevelopmentCard *dc);
 
-        void trade(Player other, int wantedResource, int wantedAmount, int givenResource, int givenAmount);
+        int trade(Player other, int wantedResource, int wantedAmount, int givenResource, int givenAmount);
 
-        void tradeWithTheBank(int wantedResource, int wantedAmount);
+        int tradeWithTheBank(int wantedResource, int wantedAmount);
 
-        void takeResources(int brick, int iron, int wheat, int wood, int wool);
+        int takeResources(int brick, int iron, int wheat, int wood, int wool);
 
-        void useResources(int brick, int iron, int wheat, int wood, int wool);
+        int useResources(int brick, int iron, int wheat, int wood, int wool);
 
         int getVictoryPoints();
 
@@ -102,8 +114,13 @@ namespace ariel {
 
     };
 
-    bool operator==(const Player& p1, const Player & p2);
-    bool operator!=(const Player& p1, const Player & p2);
+    int Player::playerNum = 0;
+    // converting the resource name to the resource int.
+    int convertResourceToInt(std::string resourceTile1);
+
+    bool operator==(const Player &p1, const Player &p2);
+
+    bool operator!=(const Player &p1, const Player &p2);
 
 }
 #endif //CPP_EX3_24_MAIN_PLAYER_H

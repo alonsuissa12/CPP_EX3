@@ -22,17 +22,24 @@ namespace ariel {
 //###################################    ROAD   ###################################
 
     // constructor
-    Road::Road(std::string owner) : ownerName(owner) {}
+    Road::Road(Player *owner) : owner(owner) {}
 
     //placing the road in the location
-    void Road::place(Tile &n1, Tile &n2) {
+    int Road::place(Tile &n1, Tile &n2) {
         int edgeSideOfN1 = edgeSide(n1, n2);
         int edgeSideOfN2 = edgeSide(n2, n1);
 
-        if (edgeSideOfN1 == -1 || edgeSideOfN2 == -1)
-            void UpdateNeighbor(Tile &neighbor);
-        if (n1.getRoad(edgeSideOfN1) != nullptr)
+        if (edgeSideOfN1 == -1 || edgeSideOfN2 == -1) { //todo:???
+//            void UpdateNeighbor(Tile &neighbor);
+            std::cout << " the tiles r not adjacent!\n";
+            return -1;
+        }
+
+
+        if (n1.getRoad(edgeSideOfN1) != nullptr) {
             throw std::invalid_argument("the place is already taken!");
+            return -1;
+        }
 
         bool continues = false;
         Road *pprevn1 = n1.getRoad(((edgeSideOfN1 - 1) % 6));
@@ -42,23 +49,31 @@ namespace ariel {
         UrbanEntity *urbanEntity1 = n1.getUrbanEntity(edgeSideOfN1);
         UrbanEntity *urbanEntity2 = n1.getUrbanEntity((edgeSideOfN1 + 1) % 6);
 
-        if (pprevn1->getOwnerName() == this->ownerName || pprevn2->getOwnerName() == this->ownerName ||
-            ppnextn2->getOwnerName() == this->ownerName || ppnextn1->getOwnerName() == this->ownerName)
+        if (pprevn1->owner == this->owner || pprevn2->owner == this->owner ||
+            ppnextn2->owner == this->owner || ppnextn1->owner == this->owner)
             continues = true;
-        if (urbanEntity1->getOwnerName() == this->ownerName || urbanEntity2->getOwnerName() == this->ownerName)
+        if (urbanEntity1->getOwner() == this->owner || urbanEntity2->getOwner() == this->owner)
             continues = true;
-        if (!continues)
-            throw std::invalid_argument(
-                    "Invalid location! Roads have to be adjacent to your other roads/cities/settlements");
+        if (!continues) {
+            std::cout << "Invalid location! Roads have to be adjacent to your other roads/cities/settlements\n";
+            return -1;
+        }
 
         n1.placeRoad(this, edgeSideOfN1);
         n2.placeRoad(this, edgeSideOfN2);
 
         neighborTile1 = &n1;
         neighborTile2 = &n2;
-
+        return 0;
     }
 
+    std::string Road::getOwnerName() {
+        return owner->getName();
+    }
+
+    Player *Road::getOwner() {
+        return owner;
+    }
 
 //###################################   URBAN ENTITIES   ###################################
 
@@ -108,7 +123,7 @@ namespace ariel {
     int UrbanEntity::getType() { return type; }
 
     //placing the settlement in the location
-    void Settlement::place(Tile &n1, Tile &n2, Tile &n3, bool start = false) {
+    int Settlement::place(Tile &n1, Tile &n2, Tile &n3, bool start = false) {
         //find the edges that connect the tiles
         int edgeSideOfN1ToN2 = edgeSide(n1, n2);
         int edgeSideOfN2ToN1 = edgeSide(n2, n1);
@@ -136,12 +151,15 @@ namespace ariel {
                 n3Vertex = i;
         }
 
-        if (edgeSideOfN1ToN2 == -1 || edgeSideOfN1ToN3 == -1 || edgeSideOfN2ToN3 == -1)
-            throw std::invalid_argument("the tiles are not adjacent");
+        if (edgeSideOfN1ToN2 == -1 || edgeSideOfN1ToN3 == -1 || edgeSideOfN2ToN3 == -1) {
+            std::cout << "the tiles are not adjacent\n";
+            return -1;
+        }
 
-        if (n1.getUrbanEntity(n1Vertex) != nullptr)
-            throw std::invalid_argument("the place is already taken!");
-
+        if (n1.getUrbanEntity(n1Vertex) != nullptr) {
+            std::cout << "the place is already taken!\n";
+            return -1;
+        }
         if (!start) {
             Road *proadn1n2 = n1.getRoad(edgeSideOfN1ToN2);
             Road *proadn1n3 = n1.getRoad(edgeSideOfN1ToN3);
@@ -149,23 +167,31 @@ namespace ariel {
 
 
             if (proadn1n2->getOwnerName() != getOwnerName() && proadn1n3->getOwnerName() != getOwnerName() &&
-                proadn2n3->getOwnerName() != getOwnerName())
-                throw std::invalid_argument("Invalid location! you have to place adjacent to one of your roads");
+                proadn2n3->getOwnerName() != getOwnerName()) {
+                std::cout << "Invalid location! you have to place adjacent to one of your roads\n";
+                return -1;
+            }
         }
         if (n1.getUrbanEntity((n1Vertex + 1) % 6) || n1.getUrbanEntity((n1Vertex - 1) % 6) ||
             n2.getUrbanEntity((n2Vertex + 1) % 6) || n2.getUrbanEntity((n2Vertex - 1) % 6) ||
-            n3.getUrbanEntity((n3Vertex + 1) % 6) || n3.getUrbanEntity((n3Vertex - 1) % 6))
-            throw std::invalid_argument(
-                    "Invalid location! you have to place at least 2 edges away from another city/settlement");
-        n1.placeUrbanEntity(this, n1Vertex);
-        n2.placeUrbanEntity(this, n2Vertex);
-        n3.placeUrbanEntity(this, n3Vertex);
+            n3.getUrbanEntity((n3Vertex + 1) % 6) || n3.getUrbanEntity((n3Vertex - 1) % 6)) {
+            std::cout << "Invalid location! you have to place at least 2 edges away from another city/settlement\n";
+            return -1;
+        }
 
+        int ans1 = n1.placeUrbanEntity(this, n1Vertex);
+        int ans2 = n2.placeUrbanEntity(this, n2Vertex);
+        int ans3 = n3.placeUrbanEntity(this, n3Vertex);
+        if (ans1 == -1 || ans2 == -1 || ans3 == -1) {
+            std::cout << "Invalid location! \n";
+            return -1;
+        }
+        return 0;
 
     }
 
     //placing the city in the location
-    void City::place(Tile &n1, Tile &n2, Tile &n3, bool start = false) {
+    int City::place(Tile &n1, Tile &n2, Tile &n3, bool start = false) {
         //find the edges that connect the tiles
         int edgeSideOfN1ToN2 = edgeSide(n1, n2);
         int edgeSideOfN2ToN1 = edgeSide(n2, n1);
@@ -193,29 +219,46 @@ namespace ariel {
                 n3Vertex = i;
         }
 
-        if (edgeSideOfN1ToN2 == -1 || edgeSideOfN1ToN3 == -1 || edgeSideOfN2ToN3 == -1)
-            throw std::invalid_argument("the tiles are not adjacent");
+        if (edgeSideOfN1ToN2 == -1 || edgeSideOfN1ToN3 == -1 || edgeSideOfN2ToN3 == -1) {
+            std::cout << "the tiles are not adjacent\n";
+            return -1;
+        }
 
         if (n1.getUrbanEntity(n1Vertex) == nullptr || n1.getUrbanEntity(n1Vertex)->getOwner() != this->owner ||
-            n1.getUrbanEntity(n1Vertex)->getType() == SETTLEMENT)
-            throw std::invalid_argument("the location is not containing one of your settlements ");
+            n1.getUrbanEntity(n1Vertex)->getType() == SETTLEMENT) {
+            std::cout << "the location is not containing one of your settlements\n";
+            return -1;
+        }
 
-        n1.placeUrbanEntity(this, n1Vertex);
-        n2.placeUrbanEntity(this, n2Vertex);
-        n3.placeUrbanEntity(this, n3Vertex);
+
+        int ans1 = n1.placeUrbanEntity(this, n1Vertex);
+        int ans2 = n2.placeUrbanEntity(this, n2Vertex);
+        int ans3 = n3.placeUrbanEntity(this, n3Vertex);
+        if (ans1 == -1 || ans2 == -1 || ans3 == -1) {
+            std::cout << "Invalid location! \n";
+            return -1;
+        }
+        return 0;
 
     }
 
 
     //###################################    DEVELOPMENT CARDS    ###################################
 
-    VictoryPoint::VictoryPoint() { this->name = "VictoryPoint"; }
+    VictoryPoint::VictoryPoint(Catan *gm) {
+        this->name = "VictoryPoint";
+        gameManager = gm;
+    }
 
     void VictoryPoint::playCard(Player &p) {
         p.VictoryPoints++;
+        std::cout << p.name << " played a victory point card and now have " << p.VictoryPoints << " points!\n";
     }
 
-    Knight::Knight() { name = "Knight"; }
+    Knight::Knight(Catan *gm) {
+        name = "Knight";
+        gameManager = gm;
+    }
 
     void Knight::playCard(Player &p) {
         p.numOfKnights++;
@@ -223,16 +266,40 @@ namespace ariel {
             p.VictoryPoints += 2;
     }
 
-    Monopole::Monopole() { name = "Monopole"; }
-
-    void Monopole::playCard(Player &p) {
-        // todo: implement
+    Monopole::Monopole(Catan *gm) {
+        name = "Monopole";
+        gameManager = gm;
     }
 
-    YearOfPlenty::YearOfPlenty() { name = "YearOfPlenty"; }
+    void Monopole::playCard(Player &p) {
+        int resource = -1;
+        std::cout << "choose a resource for monopoly card(type a number):\n";
+        while (resource < 0 || resource > 4) {
+            std::cout << "BRICK: 0, IRON: 1, WHEAT: 2, WOOD: 3, WOOL: 4\n";
+            std::cin >> resource;
+        }
+        this->gameManager->monopole(&p, resource);
+    }
+
+    YearOfPlenty::YearOfPlenty(Catan *gm) {
+        name = "YearOfPlenty";
+        gameManager = gm;
+    }
 
     void YearOfPlenty::playCard(Player &p) {
-        //todo: implement
+        int resource = -1;
+        std::cout << "choose a two resources to get from `year of plenty` card (type a number):\n";
+        while (resource < 0 || resource > 4) {
+            std::cout << "choose your first resource: BRICK: 0, IRON: 1, WHEAT: 2, WOOD: 3, WOOL: 4\n";
+            std::cin >> resource;
+        }
+        p.resources[resource++];
+        resource = -1;
+        while (resource < 0 || resource > 4) {
+            std::cout << "choose your second resource: BRICK: 0, IRON: 1, WHEAT: 2, WOOD: 3, WOOL: 4\n";
+            std::cin >> resource;
+        }
+        p.resources[resource++];
     }
 
     //###################################   TILE   ###################################
@@ -250,16 +317,22 @@ namespace ariel {
         neighbors[side] = &neighbor;
     }
 
-    void Tile::placeUrbanEntity(UrbanEntity *UrbanEntity, int side) {
-        if (side > 5 || side < 0)
-            throw std::invalid_argument("side should be between 0 to 5 (include 0 and 5)");
+    int Tile::placeUrbanEntity(UrbanEntity *UrbanEntity, int side) {
+        if (side > 5 || side < 0) {
+            std::cout << "side should be between 0 to 5 (include 0 and 5)\n";
+            return -1;
+        }
         urbanEntities[side] = UrbanEntity;
+        return 0;
     }
 
-    void Tile::placeRoad(Road *road, int side) {
-        if (side > 5 || side < 0)
-            throw std::invalid_argument("side should be between 0 to 5 (include 0 and 5)");
+    int Tile::placeRoad(Road *road, int side) {
+        if (side > 5 || side < 0) {
+            std::cout << "side should be between 0 to 5 (include 0 and 5)\n";
+            return -1;
+        }
         roads[side] = road;
+        return 0;
     }
 
     Tile &Tile::getNeighbor(int side) {
@@ -288,6 +361,10 @@ namespace ariel {
         return !(t1 == t2);
     }
 
+    int Tile::getNumber() {
+        return number;
+    }
+
     //###################################   BOARD   ###################################
     Board::Board() {
         // Seed the random number generator
@@ -302,32 +379,32 @@ namespace ariel {
         // 18 yielding tiles:
         // 3 iron tiles
         for (unsigned int i = 0; i < 3; ++i) {
-            Tile tile = Tile(numbers[i], "iron");
+            Tile tile = Tile(numbers[i], "iron"); //todo:add new?
             tiles.push_back(&tile);
         }
         // 4 wood tiles
         for (unsigned int i = 0; i < 4; ++i) {
-            Tile tile = Tile(numbers[i + 3], "wood");
+            Tile tile = Tile(numbers[i + 3], "wood");//todo:add new?
             tiles.push_back(&tile);
         }
         // 4 wool tiles
         for (unsigned int i = 0; i < 4; ++i) {
-            Tile tile = Tile(numbers[i + 7], "wool");
+            Tile tile = Tile(numbers[i + 7], "wool");//todo:add new?
             tiles.push_back(&tile);
         }
         // 3 brick tiles
         for (unsigned int i = 0; i < 3; ++i) {
-            Tile tile = Tile(numbers[i + 11], "brick");
+            Tile tile = Tile(numbers[i + 11], "brick");//todo:add new?
             tiles.push_back(&tile);
         }
         // 4 wheat tiles
         for (unsigned int i = 0; i < 4; ++i) {
-            Tile tile = Tile(numbers[i + 14], "wheat");
+            Tile tile = Tile(numbers[i + 14], "wheat");//todo:add new?
             tiles.push_back(&tile);
         }
 
         // desert tile
-        Tile desert = Tile(0, "nothing", false, true);
+        Tile desert = Tile(0, "nothing", false, true);//todo:add new?
         tiles.push_back(&desert);
 
         //shuffle the tiles
@@ -338,7 +415,7 @@ namespace ariel {
                                             28, 32, 33, 34, 35, 36};
         unsigned int shift = 0;
         for (unsigned int i = 0; i < 18; ++i) {
-            Tile tile = Tile(0, "nothing", true, false);
+            Tile tile = Tile(0, "nothing", true, false);//todo:add new?
             tiles.insert(tiles.begin() + locationsForSea[i + shift], &tile);
             shift++;
         }
@@ -354,7 +431,7 @@ namespace ariel {
 
         for (unsigned int i = 0; i < rowSizeLength; ++i) {
             shift += rowSize[i];
-            if(i == 3) {
+            if (i == 3) {
                 secondHalPlus = 1;
                 firstHalfPlus = 0;
             }
@@ -365,13 +442,13 @@ namespace ariel {
                     tiles[j + shift]->UpdateNeighbor(*tiles[shift + j + 1], RightEdge);
                 if (i != 0 && (j != 0 && i >= 4))
                     tiles[j + shift]->UpdateNeighbor(*tiles[shift + j - rowSize[i] - secondHalPlus], UpLeftEdge);
-                if (i != 0 &&  (j+1 == rowSize[i] && i >= 4))
+                if (i != 0 && (j + 1 == rowSize[i] && i >= 4))
                     tiles[j + shift]->UpdateNeighbor(*tiles[shift + j - rowSize[i] + firstHalfPlus], UpRightEdge);
 
 
-                if (i+1 != rowSizeLength && (i<4 || j+1 != rowSize[i] ))
-                    tiles[j + shift]->UpdateNeighbor(*tiles[shift + j + rowSize[i]+firstHalfPlus], DownRightEdge);
-                if ( i+1 != rowSizeLength && (i<4 || j != 0))
+                if (i + 1 != rowSizeLength && (i < 4 || j + 1 != rowSize[i]))
+                    tiles[j + shift]->UpdateNeighbor(*tiles[shift + j + rowSize[i] + firstHalfPlus], DownRightEdge);
+                if (i + 1 != rowSizeLength && (i < 4 || j != 0))
                     tiles[j + shift]->UpdateNeighbor(*tiles[shift + j + rowSize[i] + secondHalPlus], DownLeftEdge);
 
             }
@@ -380,9 +457,16 @@ namespace ariel {
 
     }
 
-    void Board::printBoard(){
+    void Board::printBoard() {
         std::cout << "print board (need to implement)" << std::endl;
         // todo: implement printBoard (maybe)
+    }
+
+    Tile *Board::findTile(int numTile, int resourceTile) {
+        for (Tile *t: tiles)
+            if (t->getResource() == resourceTile && t->getNumber() == numTile)
+                return t;
+        return nullptr;
     }
 
 
