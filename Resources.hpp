@@ -125,6 +125,7 @@ namespace ariel {
         Catan* gameManager;
     public:
         virtual void playCard(Player &p) = 0;
+        std::string getName();
 
     };
 
@@ -233,8 +234,6 @@ namespace ariel {
 
     private:
         void monopole(Player *p, int resource);
-        void RoadsBuild(Player *p);
-        void YearOfPlenty(Player *p);
 
     public:
         Catan(Player &p1, Player &p2, Player &p3);
@@ -249,6 +248,8 @@ namespace ariel {
         void diceRoll(int);
 
         Tile * findTile(int numTile, int resourceTile);
+
+        DevelopmentCard * buyDevelopmentCard(); // todo: implement
 
 
         friend class Monopole;

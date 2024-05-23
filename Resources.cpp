@@ -245,6 +245,10 @@ namespace ariel {
 
     //###################################    DEVELOPMENT CARDS    ###################################
 
+    std::string DevelopmentCard::getName() {
+        return name;
+    }
+
     VictoryPoint::VictoryPoint(Catan *gm) {
         this->name = "VictoryPoint";
         gameManager = gm;
@@ -281,6 +285,98 @@ namespace ariel {
         this->gameManager->monopole(&p, resource);
     }
 
+    RoadsBuild::RoadsBuild(Catan *catan) {
+        name = "RoadsBuild";
+        gameManager = catan;
+    }
+
+    void RoadsBuild::playCard(Player &p) {
+        std::cout << " played roads build\n";
+
+        int roadsLeft = p.unusedRoads.size();
+        int roadsToGet = 0;
+        if (roadsLeft >= 2)
+            roadsToGet = 2;
+        else if (roadsLeft == 1)
+            roadsToGet = 1;
+
+        while (roadsToGet > 0) {
+            int resource1 = -1;
+            int tileNumber1 = -1;
+            int resource2 = -1;
+            int tileNumber2 = -1;
+            bool validTile1 = false;
+            bool validTile2 = false;
+
+            std::cout << " choose where u want to place your road:\n";
+            std::cout << " (choose two tiles and the road will build between them)\n";
+
+
+            std::cout << "Choose where you want to place your road:\n"
+                      << "(choose two tiles and the road will be built between them)\n";
+
+            while (!validTile1) {
+                std::cout << "Tile 1:\n";
+                std::cout << "----Enter the resource of the tile (0 for brick, 1 for iron, 2 for wheat, 3 for wood, 4 for wool):\n";
+                std::cin >> resource1;
+
+                std::cout << "----Enter the dice number of the tile:\n";
+                std::cin >> tileNumber1;
+
+                validTile1 = (resource1 >= 0 && resource1 <= 4) &&
+                             (tileNumber1 >= 2 && tileNumber1 <= 12) &&
+                             (gameManager->findTile(tileNumber1, resource1) != nullptr);
+
+                if (!validTile1) {
+                    std::cout << "Invalid tile. Please try again.\n";
+                    std::cin.clear(); // Clear error flags
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
+                }
+            }
+            // tile 2
+
+            std::cout << "Choose where you want to place your road:\n"
+                      << "(choose two tiles and the road will be built between them)\n";
+
+            while (!validTile2) {
+                std::cout << "Tile 2:\n";
+                std::cout << "----Enter the resource of the tile (0 for brick, 1 for iron, 2 for wheat, 3 for wood, 4 for wool):\n";
+                std::cin >> resource2;
+
+                std::cout << "----Enter the dice number of the tile:\n";
+                std::cin >> tileNumber2;
+
+                validTile2 = (resource2 >= 0 && resource2 <= 4) &&
+                             (tileNumber2 >= 2 && tileNumber2 <= 12) &&
+                             (gameManager->findTile(tileNumber2, resource2) != nullptr);
+
+                if (!validTile2) {
+                    std::cout << "Invalid tile. Please try again.\n";
+                    std::cin.clear(); // Clear error flags
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
+                }
+            }
+
+            p.resources[BRICK]++;
+            p.resources[WOOD]++;
+            int placed = p.placeRoad(tileNumber1, resource1, tileNumber2, resource2);
+            if (placed == 0) {
+                roadsToGet--;
+                std::cout << " first road build successfully\n";
+            } else {
+                std::cout << " there was a problem with building this road, pleas try again\n";
+                p.resources[BRICK]--;
+                p.resources[WOOD]--;
+                resource1 = -1;
+                tileNumber1 = -1;
+                resource2 = -1;
+                tileNumber2 = -1;
+                validTile1 = false;
+                validTile2 = false;
+            }
+        }
+    }
+
     YearOfPlenty::YearOfPlenty(Catan *gm) {
         name = "YearOfPlenty";
         gameManager = gm;
@@ -288,15 +384,18 @@ namespace ariel {
 
     void YearOfPlenty::playCard(Player &p) {
         int resource = -1;
-        std::cout << "choose a two resources to get from `year of plenty` card (type a number):\n";
-        while (resource < 0 || resource > 4) {
-            std::cout << "choose your first resource: BRICK: 0, IRON: 1, WHEAT: 2, WOOD: 3, WOOL: 4\n";
+        while (resource < 0 || resource > 4 || std::cin.fail()) {
+            std::cout << "Choose your first resource: BRICK: 0, IRON: 1, WHEAT: 2, WOOD: 3, WOOL: 4\n";
+            std::cin.clear(); // Clear any error flags
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear input buffer
             std::cin >> resource;
         }
         p.resources[resource++];
         resource = -1;
-        while (resource < 0 || resource > 4) {
-            std::cout << "choose your second resource: BRICK: 0, IRON: 1, WHEAT: 2, WOOD: 3, WOOL: 4\n";
+        while (resource < 0 || resource > 4 || std::cin.fail()) {
+            std::cout << "Choose your second resource: BRICK: 0, IRON: 1, WHEAT: 2, WOOD: 3, WOOL: 4\n";
+            std::cin.clear(); // Clear any error flags
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear input buffer
             std::cin >> resource;
         }
         p.resources[resource++];

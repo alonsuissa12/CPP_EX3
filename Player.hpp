@@ -44,6 +44,7 @@ namespace ariel {
         Catan *gameManager;
         int VictoryPoints;
         int numOfKnights;
+        bool playedDevelopmentCard;
         std::vector<DevelopmentCard *> developmentCards;
         std::vector<Settlement *> unusedSettlements;
         std::vector<City *> unusedCities;
@@ -88,13 +89,14 @@ namespace ariel {
         int placeSettlement(int numTile1, int resourceTile1, int numTile2, int resourceTile2,int numTile3, int resourceTile3,bool start);
 
         int placeCity(int numTile1, std::string resourceTile1, int numTile2, std::string resourceTile2, int numTile3,
-                       std::string resourceTile3);
+                       std::string resourceTile3,bool start);
+        int placeCity(int numTile1, int resourceTile1, int numTile2, int resourceTile2,int numTile3, int resourceTile3,bool start);
 
-        int placeCity(Tile &t1, Tile t2, Tile t3);
+        int placeCity(Tile *t1, Tile* t2, Tile* t3,bool start);
 
-        int buyDevelopmentCard(DevelopmentCardsDeck);
+        int buyDevelopmentCard();
 
-        std::vector <DevelopmentCard> getDevelopmentCards();
+        std::vector <DevelopmentCard*> getDevelopmentCards();
 
         int useDevelopmentCard(DevelopmentCard *dc);
 

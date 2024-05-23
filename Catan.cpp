@@ -29,7 +29,7 @@ namespace ariel {
         p->resources[resource] += sum;
     }
 
-    Board* Catan::getBoard() {
+    Board *Catan::getBoard() {
         return board;
     }
 
@@ -52,16 +52,16 @@ namespace ariel {
 
     // updates the players resourced according to the dice roll
     void Catan::diceRoll(int diceRoll) {
-        for (Player *pp: players){
+        for (Player *pp: players) {
             for (unsigned int i = 0; i < pp->usedUrbanEntities.size(); ++i) {
 
-                if(pp->usedUrbanEntities[i]->neighborTileRight->number == diceRoll){
+                if (pp->usedUrbanEntities[i]->neighborTileRight->number == diceRoll) {
                     pp->resources[pp->usedUrbanEntities[i]->neighborTileRight->getResource()] += pp->usedUrbanEntities[i]->numOfResources;
                 }
-                if(pp->usedUrbanEntities[i]->neighborTileLeft->number == diceRoll){
+                if (pp->usedUrbanEntities[i]->neighborTileLeft->number == diceRoll) {
                     pp->resources[pp->usedUrbanEntities[i]->neighborTileLeft->getResource()] += pp->usedUrbanEntities[i]->numOfResources;
                 }
-                if(pp->usedUrbanEntities[i]->neighborTileDown->number == diceRoll){
+                if (pp->usedUrbanEntities[i]->neighborTileDown->number == diceRoll) {
                     pp->resources[pp->usedUrbanEntities[i]->neighborTileDown->getResource()] += pp->usedUrbanEntities[i]->numOfResources;
                 }
             }
@@ -69,8 +69,35 @@ namespace ariel {
     }
 
     Tile *Catan::findTile(int numTile, int resourceTile) {
-        Tile* pt = board -> findTile( numTile,  resourceTile);
+        Tile *pt = board->findTile(numTile, resourceTile);
         return pt;
+    }
+
+    DevelopmentCard *Catan::buyDevelopmentCard() {
+        DevelopmentCard *pdc; // todo: add to destructor!
+
+        // Seed the random number generator
+        srand(static_cast<unsigned int>(time(0)));
+
+        // Generate a random number between 1 and 25
+        int randomNumber = (rand() % 25) + 1;
+
+        if (randomNumber <= 14) { // knight
+            pdc = new Knight(this);
+        }
+        if (randomNumber > 14 && randomNumber <= 19) {// victory point
+            pdc = new VictoryPoint(this);
+        }
+        if (randomNumber > 19 && randomNumber <= 21) {// roads build
+            pdc = new RoadsBuild(this);
+        }
+        if (randomNumber > 21 && randomNumber <= 23) {// year of plenty
+            pdc = new YearOfPlenty(this);
+        }
+        if (randomNumber > 23 && randomNumber <= 25) {// monopoly
+            pdc = new Monopole(this);
+        }
+        return pdc;
     }
 
 }

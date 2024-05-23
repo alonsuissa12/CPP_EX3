@@ -27,6 +27,7 @@ namespace ariel {
         gameManager = gm;
         VictoryPoints = 0;
         numOfKnights = 0;
+        playedDevelopmentCard = false;
 
         //settlements:
         for (int i = 0; i < 5; ++i) {
@@ -56,6 +57,7 @@ namespace ariel {
         gameManager = gm;
         VictoryPoints = 0;
         numOfKnights = 0;
+        playedDevelopmentCard = false;
 
         //settlements:
         for (int i = 0; i < 5; ++i) {
@@ -126,6 +128,11 @@ namespace ariel {
             std::cout << " no more roads to use!" << std::endl;
             return -1;
         }
+        if (resources[WOOD] < 1 || resources[BRICK] < 1) {
+            std::cout << " not enough resources!" << std::endl;
+            return -1;
+        }
+
 
         int resNum1 = convertResourceToInt(resourceTile1);
         int resNum2 = convertResourceToInt(resourceTile2);
@@ -141,21 +148,37 @@ namespace ariel {
     }
 
     int Player::placeRoad(Tile *t1, Tile *t2) {
+        if (resources[WOOD] < 1 || resources[BRICK] < 1) {
+            std::cout << " not enough resources!" << std::endl;
+            return -1;
+        }
+
+        if (resources[WOOD] < 1 || resources[BRICK] < 1) {
+            std::cout << " not enough resources!" << std::endl;
+            return -1;
+        }
+
         Road *r1 = unusedRoads.back();
 
         int ans = r1->place(*t1, *t2);
         if (ans == 0) {
             unusedRoads.pop_back();
             usedRoads.push_back(r1);
+            resources[WOOD]--;
+            resources[BRICK]--;
         }
         return ans;
     }
 
 
     int Player::placeSettlement(int numTile1, std::string resourceTile1, int numTile2, std::string resourceTile2,
-                                int numTile3, std::string resourceTile3,bool start = false) {
+                                int numTile3, std::string resourceTile3, bool start = false) {
         if (unusedSettlements.size() == 0) {
             std::cout << " no more settlements to use!" << std::endl;
+            return -1;
+        }
+        if (resources[WOOD] < 1 || resources[BRICK] < 1 || resources[WHEAT] < 1 || resources[WOOL] < 1) {
+            std::cout << " not enough resources!" << std::endl;
             return -1;
         }
 
@@ -168,13 +191,88 @@ namespace ariel {
             std::cout << "brick, iron, wheat, wood, wool " << std::endl;
             return -1;
         }
-        return placeSettlement(numTile1, resNum1, numTile2, resNum2, numTile3, resNum3,start);
+        return placeSettlement(numTile1, resNum1, numTile2, resNum2, numTile3, resNum3, start);
     }
 
     int Player::placeSettlement(int numTile1, int resourceTile1, int numTile2, int resourceTile2, int numTile3,
-                                int resourceTile3,bool start  = false) {
-        if (unusedRoads.size() == 0) {
+                                int resourceTile3, bool start = false) {
+        if (unusedSettlements.size() == 0) {
             std::cout << " no more settlements to use!" << std::endl;
+            return -1;
+        }
+        if (resources[WOOD] < 1 || resources[BRICK] < 1 || resources[WHEAT] < 1 || resources[WOOL] < 1) {
+            std::cout << " not enough resources!" << std::endl;
+            return -1;
+        }
+
+        Tile *t1 = gameManager->findTile(numTile1, resourceTile1);
+        Tile *t2 = gameManager->findTile(numTile2, resourceTile2);
+        Tile *t3 = gameManager->findTile(numTile3, resourceTile3);
+
+
+        if (t1 == nullptr || t2 == nullptr || t3 == nullptr) {
+            std::cout << " location doesn't exist\n";
+            return -1;
+        }
+        return placeSettlement(t1, t2, t3, start);
+    }
+
+    int Player::placeSettlement(Tile *t1, Tile *t2, Tile *t3, bool start) {
+        if (resources[WOOD] < 1 || resources[BRICK] < 1 || resources[WHEAT] < 1 || resources[WOOL] < 1) {
+            std::cout << " not enough resources!" << std::endl;
+            return -1;
+        }
+        if (unusedSettlements.size() == 0) {
+            std::cout << " no more settlements to use!" << std::endl;
+            return -1;
+        }
+        Settlement *s1 = unusedSettlements.back();
+
+        int ans = s1->place(*t1, *t2, *t3, start);
+        if (ans == 0) {
+            unusedSettlements.pop_back();
+            usedUrbanEntities.push_back(s1);
+            VictoryPoints++;
+            resources[WOOD]--;
+            resources[BRICK]--;
+            resources[WHEAT]--;
+            resources[WOOL]--;
+        }
+        return ans;
+    }
+
+    int
+    Player::placeCity(int numTile1, std::string resourceTile1, int numTile2, std::string resourceTile2, int numTile3,
+                      std::string resourceTile3, bool start = false) {
+        if (unusedCities.size() == 0) {
+            std::cout << " no more Cities to use!" << std::endl;
+            return -1;
+        }
+        if (resources[IRON] < 3 || resources[WHEAT] < 2) {
+            std::cout << " not enough resources!" << std::endl;
+            return -1;
+        }
+
+        int resNum1 = convertResourceToInt(resourceTile1);
+        int resNum2 = convertResourceToInt(resourceTile2);
+        int resNum3 = convertResourceToInt(resourceTile3);
+
+        if (resNum2 == -1 || resNum1 == -1 || resNum3 == -1) {
+            std::cout << " wrong resource name. make sure you use one of the resources:" << std::endl;
+            std::cout << "brick, iron, wheat, wood, wool " << std::endl;
+            return -1;
+        }
+        return placeCity(numTile1, resNum1, numTile2, resNum2, numTile3, resNum3, start);
+    }
+
+    int Player::placeCity(int numTile1, int resourceTile1, int numTile2, int resourceTile2, int numTile3,
+                          int resourceTile3, bool start = false) {
+        if (resources[IRON] < 3 || resources[WHEAT] < 2) {
+            std::cout << " not enough resources!" << std::endl;
+            return -1;
+        }
+        if (unusedCities.size() == 0) {
+            std::cout << " no more cities to use!" << std::endl;
             return -1;
         }
         Tile *t1 = gameManager->findTile(numTile1, resourceTile1);
@@ -186,18 +284,70 @@ namespace ariel {
             std::cout << " location doesn't exist\n";
             return -1;
         }
-        return placeSettlement(t1, t2,t3,start);
+        return placeCity(t1, t2, t3, start);
     }
 
-    int Player::placeSettlement(Tile *t1, Tile* t2, Tile* t3,bool start) {
-        Settlement *s1 = unusedSettlements.back();
+    int Player::placeCity(Tile *t1, Tile *t2, Tile *t3, bool start) {
+        City *c1 = unusedCities.back();
+        if (resources[IRON] < 3 || resources[WHEAT] < 2) {
+            std::cout << " not enough resources!" << std::endl;
+            return -1;
+        }
 
-        int ans = s1->place(*t1, *t2, *t3,start);
+        int ans = c1->place(*t1, *t2, *t3, start);
         if (ans == 0) {
-            unusedSettlements.pop_back();
-             usedUrbanEntities.push_back(s1);
+            unusedCities.pop_back();
+            usedUrbanEntities.push_back(c1);
+            VictoryPoints++;
+            resources[WHEAT] -= 2;
+            resources[IRON] -= 3;
         }
         return ans;
+    }
+
+    int Player::buyDevelopmentCard() {
+        if (resources[IRON] < 1 || resources[WOOL] < 1 || resources[WHEAT] < 1) {
+            std::cout << " not enough resources!" << std::endl;
+            return -1;
+        }
+        DevelopmentCard *pdvc = gameManager->buyDevelopmentCard();
+        if (pdvc != nullptr) {
+
+            std::cout << name << " bought " << pdvc->getName() << " card\n";
+            developmentCards.push_back(pdvc);
+            resources[IRON]--;
+            resources[WOOL]--;
+            resources[WHEAT]--;
+
+            return 0;
+        }
+        return -1;
+    }
+
+    int Player::useDevelopmentCard(DevelopmentCard *dc) {
+        auto it = std::find(developmentCards.begin(), developmentCards.end(), dc);
+        // If dc is found, erase it from the vector
+        if (it != developmentCards.end()) {
+            dc->playCard(*this);
+            developmentCards.erase(it);
+            delete dc; // delete the card because it's dynamically allocated
+            endTurn();
+            return 0;
+        } else {
+            std::cout << "Invalid development card!\n";
+            return -1;
+        }
+    }
+
+    std::vector<DevelopmentCard *> Player::getDevelopmentCards() {
+        std::cout << "development cards you (" << name << ") have: ";
+        for (unsigned int i = 0; i < developmentCards.size() - 1; ++i) {
+            std::cout << developmentCards[i]->getName() << ", ";
+        }
+        if (developmentCards.size() - 1 >= 0)
+            std::cout << developmentCards[developmentCards.size() - 1]->getName();
+        std::cout << "\n";
+        return developmentCards;
     }
 
 }
