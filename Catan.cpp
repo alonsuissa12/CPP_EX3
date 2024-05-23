@@ -7,6 +7,7 @@
 
 namespace ariel {
     Catan::Catan(Player &p1, Player &p2, Player &p3) {
+        playerTurn = (unsigned int) myChooseStartingPlayer();
         p1.gameManager = this;
         p2.gameManager = this;
         p3.gameManager = this;
@@ -40,14 +41,18 @@ namespace ariel {
         }
     }
 
-    Player &Catan::ChooseStartingPlayer() {
+    int Catan::myChooseStartingPlayer() {
         // Seed the random number generator
         srand(static_cast<unsigned int>(time(0)));
 
         // Generate a random integer between 0 and 2
         int randomInt = rand() % 3; // Generates a random number in the range [0, 2]
 
-        return *players[(unsigned int) randomInt];
+        return randomInt;
+    }
+
+    Player *Catan::chooseStartingPlayer() {
+        return players[playerTurn];
     }
 
     // updates the players resourced according to the dice roll
@@ -100,4 +105,13 @@ namespace ariel {
         return pdc;
     }
 
+    void Catan::nextTurn() {
+        std::cout << players[playerTurn]->name << " done with his turn. \n";
+        playerTurn = ((playerTurn + 1) % players.size());
+        std::cout <<"it's  "<< players[playerTurn]->name << " turn now, roll the dice!\n";
+    }
+
+    Player * Catan::getPlayerTurn() {
+        return players[playerTurn];
+    }
 }

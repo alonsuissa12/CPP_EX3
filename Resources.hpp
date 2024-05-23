@@ -231,10 +231,13 @@ namespace ariel {
     private:
         Board *board;
         std::vector <Player*> players;
+        unsigned int playerTurn;
+
 
     private:
         void monopole(Player *p, int resource);
 
+        int myChooseStartingPlayer();
     public:
         Catan(Player &p1, Player &p2, Player &p3);
 
@@ -242,14 +245,21 @@ namespace ariel {
 
         void printWinner();
 
-        Player &ChooseStartingPlayer();
+        Player* chooseStartingPlayer();
 
         // updates the players resourced according to the dice roll
         void diceRoll(int);
 
         Tile * findTile(int numTile, int resourceTile);
 
+        Player *getPlayerTurn();
+
+        void nextTurn();
+
         DevelopmentCard * buyDevelopmentCard(); // todo: implement
+
+
+        void win(Player& p); // todo: implement
 
 
         friend class Monopole;

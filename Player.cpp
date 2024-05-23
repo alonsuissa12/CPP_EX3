@@ -20,6 +20,21 @@ namespace ariel {
         return resNum;
     }
 
+    std::string convertResourceToString(int resource) {
+        if (resource == 0)
+            return "brick";
+        if (resource == 1)
+            return "iron";
+        if (resource == 2)
+            return "wheat";
+        if (resource == 3)
+            return "wood";
+        if (resource == 4)
+            return "wool";
+        return "";
+
+    }
+
     Player::Player(Catan *gm) {
         // default name
         name = "Player " + std::to_string(Player::playerNum);
@@ -80,7 +95,10 @@ namespace ariel {
     }
 
     int Player::rollDice() {
-
+        if (*gameManager->getPlayerTurn() != *this) {
+            std::cout << name << ", its not your turn! \n";
+            return -1;
+        }
         static bool seeded = false;
         if (!seeded) {
             srand(static_cast<unsigned int>(time(0)));
@@ -97,7 +115,7 @@ namespace ariel {
     }
 
 
-    bool operator==(const Player &p1, const Player &p2) {
+    bool operator==( Player &p1,  Player &p2) {
         return (&p1 == &p2);
     }
 
@@ -106,6 +124,10 @@ namespace ariel {
     }
 
     int Player::placeRoad(int numTile1, int resourceTile1, int numTile2, int resourceTile2) {
+        if (*gameManager->getPlayerTurn() != *this) {
+            std::cout << name << ", its not your turn! \n";
+            return -1;
+        }
         if (unusedRoads.size() == 0) {
             std::cout << " no more roads to use!" << std::endl;
             return -1;
@@ -124,6 +146,10 @@ namespace ariel {
     }
 
     int Player::placeRoad(int numTile1, std::string resourceTile1, int numTile2, std::string resourceTile2) {
+        if (*gameManager->getPlayerTurn() != *this) {
+            std::cout << name << ", its not your turn! \n";
+            return -1;
+        }
         if (unusedRoads.size() == 0) {
             std::cout << " no more roads to use!" << std::endl;
             return -1;
@@ -148,6 +174,10 @@ namespace ariel {
     }
 
     int Player::placeRoad(Tile *t1, Tile *t2) {
+        if (*gameManager->getPlayerTurn() != *this) {
+            std::cout << name << ", its not your turn! \n";
+            return -1;
+        }
         if (resources[WOOD] < 1 || resources[BRICK] < 1) {
             std::cout << " not enough resources!" << std::endl;
             return -1;
@@ -173,6 +203,10 @@ namespace ariel {
 
     int Player::placeSettlement(int numTile1, std::string resourceTile1, int numTile2, std::string resourceTile2,
                                 int numTile3, std::string resourceTile3, bool start = false) {
+        if (*gameManager->getPlayerTurn() != *this) {
+            std::cout << name << ", its not your turn! \n";
+            return -1;
+        }
         if (unusedSettlements.size() == 0) {
             std::cout << " no more settlements to use!" << std::endl;
             return -1;
@@ -196,6 +230,10 @@ namespace ariel {
 
     int Player::placeSettlement(int numTile1, int resourceTile1, int numTile2, int resourceTile2, int numTile3,
                                 int resourceTile3, bool start = false) {
+        if (*gameManager->getPlayerTurn() != *this) {
+            std::cout << name << ", its not your turn! \n";
+            return -1;
+        }
         if (unusedSettlements.size() == 0) {
             std::cout << " no more settlements to use!" << std::endl;
             return -1;
@@ -218,6 +256,10 @@ namespace ariel {
     }
 
     int Player::placeSettlement(Tile *t1, Tile *t2, Tile *t3, bool start) {
+        if (*gameManager->getPlayerTurn() != *this) {
+            std::cout << name << ", its not your turn! \n";
+            return -1;
+        }
         if (resources[WOOD] < 1 || resources[BRICK] < 1 || resources[WHEAT] < 1 || resources[WOOL] < 1) {
             std::cout << " not enough resources!" << std::endl;
             return -1;
@@ -241,9 +283,12 @@ namespace ariel {
         return ans;
     }
 
-    int
-    Player::placeCity(int numTile1, std::string resourceTile1, int numTile2, std::string resourceTile2, int numTile3,
-                      std::string resourceTile3, bool start = false) {
+    int Player::placeCity(int numTile1, std::string resourceTile1, int numTile2, std::string resourceTile2
+                          ,int numTile3, std::string resourceTile3, bool start = false) {
+        if(*gameManager->getPlayerTurn() != *this){
+            std::cout<< name << ", its not your turn! \n";
+            return -1;
+        }
         if (unusedCities.size() == 0) {
             std::cout << " no more Cities to use!" << std::endl;
             return -1;
@@ -267,6 +312,10 @@ namespace ariel {
 
     int Player::placeCity(int numTile1, int resourceTile1, int numTile2, int resourceTile2, int numTile3,
                           int resourceTile3, bool start = false) {
+        if(*gameManager->getPlayerTurn() != *this){
+            std::cout<< name << ", its not your turn! \n";
+            return -1;
+        }
         if (resources[IRON] < 3 || resources[WHEAT] < 2) {
             std::cout << " not enough resources!" << std::endl;
             return -1;
@@ -288,6 +337,10 @@ namespace ariel {
     }
 
     int Player::placeCity(Tile *t1, Tile *t2, Tile *t3, bool start) {
+        if(*gameManager->getPlayerTurn() != *this){
+            std::cout<< name << ", its not your turn! \n";
+            return -1;
+        }
         City *c1 = unusedCities.back();
         if (resources[IRON] < 3 || resources[WHEAT] < 2) {
             std::cout << " not enough resources!" << std::endl;
@@ -306,6 +359,10 @@ namespace ariel {
     }
 
     int Player::buyDevelopmentCard() {
+        if(*gameManager->getPlayerTurn() != *this){
+            std::cout<< name << ", its not your turn! \n";
+            return -1;
+        }
         if (resources[IRON] < 1 || resources[WOOL] < 1 || resources[WHEAT] < 1) {
             std::cout << " not enough resources!" << std::endl;
             return -1;
@@ -325,13 +382,24 @@ namespace ariel {
     }
 
     int Player::useDevelopmentCard(DevelopmentCard *dc) {
+        if(*gameManager->getPlayerTurn() != *this){
+            std::cout<< name << ", its not your turn! \n";
+            return -1;
+        }
+        bool isVP = dc->getName() == "VictoryPoint";
+        if (!isVP && playedDevelopmentCard) {
+            std::cout << "you can only play one development card per turn (except of victory points)\n ";
+            return -1;
+        }
+
         auto it = std::find(developmentCards.begin(), developmentCards.end(), dc);
         // If dc is found, erase it from the vector
         if (it != developmentCards.end()) {
             dc->playCard(*this);
             developmentCards.erase(it);
             delete dc; // delete the card because it's dynamically allocated
-            endTurn();
+            if (!isVP)
+                playedDevelopmentCard = true;
             return 0;
         } else {
             std::cout << "Invalid development card!\n";
@@ -340,6 +408,10 @@ namespace ariel {
     }
 
     std::vector<DevelopmentCard *> Player::getDevelopmentCards() {
+        if(*gameManager->getPlayerTurn() != *this){
+            std::cout<< name << ", its not your turn! \n";
+            return std::vector<DevelopmentCard*>(); // Return an empty vector;
+        }
         std::cout << "development cards you (" << name << ") have: ";
         for (unsigned int i = 0; i < developmentCards.size() - 1; ++i) {
             std::cout << developmentCards[i]->getName() << ", ";
@@ -350,4 +422,85 @@ namespace ariel {
         return developmentCards;
     }
 
+    int Player::trade(Player other, int wantedResource, int wantedAmount, int givenResource, int givenAmount) {
+        if(*gameManager->getPlayerTurn() != *this){
+            std::cout<< name << ", its not your turn! \n";
+            return -1;
+        }
+        if (wantedResource > 4 || wantedResource < 0 || givenResource > 4 || givenResource < 0) {
+            std::cout << "Invalid resource numbers\n";
+            return -1;
+        }
+        if (other.resources[wantedResource] < wantedAmount || resources[givenResource] < givenAmount) {
+            std::cout << "not enough resources!\n";
+            return -1;
+        }
+
+
+        int agree = 3;
+        std::string wantedResourceString = convertResourceToString(wantedResource);
+        std::string givenResourceString = convertResourceToString(givenResource);
+        std::cout << "trade offer from " << name << " to " << other.name << " :\n";
+        std::cout << "offers " << givenAmount << " " << givenResourceString << " in return for: " << wantedAmount << " "
+                  << wantedResource << " \n";
+        while (agree != 0 && agree != 1) {
+            std::cout << other.name << " do you accept this offer? (enter 1/0 for yes/no)\n";
+            agree++;
+            std::cin >> agree;
+            std::cin.clear(); // Clear error flags
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
+        }
+        if (agree == 1) {
+            std::cout << other.name << " accepts your offer\n";
+            other.resources[givenResource] += givenAmount;
+            other.resources[wantedResource] -= wantedAmount;
+            resources[wantedResource] += wantedAmount;
+            resources[givenResource] -= givenAmount;
+        } else {
+            std::cout << other.name << " declined your offer\n";
+        }
+        return 0;
+
+    }
+
+    // trade with the bank 4 resources for one resource
+    int Player::tradeWithTheBank(int wantedResource, int givenResource) {
+        if(*gameManager->getPlayerTurn() != *this){
+            std::cout<< name << ", its not your turn! \n";
+            return -1;
+        }
+        if (wantedResource > 4 || wantedResource < 0 || givenResource > 4 || givenResource < 0) {
+            std::cout << "Invalid resource numbers\n";
+            return -1;
+        }
+        if (resources[givenResource] < 4) {
+            std::cout << "not enough resources!\n";
+            return -1;
+        }
+        resources[wantedResource]++;
+        resources[givenResource] -= 4;
+
+        std::string Wresource = convertResourceToString(wantedResource);
+        std::string Gresource = convertResourceToString(givenResource);
+
+        std::cout << name << " traded with the bank 4 " << Gresource << " for 1 " << Wresource << "\n";
+        return 0;
+
+    }
+
+    int Player::getVictoryPoints() { return VictoryPoints; }
+
+    std::string Player::getName() { return name; }
+
+    void Player::endTurn() {
+        playedDevelopmentCard = false;
+        if (VictoryPoints >= 10) { //win game
+            gameManager->win(*this);
+        } else {
+            gameManager->nextTurn();
+        }
+    }
+
+
 }
+

@@ -81,32 +81,35 @@ namespace ariel {
         int placeRoad(Tile *t1, Tile *t2);
 
 
-        int placeSettlement(int numTile1, std::string resourceTile1, int numTile2, std::string resourceTile2, int numTile3,
-                        std::string resourceTile3,bool start);
+        int placeSettlement(int numTile1, std::string resourceTile1, int numTile2, std::string resourceTile2,
+                            int numTile3, std::string resourceTile3, bool start);
 
-        int placeSettlement(Tile *t1, Tile *t2, Tile *t3,bool start);
+        int placeSettlement(Tile *t1, Tile *t2, Tile *t3, bool start);
 
-        int placeSettlement(int numTile1, int resourceTile1, int numTile2, int resourceTile2,int numTile3, int resourceTile3,bool start);
+        int placeSettlement(int numTile1, int resourceTile1, int numTile2, int resourceTile2, int numTile3,
+                            int resourceTile3, bool start);
 
         int placeCity(int numTile1, std::string resourceTile1, int numTile2, std::string resourceTile2, int numTile3,
-                       std::string resourceTile3,bool start);
-        int placeCity(int numTile1, int resourceTile1, int numTile2, int resourceTile2,int numTile3, int resourceTile3,bool start);
+                      std::string resourceTile3, bool start);
 
-        int placeCity(Tile *t1, Tile* t2, Tile* t3,bool start);
+        int placeCity(int numTile1, int resourceTile1, int numTile2, int resourceTile2, int numTile3, int resourceTile3,
+                      bool start);
+
+        int placeCity(Tile *t1, Tile *t2, Tile *t3, bool start);
 
         int buyDevelopmentCard();
 
-        std::vector <DevelopmentCard*> getDevelopmentCards();
+        std::vector<DevelopmentCard *> getDevelopmentCards();
 
         int useDevelopmentCard(DevelopmentCard *dc);
 
         int trade(Player other, int wantedResource, int wantedAmount, int givenResource, int givenAmount);
 
-        int tradeWithTheBank(int wantedResource, int wantedAmount);
+        int tradeWithTheBank(int wantedResource, int givenResource);
 
-        int takeResources(int brick, int iron, int wheat, int wood, int wool);
+        //int takeResources(int brick, int iron, int wheat, int wood, int wool);
 
-        int useResources(int brick, int iron, int wheat, int wood, int wool);
+//        int useResources(int brick, int iron, int wheat, int wood, int wool);
 
         int getVictoryPoints();
 
@@ -117,8 +120,11 @@ namespace ariel {
     };
 
     int Player::playerNum = 0;
+
     // converting the resource name to the resource int.
     int convertResourceToInt(std::string resourceTile1);
+
+    std::string convertResourceToString(int resource);
 
     bool operator==(const Player &p1, const Player &p2);
 
