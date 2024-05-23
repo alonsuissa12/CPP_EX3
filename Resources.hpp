@@ -6,7 +6,6 @@
 #define CPP_EX3_24_MAIN_RESOURCES_H
 
 //#include "Board.hpp" //todo: pay attention for loop include!
-#include "Player.hpp"
 #include <string>
 #include <vector>
 #include <stdexcept>
@@ -14,6 +13,16 @@
 #include <ctime>
 #include <algorithm>
 #include <iostream>
+
+#ifndef BRICK
+#define BRICK 0
+#define IRON 1
+#define WHEAT 2
+#define WOOD 3
+#define WOOL 4
+#endif
+
+
 
 #define RightEdge 0
 #define UpRightEdge 1
@@ -32,7 +41,6 @@
 #define RightTile 0
 #define LeftTile 1
 #define DownTile 2
-
 
 
 #define SETTLEMENT 1
@@ -54,33 +62,35 @@ namespace ariel {
     class Player;
 
     class DevelopmentCardsDeck;
+
     class Tile;
+
     class Board;
 
     //find the edge side from n1 to n2
-    int edgeSide(Tile&,Tile&);
+    int edgeSide(Tile &, Tile &);
 
     class Road {
     private:
-        Player * owner;
+        Player *owner;
         Tile *neighborTile1;
         Tile *neighborTile2;
 
     public:
         Road(Player *owner);
 
-        int place( Tile &n1, Tile &n2);
+        int place(Tile &n1, Tile &n2);
 
         std::string getOwnerName();
 
-        Player * getOwner();
+        Player *getOwner();
 
     };
 
     class UrbanEntity {
     protected:
         int type;
-        ariel::Player * owner;
+        ariel::Player *owner;
         int numOfResources;
         int numOfVictoryPoints;
         Tile *neighborTileRight;
@@ -88,6 +98,7 @@ namespace ariel {
         Tile *neighborTileDown;
 
         friend class Catan;
+
     public:
         Player *getOwner();
 
@@ -95,14 +106,13 @@ namespace ariel {
 
         int getNumOfResources();
 
-        int getNumOfVictoryPoints() ;
+        int getNumOfVictoryPoints();
 
         Tile *getNeighbor(int num);
 
         int getType();
 
-        virtual int place(Tile &n1, Tile &n2, Tile &n3,bool start = false) = 0;
-
+        virtual int place(Tile &n1, Tile &n2, Tile &n3, bool start = false) = 0;
 
 
     };
@@ -110,56 +120,59 @@ namespace ariel {
     class Settlement : public UrbanEntity {
     public:
         explicit Settlement(Player *);
+
         int place(Tile &n1, Tile &n2, Tile &n3, bool start) override;
     };
 
     class City : public UrbanEntity {
     public:
-        explicit City(ariel::Player *);
-        int place(Tile &n1, Tile &n2, Tile &n3, bool start ) override;
+        explicit City(Player *);
+
+        int place(Tile &n1, Tile &n2, Tile &n3, bool start) override;
     };
 
     class DevelopmentCard {
     protected:
         std::string name;
-        Catan* gameManager;
+        Catan *gameManager;
     public:
         virtual void playCard(Player &p) = 0;
+
         std::string getName();
 
     };
 
     class VictoryPoint : public DevelopmentCard {
     public:
-        VictoryPoint(Catan*);
+        VictoryPoint(Catan *);
 
         void playCard(Player &p) override;
     };
 
     class Knight : public DevelopmentCard {
     public:
-        Knight(Catan*);
+        Knight(Catan *);
 
         void playCard(Player &p) override;
     };
 
     class Monopole : public DevelopmentCard {
     public:
-        Monopole(Catan*);
+        Monopole(Catan *);
 
         void playCard(Player &p) override;
     };
 
     class RoadsBuild : public DevelopmentCard {
     public:
-        RoadsBuild(Catan*);
+        RoadsBuild(Catan *);
 
         void playCard(Player &p) override;
     };
 
     class YearOfPlenty : public DevelopmentCard {
     public:
-        YearOfPlenty(Catan*);
+        YearOfPlenty(Catan *);
 
         void playCard(Player &p) override;
     };
@@ -177,7 +190,7 @@ namespace ariel {
 //
 //    };
 
-    class Tile { //todo: add ports?
+    class Tile {
     private:
         bool isSea;
         bool isDesert;
@@ -185,43 +198,44 @@ namespace ariel {
         std::string resource;
         Tile *neighbors[6];
         UrbanEntity *urbanEntities[6];
-        Road * roads[6];
+        Road *roads[6];
 
         friend class Catan;
+
     private:
         Settlement &removeSettlement(Settlement &settlement);
 
     public:
         Tile(int dieNum, std::string resource, bool issea, bool isDesert);
 
-        void UpdateNeighbor(Tile &neighbor,int side);
+        void UpdateNeighbor(Tile &neighbor, int side);
 
-        int placeUrbanEntity(UrbanEntity *UrbanEntity,int side);
+        int placeUrbanEntity(UrbanEntity *UrbanEntity, int side);
 
         int placeRoad(Road *road, int side);
 
-        Tile& getNeighbor(int side);
+        Tile &getNeighbor(int side);
 
-        Road * getRoad(int side);
+        Road *getRoad(int side);
 
-        UrbanEntity * getUrbanEntity(int side);
+        UrbanEntity *getUrbanEntity(int side);
 
         int getResource(); //todo: implement! (return the resource number!)
 
         int getNumber();
 
 
-
     };
 
     class Board { //todo: add destructor
     private:
-        std::vector<Tile *>tiles;
+        std::vector<Tile *> tiles;
     public:
         Board();
 
         void printBoard();
-        Tile * findTile(int numTile, int resourceTile);
+
+        Tile *findTile(int numTile, int resourceTile);
 
     };
 
@@ -230,7 +244,7 @@ namespace ariel {
     class Catan {
     private:
         Board *board;
-        std::vector <Player*> players;
+        std::vector<Player *> players;
         unsigned int playerTurn;
 
 
@@ -238,37 +252,138 @@ namespace ariel {
         void monopole(Player *p, int resource);
 
         int myChooseStartingPlayer();
+
     public:
         Catan(Player &p1, Player &p2, Player &p3);
 
-        Board* getBoard();
+        Board *getBoard();
 
         void printWinner();
 
-        Player* chooseStartingPlayer();
+        Player *chooseStartingPlayer();
 
         // updates the players resourced according to the dice roll
         void diceRoll(int);
 
-        Tile * findTile(int numTile, int resourceTile);
+        Tile *findTile(int numTile, int resourceTile);
 
         Player *getPlayerTurn();
 
         void nextTurn();
 
-        DevelopmentCard * buyDevelopmentCard(); // todo: implement
+        DevelopmentCard *buyDevelopmentCard();
 
 
-        void win(Player& p); // todo: implement
+        void win(Player &p);
 
 
         friend class Monopole;
+
         friend class RoadsBuild;
+
         friend class YearOfPlenty;
     };
 
-    bool operator==(const Tile& t1, const Tile & t2);
-    bool operator!=(const Tile& t1, const Tile & t2);
+    bool operator==(const Tile &t1, const Tile &t2);
+
+    bool operator!=(const Tile &t1, const Tile &t2);
+
+
+
+
+    class Player {
+
+    private:
+        static int playerNum;
+        std::string name;
+        Catan *gameManager;
+        int VictoryPoints;
+        int numOfKnights;
+        bool playedDevelopmentCard;
+        std::vector<DevelopmentCard *> developmentCards;
+        std::vector<Settlement *> unusedSettlements;
+        std::vector<City *> unusedCities;
+        std::vector<Road *> unusedRoads;
+        std::vector<UrbanEntity *> usedUrbanEntities;
+        std::vector<Road *> usedRoads;
+        int resources[5];
+
+        friend class DevelopmentCard;
+
+        friend class VictoryPoint;
+
+        friend class Knight;
+
+        friend class Monopole;
+
+        friend class RoadsBuild;
+
+        friend class YearOfPlenty;
+
+        friend class Catan;
+
+    public:
+        Player(Catan *gm);
+
+        Player(Catan *gm, std::string name);
+
+        int rollDice();
+
+        int placeRoad(int numTile1, int resourceTile1, int numTile2, int resourceTile2);
+
+        int placeRoad(int numTile1, std::string resourceTile1, int numTile2, std::string resourceTile2);
+
+        int placeRoad(Tile *t1, Tile *t2);
+
+
+        int placeSettlement(int numTile1, std::string resourceTile1, int numTile2, std::string resourceTile2,
+                            int numTile3, std::string resourceTile3, bool start);
+
+        int placeSettlement(Tile *t1, Tile *t2, Tile *t3, bool start);
+
+        int placeSettlement(int numTile1, int resourceTile1, int numTile2, int resourceTile2, int numTile3,
+                            int resourceTile3, bool start);
+
+        int placeCity(int numTile1, std::string resourceTile1, int numTile2, std::string resourceTile2, int numTile3,
+                      std::string resourceTile3, bool start);
+
+        int placeCity(int numTile1, int resourceTile1, int numTile2, int resourceTile2, int numTile3, int resourceTile3,
+                      bool start);
+
+        int placeCity(Tile *t1, Tile *t2, Tile *t3, bool start);
+
+        int buyDevelopmentCard();
+
+        std::vector<DevelopmentCard *> getDevelopmentCards();
+
+        int useDevelopmentCard(DevelopmentCard *dc);
+
+        int trade(Player other, int wantedResource, int wantedAmount, int givenResource, int givenAmount);
+
+        int tradeWithTheBank(int wantedResource, int givenResource);
+
+        //int takeResources(int brick, int iron, int wheat, int wood, int wool);
+
+//        int useResources(int brick, int iron, int wheat, int wood, int wool);
+
+        int getVictoryPoints();
+
+        std::string getName();
+
+        void endTurn();
+
+    };
+
+
+    // converting the resource name to the resource int.
+    int convertResourceToInt(std::string resourceTile1);
+
+    std::string convertResourceToString(int resource);
+
+    bool operator==(const Player &p1, const Player &p2);
+
+    bool operator!=(const Player &p1, const Player &p2);
+
 
 }
 

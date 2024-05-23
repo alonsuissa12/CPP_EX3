@@ -114,4 +114,9 @@ namespace ariel {
     Player * Catan::getPlayerTurn() {
         return players[playerTurn];
     }
+
+    void Catan::win(Player &p) {
+        std::cout<< p.getName() << " is the WINNER!!!\n";
+        //todo: call destructor and end the game;
+    }
 }

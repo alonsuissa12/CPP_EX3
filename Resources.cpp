@@ -17,6 +17,36 @@ namespace ariel {
         }
         return edgeSideOfN1;
     }
+    int convertResourceToInt(std::string resourceTile1) {
+        int resNum = -1;
+        if (resourceTile1 == "brick" || resourceTile1 == "BRICK")
+            resNum = 0;
+        if (resourceTile1 == "iron" || resourceTile1 == "IRON")
+            resNum = 1;
+        if (resourceTile1 == "wheat" || resourceTile1 == "WHEAT")
+            resNum = 2;
+        if (resourceTile1 == "wood" || resourceTile1 == "WOOD")
+            resNum = 3;
+        if (resourceTile1 == "wool" || resourceTile1 == "WOOL")
+            resNum = 4;
+        return resNum;
+    }
+
+    std::string convertResourceToString(int resource) {
+        if (resource == 0)
+            return "brick";
+        if (resource == 1)
+            return "iron";
+        if (resource == 2)
+            return "wheat";
+        if (resource == 3)
+            return "wood";
+        if (resource == 4)
+            return "wool";
+        return "";
+
+    }
+
 
 
 //###################################    ROAD   ###################################
@@ -188,6 +218,17 @@ namespace ariel {
         }
         return 0;
 
+    }
+
+    //constructor
+    City::City(Player* p){
+        this->owner = owner;
+        type = CITY;
+        numOfResources = 2;
+        numOfVictoryPoints = 2;
+        neighborTileRight = nullptr;
+        neighborTileLeft = nullptr;
+        neighborTileDown = nullptr;
     }
 
     //placing the city in the location
@@ -452,12 +493,17 @@ namespace ariel {
         return urbanEntities[side];
     }
 
+    int Tile::getResource() {
+        return convertResourceToInt(resource);
+    }
+
+
     bool operator==(const Tile &t1, const Tile &t2) {
         return (&t1 == &t2);
     }
 
     bool operator!=(const Tile &t1, const Tile &t2) {
-        return !(t1 == t2);
+        return &t1 != &t2;
     }
 
     int Tile::getNumber() {

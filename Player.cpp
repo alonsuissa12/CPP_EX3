@@ -2,38 +2,13 @@
 //
 // Created by alon on 5/20/24.
 //
-#include "Player.hpp"
+#include "Resources.hpp"
 
 namespace ariel {
-    int convertResourceToInt(std::string resourceTile1) {
-        int resNum = -1;
-        if (resourceTile1 == "brick" || resourceTile1 == "BRICK")
-            resNum = 0;
-        if (resourceTile1 == "iron" || resourceTile1 == "IRON")
-            resNum = 1;
-        if (resourceTile1 == "wheat" || resourceTile1 == "WHEAT")
-            resNum = 2;
-        if (resourceTile1 == "wood" || resourceTile1 == "WOOD")
-            resNum = 3;
-        if (resourceTile1 == "wool" || resourceTile1 == "WOOL")
-            resNum = 4;
-        return resNum;
-    }
+    int Player::playerNum = 0;
 
-    std::string convertResourceToString(int resource) {
-        if (resource == 0)
-            return "brick";
-        if (resource == 1)
-            return "iron";
-        if (resource == 2)
-            return "wheat";
-        if (resource == 3)
-            return "wood";
-        if (resource == 4)
-            return "wool";
-        return "";
 
-    }
+
 
     Player::Player(Catan *gm) {
         // default name
@@ -120,7 +95,7 @@ namespace ariel {
     }
 
     bool operator!=(const Player &p1, const Player &p2) {
-        return !(p1 == p2);
+        return  &p1 != &p2;;
     }
 
     int Player::placeRoad(int numTile1, int resourceTile1, int numTile2, int resourceTile2) {
