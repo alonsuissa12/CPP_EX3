@@ -60,8 +60,7 @@ namespace ariel {
         int edgeSideOfN1 = edgeSide(n1, n2);
         int edgeSideOfN2 = edgeSide(n2, n1);
 
-        if (edgeSideOfN1 == -1 || edgeSideOfN2 == -1) { //todo:???
-//            void UpdateNeighbor(Tile &neighbor);
+        if (edgeSideOfN1 == -1 || edgeSideOfN2 == -1) {
             std::cout << " the tiles r not adjacent!\n";
             return -1;
         }
@@ -108,7 +107,9 @@ namespace ariel {
 
 //###################################   URBAN ENTITIES   ###################################
 
-    //constructor
+    UrbanEntity::~UrbanEntity() {}
+
+//constructor
     Settlement::Settlement(Player *owner) {
         this->owner = owner;
         type = SETTLEMENT;
@@ -119,27 +120,27 @@ namespace ariel {
         neighborTileDown = nullptr;
     }
 
-    // getter for the owner
+// getter for the owner
     Player *UrbanEntity::getOwner() {
         return owner;
     }
 
-    // getter for the owner's name
+// getter for the owner's name
     std::string UrbanEntity::getOwnerName() {
         return owner->getName();
     }
 
-    // getter for the number of resources this urban entity generates
+// getter for the number of resources this urban entity generates
     int UrbanEntity::getNumOfResources() {
         return numOfResources;
     }
 
-    //getter for the number of resources this urban entity worth
+//getter for the number of resources this urban entity worth
     int UrbanEntity::getNumOfVictoryPoints() {
         return numOfVictoryPoints;
     }
 
-    // getter for the tiles of this urban entity location
+// getter for the tiles of this urban entity location
     Tile *UrbanEntity::getNeighbor(int num) {
         if (num == RightTile)
             return neighborTileRight;
@@ -150,10 +151,10 @@ namespace ariel {
         return nullptr;
     }
 
-    //getter for the type of the urban entity
+//getter for the type of the urban entity
     int UrbanEntity::getType() { return type; }
 
-    //placing the settlement in the location
+//placing the settlement in the location
     int Settlement::place(Tile &n1, Tile &n2, Tile &n3, bool start = false) {
         //find the edges that connect the tiles
         int edgeSideOfN1ToN2 = edgeSide(n1, n2);
@@ -221,7 +222,7 @@ namespace ariel {
 
     }
 
-    //constructor
+//constructor
     City::City(Player *p) {
         this->owner = owner;
         type = CITY;
@@ -232,7 +233,7 @@ namespace ariel {
         neighborTileDown = nullptr;
     }
 
-    //placing the city in the location
+//placing the city in the location
     int City::place(Tile &n1, Tile &n2, Tile &n3, bool start = false) {
         //find the edges that connect the tiles
         int edgeSideOfN1ToN2 = edgeSide(n1, n2);
@@ -285,7 +286,9 @@ namespace ariel {
     }
 
 
-    //###################################    DEVELOPMENT CARDS    ###################################
+//###################################    DEVELOPMENT CARDS    ###################################
+
+    DevelopmentCard::~DevelopmentCard() {}
 
     std::string DevelopmentCard::getName() {
         return name;
@@ -445,7 +448,7 @@ namespace ariel {
         p.resources[resource++];
     }
 
-    //###################################   TILE   ###################################
+//###################################   TILE   ###################################
 
     Tile::Tile(int dieNum, std::string resource, bool issea = false, bool isDesert = false) {
         isSea = issea;
@@ -524,7 +527,7 @@ namespace ariel {
         return os;
     }
 
-    //###################################   BOARD   ###################################
+//###################################   BOARD   ###################################
     Board::Board() {
         // Seed the random number generator
         std::srand(static_cast<unsigned int>(std::time(nullptr)));
@@ -538,34 +541,34 @@ namespace ariel {
         // 18 yielding tiles:
         // 3 iron tiles
         for (unsigned int i = 0; i < 3; ++i) {
-            Tile *tile = new Tile(numbers[i], "iron"); //todo:add destructor
+            Tile *tile = new Tile(numbers[i], "iron");
             tiles.push_back(tile);
         }
 
         // 4 wood tiles
         for (unsigned int i = 0; i < 4; ++i) {
-            Tile *tile = new Tile(numbers[i + 3], "wood");//todo:add new?
+            Tile *tile = new Tile(numbers[i + 3], "wood");
             tiles.push_back(tile);
         }
         // 4 wool tiles
         for (unsigned int i = 0; i < 4; ++i) {
-            Tile *tile = new Tile(numbers[i + 7], "wool");//todo:add new?
+            Tile *tile = new Tile(numbers[i + 7], "wool");
             tiles.push_back(tile);
         }
         // 3 brick tiles
         for (unsigned int i = 0; i < 3; ++i) {
-            Tile *tile = new Tile(numbers[i + 11], "brick");//todo:add new?
+            Tile *tile = new Tile(numbers[i + 11], "brick");
             tiles.push_back(tile);
         }
 
         // 4 wheat tiles
         for (unsigned int i = 0; i < 4; ++i) {
-            Tile *tile = new Tile(numbers[i + 14], "wheat");//todo:add new?
+            Tile *tile = new Tile(numbers[i + 14], "wheat");
             tiles.push_back(tile);
         }
 
         // desert tile
-        Tile *desert = new Tile(0, "nothing", false, true);//todo:add new?
+        Tile *desert = new Tile(0, "nothing", false, true);
         tiles.push_back(desert);
         //shuffle the tiles
         std::shuffle(tiles.begin(), tiles.end(), std::default_random_engine((unsigned long) std::time(nullptr)));
@@ -576,7 +579,7 @@ namespace ariel {
         unsigned int shift = 0;
 
         for (unsigned int i = 0; i < 18; ++i) {
-            Tile *tile = new Tile(0, "nothing", true, false);//todo:add new?
+            Tile *tile = new Tile(0, "nothing", true, false);
             tiles.insert(tiles.begin() + locationsForSea[i], tile);
             shift++;
 
@@ -592,8 +595,8 @@ namespace ariel {
 
 
         for (unsigned int i = 0; i < rowSizeLength; ++i) {
-            if(i != 0)
-                shift += rowSize[i-1];
+            if (i != 0)
+                shift += rowSize[i - 1];
             if (i == 3) {
                 secondHalPlus = 1;
                 firstHalfPlus = 0;
@@ -618,6 +621,15 @@ namespace ariel {
         }
 
 
+    }
+
+    Board::~Board() {
+        // Deallocate memory for each tile
+        for (Tile *tile: tiles) {
+            delete tile;
+        }
+        // Clear the vector of tiles
+        tiles.clear();
     }
 
     void Board::printBoard() {
@@ -660,7 +672,7 @@ namespace ariel {
              i < first + second + third + fourth + fifth + sixth + seventh; ++i) { //seventh row
             std::cout << *tiles[i] << "  ";
         }
-        std::cout<<"\n             **************************************\n\n";
+        std::cout << "\n             **************************************\n\n";
     }
 
     Tile *Board::findTile(int numTile, int resourceTile) {

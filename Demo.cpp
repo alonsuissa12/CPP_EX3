@@ -22,6 +22,7 @@ int main()
     cout << "starting player: " <<  p->getName() <<"\n";
     Board * board = catan.getBoard(); // get the board of the game.
     board->printBoard();
+    p3.getDevelopmentCards();
 //    p1.placeSettelemnut(places, placesNum);
 //    p1.placeRoad(places, placesNum, board);
 //    vector<string> places = {"Agricultural Land", "Desert"};

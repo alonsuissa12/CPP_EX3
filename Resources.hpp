@@ -5,7 +5,6 @@
 #ifndef CPP_EX3_24_MAIN_RESOURCES_H
 #define CPP_EX3_24_MAIN_RESOURCES_H
 
-//#include "Board.hpp" //todo: pay attention for loop include!
 #include <string>
 #include <vector>
 #include <stdexcept>
@@ -98,6 +97,7 @@ namespace ariel {
         Tile *neighborTileRight;
         Tile *neighborTileLeft;
         Tile *neighborTileDown;
+        virtual ~UrbanEntity();
 
         friend class Catan;
 
@@ -139,6 +139,7 @@ namespace ariel {
         Catan *gameManager;
     public:
         virtual void playCard(Player &p) = 0;
+        virtual ~DevelopmentCard();
 
         std::string getName();
 
@@ -210,7 +211,7 @@ namespace ariel {
 
         UrbanEntity *getUrbanEntity(int side);
 
-        int getResource(); //todo: implement! (return the resource number!)
+        int getResource();
 
         int getNumber();
 
@@ -220,11 +221,12 @@ namespace ariel {
 
     };
 
-    class Board { // todo: add destructor
+    class Board {
     private:
         std::vector<Tile *> tiles;
     public:
         Board();
+        ~Board();
 
         void printBoard();
 
@@ -246,6 +248,8 @@ namespace ariel {
 
     public:
         Catan(Player &p1, Player &p2, Player &p3);
+
+        ~Catan();
 
         Board *getBoard();
 
@@ -317,6 +321,8 @@ namespace ariel {
         Player();
 
         Player( std::string name);
+
+        ~Player();
 
         void joinGame(Catan *gm);
 

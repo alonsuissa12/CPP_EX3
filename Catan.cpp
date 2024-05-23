@@ -15,8 +15,12 @@ namespace ariel {
         players.push_back(&p2);
         players.push_back(&p3);
 
-        this->board = new Board(); //todo: add destructor
+        this->board = new Board();
 
+    }
+
+    Catan::~Catan() {
+        delete board; // board allocated dynamically
     }
 
     void Catan::monopole(Player *p, int resource) {
@@ -79,7 +83,7 @@ namespace ariel {
     }
 
     DevelopmentCard *Catan::buyDevelopmentCard() {
-        DevelopmentCard *pdc; // todo: add to destructor!
+        DevelopmentCard *pdc;
 
         // Seed the random number generator
         srand(static_cast<unsigned int>(time(0)));
@@ -117,6 +121,7 @@ namespace ariel {
 
     void Catan::win(Player &p) {
         std::cout << p.getName() << " is the WINNER!!!\n";
-        //todo: call destructor and end the game;
+        std::cout << p.getName() << " (this object will not be available for another game. in order to play another game ,please crate a new object of catan)\n";
+        delete this;
     }
 }

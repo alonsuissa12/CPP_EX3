@@ -8,8 +8,6 @@ namespace ariel {
     int Player::playerNum = 0;
 
 
-
-
     Player::Player() {
         // default name
         name = "Player " + std::to_string(Player::playerNum);
@@ -20,18 +18,18 @@ namespace ariel {
 
         //settlements:
         for (int i = 0; i < 5; ++i) {
-            Settlement s = Settlement(this);//todo: new? and add destructor
-            unusedSettlements.push_back(&s);
+            Settlement *s = new Settlement(this);
+            unusedSettlements.push_back(s);
         }
         //cities
         for (int i = 0; i < 4; ++i) {
-            City c = City(this); //todo: new? and add destructor
-            unusedCities.push_back(&c);
+            City *c = new City(this);
+            unusedCities.push_back(c);
         }
         //roads
         for (int i = 0; i < 15; ++i) {
-            Road r = Road(this); //todo: new? and add destructor
-            unusedRoads.push_back(&r);
+            Road *r = new Road(this);
+            unusedRoads.push_back(r);
         }
         for (int i = 0; i < 5; ++i) {
             resources[i] = 0;
@@ -39,7 +37,7 @@ namespace ariel {
 
     }
 
-    Player::Player( std::string name) {
+    Player::Player(std::string name) {
         // default name
         this->name = name;
         Player::playerNum++;
@@ -49,23 +47,54 @@ namespace ariel {
 
         //settlements:
         for (int i = 0; i < 5; ++i) {
-            Settlement s = Settlement(this);//todo: new? and add destructor
-            unusedSettlements.push_back(&s);
+            Settlement *s = new Settlement(this);
+            unusedSettlements.push_back(s);
         }
         //cities
         for (int i = 0; i < 5; ++i) {
-            City c = City(this); //todo: new? and add destructor
-            unusedCities.push_back(&c);
+            City *c = new City(this);
+            unusedCities.push_back(c);
         }
         //roads
         for (int i = 0; i < 5; ++i) {
-            Road r = Road(this); //todo: new? and add destructor
-            unusedRoads.push_back(&r);
+            Road *r = new Road(this);
+            unusedRoads.push_back(r);
         }
         for (int i = 0; i < 5; ++i) {
             resources[i] = 0;
         }
     }
+
+    Player::~Player() {
+        // Deallocate settlements
+        for (Settlement* s : unusedSettlements) {
+            delete s;
+        }
+        // Deallocate cities
+        for (City* c : unusedCities) {
+            delete c;
+        }
+        // Deallocate roads
+        for (Road* r : unusedRoads) {
+            delete r;
+        }
+
+        for (Road* r : usedRoads) {
+            delete r;
+        }
+
+        for (UrbanEntity* u : usedUrbanEntities) {
+            delete u;
+        }
+
+        for (DevelopmentCard* dc : developmentCards) {
+            delete dc;
+        }
+
+
+
+    }
+
 
     void Player::joinGame(Catan *gm) {
         gameManager = gm;
@@ -92,12 +121,12 @@ namespace ariel {
     }
 
 
-    bool operator==( Player &p1,  Player &p2) {
+    bool operator==(Player &p1, Player &p2) {
         return (&p1 == &p2);
     }
 
     bool operator!=(const Player &p1, const Player &p2) {
-        return  &p1 != &p2;;
+        return &p1 != &p2;;
     }
 
     int Player::placeRoad(int numTile1, int resourceTile1, int numTile2, int resourceTile2) {
@@ -260,10 +289,11 @@ namespace ariel {
         return ans;
     }
 
-    int Player::placeCity(int numTile1, std::string resourceTile1, int numTile2, std::string resourceTile2
-                          ,int numTile3, std::string resourceTile3, bool start = false) {
-        if(*gameManager->getPlayerTurn() != *this){
-            std::cout<< name << ", its not your turn! \n";
+    int
+    Player::placeCity(int numTile1, std::string resourceTile1, int numTile2, std::string resourceTile2, int numTile3,
+                      std::string resourceTile3, bool start = false) {
+        if (*gameManager->getPlayerTurn() != *this) {
+            std::cout << name << ", its not your turn! \n";
             return -1;
         }
         if (unusedCities.size() == 0) {
@@ -289,8 +319,8 @@ namespace ariel {
 
     int Player::placeCity(int numTile1, int resourceTile1, int numTile2, int resourceTile2, int numTile3,
                           int resourceTile3, bool start = false) {
-        if(*gameManager->getPlayerTurn() != *this){
-            std::cout<< name << ", its not your turn! \n";
+        if (*gameManager->getPlayerTurn() != *this) {
+            std::cout << name << ", its not your turn! \n";
             return -1;
         }
         if (resources[IRON] < 3 || resources[WHEAT] < 2) {
@@ -314,8 +344,8 @@ namespace ariel {
     }
 
     int Player::placeCity(Tile *t1, Tile *t2, Tile *t3, bool start) {
-        if(*gameManager->getPlayerTurn() != *this){
-            std::cout<< name << ", its not your turn! \n";
+        if (*gameManager->getPlayerTurn() != *this) {
+            std::cout << name << ", its not your turn! \n";
             return -1;
         }
         City *c1 = unusedCities.back();
@@ -336,8 +366,8 @@ namespace ariel {
     }
 
     int Player::buyDevelopmentCard() {
-        if(*gameManager->getPlayerTurn() != *this){
-            std::cout<< name << ", its not your turn! \n";
+        if (*gameManager->getPlayerTurn() != *this) {
+            std::cout << name << ", its not your turn! \n";
             return -1;
         }
         if (resources[IRON] < 1 || resources[WOOL] < 1 || resources[WHEAT] < 1) {
@@ -359,8 +389,8 @@ namespace ariel {
     }
 
     int Player::useDevelopmentCard(DevelopmentCard *dc) {
-        if(*gameManager->getPlayerTurn() != *this){
-            std::cout<< name << ", its not your turn! \n";
+        if (*gameManager->getPlayerTurn() != *this) {
+            std::cout << name << ", its not your turn! \n";
             return -1;
         }
         bool isVP = dc->getName() == "VictoryPoint";
@@ -374,9 +404,9 @@ namespace ariel {
         if (it != developmentCards.end()) {
             dc->playCard(*this);
             developmentCards.erase(it);
-            delete dc; // delete the card because it's dynamically allocated
             if (!isVP)
                 playedDevelopmentCard = true;
+            delete dc; // delete the card because it's dynamically allocated
             return 0;
         } else {
             std::cout << "Invalid development card!\n";
@@ -385,9 +415,9 @@ namespace ariel {
     }
 
     std::vector<DevelopmentCard *> Player::getDevelopmentCards() {
-        if(*gameManager->getPlayerTurn() != *this){
-            std::cout<< name << ", its not your turn! \n";
-            return std::vector<DevelopmentCard*>(); // Return an empty vector;
+        if (*gameManager->getPlayerTurn() != *this) {
+            std::cout << name << ", its not your turn! \n";
+            return std::vector<DevelopmentCard *>(); // Return an empty vector;
         }
         std::cout << "development cards you (" << name << ") have: ";
         for (unsigned int i = 0; i < developmentCards.size() - 1; ++i) {
@@ -400,8 +430,8 @@ namespace ariel {
     }
 
     int Player::trade(Player other, int wantedResource, int wantedAmount, int givenResource, int givenAmount) {
-        if(*gameManager->getPlayerTurn() != *this){
-            std::cout<< name << ", its not your turn! \n";
+        if (*gameManager->getPlayerTurn() != *this) {
+            std::cout << name << ", its not your turn! \n";
             return -1;
         }
         if (wantedResource > 4 || wantedResource < 0 || givenResource > 4 || givenResource < 0) {
@@ -442,8 +472,8 @@ namespace ariel {
 
     // trade with the bank 4 resources for one resource
     int Player::tradeWithTheBank(int wantedResource, int givenResource) {
-        if(*gameManager->getPlayerTurn() != *this){
-            std::cout<< name << ", its not your turn! \n";
+        if (*gameManager->getPlayerTurn() != *this) {
+            std::cout << name << ", its not your turn! \n";
             return -1;
         }
         if (wantedResource > 4 || wantedResource < 0 || givenResource > 4 || givenResource < 0) {
