@@ -30,6 +30,9 @@ Tile *chooseTile(Catan *gameManager);
 
 int doAction(int action, Player *p);
 
+void startGame(Catan *gm, int numOfPlayers);
+
+
 int main() {
     Player p1("Amit");
     Player p2("Yossi");
@@ -43,11 +46,13 @@ int main() {
     Board *board = catan.getBoard(); // get the board of the game.
     board->printBoard();
 
-    // todo: add start game phase!
+    board->printNeighbors();
+
+
+    startGame(&catan, 3);
 
 
     bool gameOver = catan.isGameOver();
-
 
 
     while (!gameOver) {
@@ -55,7 +60,7 @@ int main() {
         int action = 0;
 
         while (playing) {
-            cout <<"\n"<< p->getName() << ", what would you like to do on your turn?(type the number to choose)\n";
+            cout << "\n" << p->getName() << ", what would you like to do on your turn?(type the number to choose)\n";
             printOptions();
             cin >> action;
             int playing = doAction(action, p);
@@ -135,8 +140,6 @@ int main() {
 }
 
 
-
-
 void printOptions() {
     std::cout << "Options:" << std::endl;
     std::cout << "1. Roll the dice" << std::endl;
@@ -152,20 +155,21 @@ void printOptions() {
     std::cout << "11. End your turn" << std::endl;
 }
 
+// a function to ask for the player to choose a tile. the function will return a pointer to that tile
 Tile *chooseTile(Catan *gameManager) {
     int resource = -1;
     int tileNumber = -1;
     bool validTile = false;
     Tile *t;
     std::cout << "----please choose a tile by choosing a resource and a number" << std::endl;
-    while (!validTile) {
+    while (!validTile) { // while the choice is invalid
         std::cout
                 << "----Enter the resource of the tile (0 for brick, 1 for iron, 2 for wheat, 3 for wood, 4 for wool):\n";
         std::cin >> resource;
 
         std::cout << "----Enter the dice number of the tile:\n";
         std::cin >> tileNumber;
-        t = gameManager->findTile(tileNumber, resource);
+        t = gameManager->findTile(tileNumber, resource); // find this tile and return a pointer to it
         validTile = (resource >= 0 && resource <= 4) && (tileNumber >= 2 && tileNumber <= 12) && (t != nullptr);
 
         if (!validTile) {
@@ -177,6 +181,7 @@ Tile *chooseTile(Catan *gameManager) {
     return t;
 }
 
+// a function to resolve an action of a player on his turn
 int doAction(int action, Player *p) {
 
 
@@ -218,4 +223,36 @@ int doAction(int action, Player *p) {
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
     return 0;
+}
+
+// a function to place the starting set up of the board presents of the players
+void startGame(Catan *gm, int numOfPlayers) {
+    for (int i = 0; i < numOfPlayers * 2; ++i) { // twice for each player place a settlement and a road
+        Player *p = gm->getPlayerTurn();
+
+        //place a settlement
+        int placed =-1;
+        while (placed== -1) {
+            cout << p->getName() << " for placing a settlement please chose 3 tiles (to place between them)\n ";
+            Tile *t1 = chooseTile(gm);
+            Tile *t2 = chooseTile(gm);
+            Tile *t3 = chooseTile(gm);
+            placed = p->placeSettlement(t1, t2, t3, true);
+            if(placed == -1)
+                cout << "please try again\n";
+        }
+        placed = -1;
+        //place a road
+        while (placed== -1) {
+            cout << p->getName() << " for placing a road please chose 2 tiles (to place between them)\n ";
+            cout << p->getName() << " pay attention that the road have to be continues to your board present\n";
+            Tile *t1 = chooseTile(gm);
+            Tile *t2 = chooseTile(gm);
+            placed = p->placeRoad(t1, t2);
+            if(placed == -1)
+                cout << "please try again\n";
+        }
+
+        p->endTurn();
+    }
 }

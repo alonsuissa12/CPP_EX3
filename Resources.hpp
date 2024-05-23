@@ -12,6 +12,8 @@
 #include <ctime>
 #include <algorithm>
 #include <iostream>
+#include <functional>
+
 
 #ifndef BRICK
 #define BRICK 0
@@ -207,7 +209,7 @@ namespace ariel {
 
         int placeRoad(Road *road, int side);
 
-        Tile &getNeighbor(int side);
+        Tile *getNeighbor(int side);
 
         Road *getRoad(int side);
 
@@ -233,6 +235,8 @@ namespace ariel {
         void printBoard();
 
         Tile *findTile(int numTile, int resourceTile);
+
+        void printNeighbors();
 
     };
 
@@ -322,6 +326,10 @@ namespace ariel {
         friend class YearOfPlenty;
 
         friend class Catan;
+
+        friend class Tile;
+    private:
+        void takeBackSettlement(Settlement * ps);
 
     public:
         Player();

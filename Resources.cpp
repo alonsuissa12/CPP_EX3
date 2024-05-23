@@ -12,7 +12,7 @@ namespace ariel {
     int edgeSide(Tile &n1, Tile &n2) {
         int edgeSideOfN1 = -1;
         for (int i = 0; i < 6; ++i) {
-            if (n1.getNeighbor(i) == n2)
+            if (*n1.getNeighbor(i) == n2)
                 edgeSideOfN1 = i;
         }
         return edgeSideOfN1;
@@ -60,6 +60,7 @@ namespace ariel {
         int edgeSideOfN1 = edgeSide(n1, n2);
         int edgeSideOfN2 = edgeSide(n2, n1);
 
+
         if (edgeSideOfN1 == -1 || edgeSideOfN2 == -1) {
             std::cout << " the tiles r not adjacent!\n";
             return -1;
@@ -71,26 +72,39 @@ namespace ariel {
             return -1;
         }
 
+        //  check continues
         bool continues = false;
-        Road *pprevn1 = n1.getRoad(((edgeSideOfN1 - 1) % 6));
+        // check the two adjacent roads
+        Road *pprevn1 = n1.getRoad(((edgeSideOfN1 - 1 + 6) % 6));
         Road *ppnextn1 = n1.getRoad((edgeSideOfN1 + 1) % 6);
-        ariel::Road *pprevn2 = n2.getRoad((edgeSideOfN1 - 1) % 6);
-        ariel::Road *ppnextn2 = n2.getRoad((edgeSideOfN1 + 1) % 6);
+        Road *pprevn2 = n2.getRoad((edgeSideOfN2 - 1 + 6) % 6);
+        Road *ppnextn2 = n2.getRoad((edgeSideOfN2 + 1) % 6);
+
+
+        // check the adjacent urban entities
         UrbanEntity *urbanEntity1 = n1.getUrbanEntity(edgeSideOfN1);
         UrbanEntity *urbanEntity2 = n1.getUrbanEntity((edgeSideOfN1 + 1) % 6);
 
-        if (pprevn1->owner == this->owner || pprevn2->owner == this->owner ||
-            ppnextn2->owner == this->owner || ppnextn1->owner == this->owner)
+        // if one of the adjacent roads belongs to this player
+        if ((pprevn1 != nullptr && pprevn1->owner == this->owner) ||
+            (pprevn2 != nullptr && pprevn2->owner == this->owner) ||
+            (ppnextn2 != nullptr && ppnextn2->owner == this->owner) ||
+            (ppnextn1 != nullptr && ppnextn1->owner == this->owner))
             continues = true;
-        if (urbanEntity1->getOwner() == this->owner || urbanEntity2->getOwner() == this->owner)
+
+        // if one of the adjacent urban entities belongs to this player
+        if ((urbanEntity1 != nullptr && urbanEntity1->getOwner() == this->owner) ||
+            (urbanEntity2 != nullptr && urbanEntity2->getOwner() == this->owner))
             continues = true;
         if (!continues) {
             std::cout << "Invalid location! Roads have to be adjacent to your other roads/cities/settlements\n";
             return -1;
         }
 
+
         n1.placeRoad(this, edgeSideOfN1);
         n2.placeRoad(this, edgeSideOfN2);
+
 
         neighborTile1 = &n1;
         neighborTile2 = &n2;
@@ -163,28 +177,43 @@ namespace ariel {
         int edgeSideOfN3ToN1 = edgeSide(n3, n1);
         int edgeSideOfN2ToN3 = edgeSide(n2, n3);
         int edgeSideOfN3ToN2 = edgeSide(n3, n2);
+
         //find the common vertex
         int n1Vertex = -1;
         int n2Vertex = -1;
         int n3Vertex = -1;
+
         for (int i = 0; i < 6; ++i) { //find n1 vertex
-            if ((n1.getNeighbor(i) == n3 || n1.getNeighbor(i) == n2) &&
-                (n1.getNeighbor((i + 1) % 6) == n3 || n1.getNeighbor((i + 1) % 6) == n2))
-                n1Vertex = i;
+            int k = (i - 1 + 6) % 6;
+            if (n1.getNeighbor(i) != nullptr || n1.getNeighbor(k) != nullptr)
+                if ((*n1.getNeighbor(i) == n3 || *n1.getNeighbor(i) == n2) &&
+                    (*n1.getNeighbor(k) == n3 || *n1.getNeighbor(k) == n2))
+                    n1Vertex = i;
         }
         for (int i = 0; i < 6; ++i) { //find n2 vertex
-            if ((n2.getNeighbor(i) == n1 || n2.getNeighbor(i) == n3) &&
-                (n2.getNeighbor((i + 1) % 6) == n1 || n2.getNeighbor((i + 1) % 6) == n3))
-                n2Vertex = i;
+            int k = (i - 1 + 6) % 6;
+            if (n2.getNeighbor(i) != nullptr || n2.getNeighbor(k) != nullptr)
+                if ((*n2.getNeighbor(i) == n1 || *n2.getNeighbor(i) == n3) &&
+                    (*n2.getNeighbor(k) == n1 || *n2.getNeighbor(k) == n3))
+                    n2Vertex = i;
         }
         for (int i = 0; i < 6; ++i) { //find n3 vertex
-            if ((n3.getNeighbor(i) == n1 || n3.getNeighbor(i) == n2) &&
-                (n3.getNeighbor((i + 1) % 6) == n1 || n3.getNeighbor((i + 1) % 6) == n2))
-                n3Vertex = i;
+            int k = (i - 1 + 6) % 6;
+            if (n3.getNeighbor(i) != nullptr || n3.getNeighbor(k) != nullptr)
+                if ((*n3.getNeighbor(i) == n1 || *n3.getNeighbor(i) == n2) &&
+                    (*n3.getNeighbor(k) == n1 || *n3.getNeighbor(k) == n2))
+                    n3Vertex = i;
+
+        }
+        if (n1Vertex == -1 || n2Vertex == -1 || n3Vertex == -1) {
+            std::cout << "the tiles are not adjacent(1)\n";
+            return -1;
         }
 
+
         if (edgeSideOfN1ToN2 == -1 || edgeSideOfN1ToN3 == -1 || edgeSideOfN2ToN3 == -1) {
-            std::cout << "the tiles are not adjacent\n";
+            std::cout << edgeSideOfN1ToN2 << ", " << edgeSideOfN1ToN3 << " , " << edgeSideOfN2ToN3 << " \n";
+            std::cout << "the tiles are not adjacent(2)\n";
             return -1;
         }
 
@@ -197,16 +226,16 @@ namespace ariel {
             Road *proadn1n3 = n1.getRoad(edgeSideOfN1ToN3);
             Road *proadn2n3 = n2.getRoad(edgeSideOfN2ToN3);
 
-
-            if (proadn1n2->getOwnerName() != getOwnerName() && proadn1n3->getOwnerName() != getOwnerName() &&
-                proadn2n3->getOwnerName() != getOwnerName()) {
+            if ((proadn1n2 == nullptr || proadn1n2->getOwner() != owner) &&
+                (proadn1n3 == nullptr || proadn1n3->getOwner() != owner) &&
+                (proadn2n3 == nullptr || proadn2n3->getOwner() != owner)) {
                 std::cout << "Invalid location! you have to place adjacent to one of your roads\n";
                 return -1;
             }
         }
-        if (n1.getUrbanEntity((n1Vertex + 1) % 6) || n1.getUrbanEntity((n1Vertex - 1) % 6) ||
-            n2.getUrbanEntity((n2Vertex + 1) % 6) || n2.getUrbanEntity((n2Vertex - 1) % 6) ||
-            n3.getUrbanEntity((n3Vertex + 1) % 6) || n3.getUrbanEntity((n3Vertex - 1) % 6)) {
+        if (n1.getUrbanEntity((n1Vertex + 1) % 6) || n1.getUrbanEntity((n1Vertex - 1 + 6) % 6) ||
+            n2.getUrbanEntity((n2Vertex + 1) % 6) || n2.getUrbanEntity((n2Vertex - 1 + 6) % 6) ||
+            n3.getUrbanEntity((n3Vertex + 1) % 6) || n3.getUrbanEntity((n3Vertex - 1 + 6) % 6)) {
             std::cout << "Invalid location! you have to place at least 2 edges away from another city/settlement\n";
             return -1;
         }
@@ -242,34 +271,48 @@ namespace ariel {
         int edgeSideOfN3ToN1 = edgeSide(n3, n1);
         int edgeSideOfN2ToN3 = edgeSide(n2, n3);
         int edgeSideOfN3ToN2 = edgeSide(n3, n2);
+
         //find the common vertex
         int n1Vertex = -1;
         int n2Vertex = -1;
         int n3Vertex = -1;
+
         for (int i = 0; i < 6; ++i) { //find n1 vertex
-            if ((n1.getNeighbor(i) == n3 || n1.getNeighbor(i) == n2) &&
-                (n1.getNeighbor((i + 1) % 6) == n3 || n1.getNeighbor((i + 1) % 6) == n2))
-                n1Vertex = i;
+            int k = (i - 1 + 6) % 6;
+            if (n1.getNeighbor(i) != nullptr || n1.getNeighbor(k) != nullptr)
+                if ((*n1.getNeighbor(i) == n3 || *n1.getNeighbor(i) == n2) &&
+                    (*n1.getNeighbor(k) == n3 || *n1.getNeighbor(k) == n2))
+                    n1Vertex = i;
         }
         for (int i = 0; i < 6; ++i) { //find n2 vertex
-            if ((n2.getNeighbor(i) == n1 || n2.getNeighbor(i) == n3) &&
-                (n2.getNeighbor((i + 1) % 6) == n1 || n2.getNeighbor((i + 1) % 6) == n3))
-                n2Vertex = i;
+            int k = (i - 1 + 6) % 6;
+            if (n2.getNeighbor(i) != nullptr || n2.getNeighbor(k) != nullptr)
+                if ((*n2.getNeighbor(i) == n1 || *n2.getNeighbor(i) == n3) &&
+                    (*n2.getNeighbor(k) == n1 || *n2.getNeighbor(k) == n3))
+                    n2Vertex = i;
         }
         for (int i = 0; i < 6; ++i) { //find n3 vertex
-            if ((n3.getNeighbor(i) == n1 || n3.getNeighbor(i) == n2) &&
-                (n3.getNeighbor((i + 1) % 6) == n1 || n3.getNeighbor((i + 1) % 6) == n2))
-                n3Vertex = i;
-        }
+            int k = (i - 1 + 6) % 6;
+            if (n3.getNeighbor(i) != nullptr || n3.getNeighbor(k) != nullptr)
+                if ((*n3.getNeighbor(i) == n1 || *n3.getNeighbor(i) == n2) &&
+                    (*n3.getNeighbor(k) == n1 || *n3.getNeighbor(k) == n2))
+                    n3Vertex = i;
 
-        if (edgeSideOfN1ToN2 == -1 || edgeSideOfN1ToN3 == -1 || edgeSideOfN2ToN3 == -1) {
-            std::cout << "the tiles are not adjacent\n";
+        }
+        if (n1Vertex == -1 || n2Vertex == -1 || n3Vertex == -1) {
+            std::cout << "the tiles are not adjacent(1)\n";
             return -1;
         }
 
-        if (n1.getUrbanEntity(n1Vertex) == nullptr || n1.getUrbanEntity(n1Vertex)->getOwner() != this->owner ||
-            n1.getUrbanEntity(n1Vertex)->getType() == SETTLEMENT) {
-            std::cout << "the location is not containing one of your settlements\n";
+
+        if (edgeSideOfN1ToN2 == -1 || edgeSideOfN1ToN3 == -1 || edgeSideOfN2ToN3 == -1) {
+            std::cout << edgeSideOfN1ToN2 << ", " << edgeSideOfN1ToN3 << " , " << edgeSideOfN2ToN3 << " \n";
+            std::cout << "the tiles are not adjacent(2)\n";
+            return -1;
+        }
+
+        if (n1.getUrbanEntity(n1Vertex) == nullptr || n1.getUrbanEntity(n1Vertex)->getOwner() != owner) {
+            std::cout << "Invalid location. the location have to contain one of your settlements\n";
             return -1;
         }
 
@@ -282,6 +325,7 @@ namespace ariel {
             return -1;
         }
         return 0;
+
 
     }
 
@@ -468,6 +512,9 @@ namespace ariel {
             std::cout << "side should be between 0 to 5 (include 0 and 5)\n";
             return -1;
         }
+        if (UrbanEntity->getType() == CITY) {
+            urbanEntities[side]->getOwner()->takeBackSettlement((Settlement *) urbanEntities[side]);
+        }
         urbanEntities[side] = UrbanEntity;
         return 0;
     }
@@ -481,10 +528,10 @@ namespace ariel {
         return 0;
     }
 
-    Tile &Tile::getNeighbor(int side) {
+    Tile *Tile::getNeighbor(int side) {
         if (side > 5 || side < 0)
-            throw std::invalid_argument("side should be between 0 to 5 (include 0 and 5)");
-        return *neighbors[side];
+            throw std::invalid_argument("side should be between 0 to 5 (including 0 and 5)");
+        return neighbors[side];
     }
 
     Road *Tile::getRoad(int side) {
@@ -594,7 +641,7 @@ namespace ariel {
         unsigned int firstHalfPlus = 1;
 
 
-        for (unsigned int i = 0; i < rowSizeLength; ++i) {
+        for (unsigned int i = 0; i < rowSizeLength; ++i) { // todo: fix the neighbors update!
             if (i != 0)
                 shift += rowSize[i - 1];
             if (i == 3) {
@@ -607,15 +654,15 @@ namespace ariel {
                 if (j != rowSize[i] - 1)
                     tiles[j + shift]->UpdateNeighbor(*tiles[shift + j + 1], RightEdge);
 
-                if (i != 0 && (j != 0 && i >= 4))
+                if (i != 0 && (j != 0 || i >= 4))
                     tiles[j + shift]->UpdateNeighbor(*tiles[shift + j - rowSize[i] - secondHalPlus], UpLeftEdge);
-                if (i != 0 && (j + 1 == rowSize[i] && i >= 4))
+                if (i != 0 && (i >= 4 || j + 1 != rowSize[i]))
                     tiles[j + shift]->UpdateNeighbor(*tiles[shift + j - rowSize[i] + firstHalfPlus], UpRightEdge);
 
                 if (i + 1 != rowSizeLength && (i < 4 || j + 1 != rowSize[i]))
                     tiles[j + shift]->UpdateNeighbor(*tiles[shift + j + rowSize[i] + firstHalfPlus], DownRightEdge);
                 if (i + 1 != rowSizeLength && (i < 4 || j != 0))
-                    tiles[j + shift]->UpdateNeighbor(*tiles[shift + j + rowSize[i] + secondHalPlus], DownLeftEdge);
+                    tiles[j + shift]->UpdateNeighbor(*tiles[shift + j + rowSize[i] - secondHalPlus], DownLeftEdge);
 
             }
         }
@@ -680,6 +727,25 @@ namespace ariel {
             if (t->getResource() == resourceTile && t->getNumber() == numTile)
                 return t;
         return nullptr;
+    }
+
+
+    void Board::printNeighbors() {
+        for (unsigned int i = 0; i < tiles.size(); ++i) {
+            std::cout << "" << std::endl;
+            for (int j = 0; j < 6; ++j) {
+                Tile *nbr = tiles[i]->getNeighbor(j);
+                std::cout << "neighbor of tile " << i << " in side " << j << " is: ";
+
+                if (nbr != nullptr)
+                    std::cout << *nbr << " |  ";
+                else
+                    std::cout << "null | ";
+            }
+            std::cout << "\n";
+            if (i == 3 || i == 8 || i == 14 || i == 21 || i == 27 || i == 32)
+                std::cout << "---------------------------------------------------------------\n";
+        }
     }
 
 

@@ -35,6 +35,9 @@ namespace ariel {
         for (int i = 0; i < 5; ++i) {
             resources[i] = 0;
         }
+        //for placing the roads at the start of the game
+        resources[WOOD] = 2;
+        resources[BRICK] = 2;
 
     }
 
@@ -65,6 +68,11 @@ namespace ariel {
         for (int i = 0; i < 5; ++i) {
             resources[i] = 0;
         }
+
+        //for placing the roads at the start of the game
+        resources[WOOD] = 2;
+        resources[BRICK] = 2;
+
     }
 
     Player::~Player() {
@@ -219,7 +227,7 @@ namespace ariel {
             std::cout << " no more settlements to use!" << std::endl;
             return -1;
         }
-        if (resources[WOOD] < 1 || resources[BRICK] < 1 || resources[WHEAT] < 1 || resources[WOOL] < 1) {
+        if ((resources[WOOD] < 1 || resources[BRICK] < 1 || resources[WHEAT] < 1 || resources[WOOL] < 1)&&!start) {
             std::cout << " not enough resources!" << std::endl;
             return -1;
         }
@@ -246,7 +254,7 @@ namespace ariel {
             std::cout << " no more settlements to use!" << std::endl;
             return -1;
         }
-        if (resources[WOOD] < 1 || resources[BRICK] < 1 || resources[WHEAT] < 1 || resources[WOOL] < 1) {
+        if ((resources[WOOD] < 1 || resources[BRICK] < 1 || resources[WHEAT] < 1 || resources[WOOL] < 1) && !start) {
             std::cout << " not enough resources!" << std::endl;
             return -1;
         }
@@ -268,7 +276,7 @@ namespace ariel {
             std::cout << name << ", its not your turn! \n";
             return -1;
         }
-        if (resources[WOOD] < 1 || resources[BRICK] < 1 || resources[WHEAT] < 1 || resources[WOOL] < 1) {
+        if ((resources[WOOD] < 1 || resources[BRICK] < 1 || resources[WHEAT] < 1 || resources[WOOL] < 1) && !start) {
             std::cout << " not enough resources!" << std::endl;
             return -1;
         }
@@ -283,10 +291,12 @@ namespace ariel {
             unusedSettlements.pop_back();
             usedUrbanEntities.push_back(s1);
             VictoryPoints++;
-            resources[WOOD]--;
-            resources[BRICK]--;
-            resources[WHEAT]--;
-            resources[WOOL]--;
+            if (!start) {
+                resources[WOOD]--;
+                resources[BRICK]--;
+                resources[WHEAT]--;
+                resources[WOOL]--;
+            }
         }
         return ans;
     }
@@ -518,7 +528,14 @@ namespace ariel {
     bool Player::getRolledDice() {
         return rolledDiceThisTurn;
     }
-
+    void Player::takeBackSettlement(Settlement * ps) {
+        for (unsigned int i = 0; i < usedUrbanEntities.size(); ++i) {
+            if(usedUrbanEntities[i] == ps){
+                usedUrbanEntities.erase(usedUrbanEntities.begin()+i);
+                unusedSettlements.push_back(ps);
+            }
+        }
+    }
 
 }
 
