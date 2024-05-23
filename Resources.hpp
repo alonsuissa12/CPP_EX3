@@ -22,6 +22,8 @@
 #define WOOL 4
 #endif
 
+#define DEBUG(x) std::cout << x << std::endl;
+
 
 
 #define RightEdge 0
@@ -178,18 +180,6 @@ namespace ariel {
     };
 
 
-//    class DevelopmentCardsDeck { //todo: delete
-//    private:
-//        std::vector <DevelopmentCard> deck;
-//
-//        void shuffle(std::vector <DevelopmentCard>);
-//
-//    public:
-//        DevelopmentCardsDeck(); //
-//        DevelopmentCard *draw();
-//
-//    };
-
     class Tile {
     private:
         bool isSea;
@@ -224,10 +214,13 @@ namespace ariel {
 
         int getNumber();
 
+        friend std::ostream& operator<<(std::ostream& os, const Tile& tile);
+
+
 
     };
 
-    class Board { //todo: add destructor
+    class Board { // todo: add destructor
     private:
         std::vector<Tile *> tiles;
     public:
@@ -238,8 +231,6 @@ namespace ariel {
         Tile *findTile(int numTile, int resourceTile);
 
     };
-
-    class Board;
 
     class Catan {
     private:
@@ -323,9 +314,11 @@ namespace ariel {
         friend class Catan;
 
     public:
-        Player(Catan *gm);
+        Player();
 
-        Player(Catan *gm, std::string name);
+        Player( std::string name);
+
+        void joinGame(Catan *gm);
 
         int rollDice();
 

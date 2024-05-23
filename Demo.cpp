@@ -6,23 +6,23 @@
 #include <iostream>
 #include <stdexcept>
 #include <vector>
-#include "Catan.hpp"
-#include "Player.hpp"
-using namespace std;
+#include "Resources.hpp"
 using namespace ariel;
+using namespace std;
 
 int main()
 {
-//    Player p1("Amit");
-//    Player p2("Yossi");
-//    Player p3("Dana");
-//    Catan catan(p1, p2, p3);
-//    // Starting of the game. Every player places two settlements and two roads.
-//    catan.ChooseStartingPlayer();   // should print the name of the starting player, assume it is Amit.
-//    Board board = catan.getBoard(); // get the board of the game.
-//    vector<string> places = {"Forest", "Hills"};
-//    vector<int> placesNum = {5, 6};
-//    p1.placeSettelemnt(places, placesNum, board);
+    Player p1("Amit");
+    Player p2("Yossi");
+    Player p3("Dana");
+    Catan catan(p1, p2, p3);
+
+    // Starting of the game. Every player places two settlements and two roads.
+    Player* p = catan.chooseStartingPlayer();   // should print the name of the starting player
+    cout << "starting player: " <<  p->getName() <<"\n";
+    Board * board = catan.getBoard(); // get the board of the game.
+    board->printBoard();
+//    p1.placeSettelemnut(places, placesNum);
 //    p1.placeRoad(places, placesNum, board);
 //    vector<string> places = {"Agricultural Land", "Desert"};
 //    vector<int> placesNum = {3, 4};

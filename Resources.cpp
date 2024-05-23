@@ -17,6 +17,7 @@ namespace ariel {
         }
         return edgeSideOfN1;
     }
+
     int convertResourceToInt(std::string resourceTile1) {
         int resNum = -1;
         if (resourceTile1 == "brick" || resourceTile1 == "BRICK")
@@ -221,7 +222,7 @@ namespace ariel {
     }
 
     //constructor
-    City::City(Player* p){
+    City::City(Player *p) {
         this->owner = owner;
         type = CITY;
         numOfResources = 2;
@@ -358,7 +359,8 @@ namespace ariel {
 
             while (!validTile1) {
                 std::cout << "Tile 1:\n";
-                std::cout << "----Enter the resource of the tile (0 for brick, 1 for iron, 2 for wheat, 3 for wood, 4 for wool):\n";
+                std::cout
+                        << "----Enter the resource of the tile (0 for brick, 1 for iron, 2 for wheat, 3 for wood, 4 for wool):\n";
                 std::cin >> resource1;
 
                 std::cout << "----Enter the dice number of the tile:\n";
@@ -381,7 +383,8 @@ namespace ariel {
 
             while (!validTile2) {
                 std::cout << "Tile 2:\n";
-                std::cout << "----Enter the resource of the tile (0 for brick, 1 for iron, 2 for wheat, 3 for wood, 4 for wool):\n";
+                std::cout
+                        << "----Enter the resource of the tile (0 for brick, 1 for iron, 2 for wheat, 3 for wood, 4 for wool):\n";
                 std::cin >> resource2;
 
                 std::cout << "----Enter the dice number of the tile:\n";
@@ -510,6 +513,17 @@ namespace ariel {
         return number;
     }
 
+    std::ostream &operator<<(std::ostream &os, const Tile &tile) {
+        if (tile.isSea)
+            os << "sea";
+        else if (tile.isDesert)
+            os << "desert";
+        else {
+            os << tile.resource << " " << std::to_string(tile.number);
+        }
+        return os;
+    }
+
     //###################################   BOARD   ###################################
     Board::Board() {
         // Seed the random number generator
@@ -524,34 +538,35 @@ namespace ariel {
         // 18 yielding tiles:
         // 3 iron tiles
         for (unsigned int i = 0; i < 3; ++i) {
-            Tile tile = Tile(numbers[i], "iron"); //todo:add new?
-            tiles.push_back(&tile);
+            Tile *tile = new Tile(numbers[i], "iron"); //todo:add destructor
+            tiles.push_back(tile);
         }
+
         // 4 wood tiles
         for (unsigned int i = 0; i < 4; ++i) {
-            Tile tile = Tile(numbers[i + 3], "wood");//todo:add new?
-            tiles.push_back(&tile);
+            Tile *tile = new Tile(numbers[i + 3], "wood");//todo:add new?
+            tiles.push_back(tile);
         }
         // 4 wool tiles
         for (unsigned int i = 0; i < 4; ++i) {
-            Tile tile = Tile(numbers[i + 7], "wool");//todo:add new?
-            tiles.push_back(&tile);
+            Tile *tile = new Tile(numbers[i + 7], "wool");//todo:add new?
+            tiles.push_back(tile);
         }
         // 3 brick tiles
         for (unsigned int i = 0; i < 3; ++i) {
-            Tile tile = Tile(numbers[i + 11], "brick");//todo:add new?
-            tiles.push_back(&tile);
+            Tile *tile = new Tile(numbers[i + 11], "brick");//todo:add new?
+            tiles.push_back(tile);
         }
+
         // 4 wheat tiles
         for (unsigned int i = 0; i < 4; ++i) {
-            Tile tile = Tile(numbers[i + 14], "wheat");//todo:add new?
-            tiles.push_back(&tile);
+            Tile *tile = new Tile(numbers[i + 14], "wheat");//todo:add new?
+            tiles.push_back(tile);
         }
 
         // desert tile
-        Tile desert = Tile(0, "nothing", false, true);//todo:add new?
-        tiles.push_back(&desert);
-
+        Tile *desert = new Tile(0, "nothing", false, true);//todo:add new?
+        tiles.push_back(desert);
         //shuffle the tiles
         std::shuffle(tiles.begin(), tiles.end(), std::default_random_engine((unsigned long) std::time(nullptr)));
 
@@ -559,10 +574,12 @@ namespace ariel {
         unsigned int locationsForSea[18] = {0, 1, 2, 3, 4, 8, 9, 14, 15, 21, 22, 27,
                                             28, 32, 33, 34, 35, 36};
         unsigned int shift = 0;
+
         for (unsigned int i = 0; i < 18; ++i) {
-            Tile tile = Tile(0, "nothing", true, false);//todo:add new?
-            tiles.insert(tiles.begin() + locationsForSea[i + shift], &tile);
+            Tile *tile = new Tile(0, "nothing", true, false);//todo:add new?
+            tiles.insert(tiles.begin() + locationsForSea[i], tile);
             shift++;
+
         }
 
         //update neighbors
@@ -575,7 +592,8 @@ namespace ariel {
 
 
         for (unsigned int i = 0; i < rowSizeLength; ++i) {
-            shift += rowSize[i];
+            if(i != 0)
+                shift += rowSize[i-1];
             if (i == 3) {
                 secondHalPlus = 1;
                 firstHalfPlus = 0;
@@ -585,11 +603,11 @@ namespace ariel {
                     tiles[j + shift]->UpdateNeighbor(*tiles[shift + j - 1], LeftEdge);
                 if (j != rowSize[i] - 1)
                     tiles[j + shift]->UpdateNeighbor(*tiles[shift + j + 1], RightEdge);
+
                 if (i != 0 && (j != 0 && i >= 4))
                     tiles[j + shift]->UpdateNeighbor(*tiles[shift + j - rowSize[i] - secondHalPlus], UpLeftEdge);
                 if (i != 0 && (j + 1 == rowSize[i] && i >= 4))
                     tiles[j + shift]->UpdateNeighbor(*tiles[shift + j - rowSize[i] + firstHalfPlus], UpRightEdge);
-
 
                 if (i + 1 != rowSizeLength && (i < 4 || j + 1 != rowSize[i]))
                     tiles[j + shift]->UpdateNeighbor(*tiles[shift + j + rowSize[i] + firstHalfPlus], DownRightEdge);
@@ -603,8 +621,46 @@ namespace ariel {
     }
 
     void Board::printBoard() {
-        std::cout << "print board (need to implement)" << std::endl;
-        // todo: implement printBoard (maybe)
+        unsigned int first = 4;
+        unsigned int second = 5;
+        unsigned int third = 6;
+        unsigned int fourth = 7;
+        unsigned int fifth = 6;
+        unsigned int sixth = 5;
+        unsigned int seventh = 4;
+        std::cout << "\n              ************ CATAN BOARD ************\n";
+        std::cout << "                       ";
+        for (unsigned int i = 0; i < first; ++i) { // first row
+            std::cout << *tiles[i] << "  ";
+        }
+        std::cout << "\n               ";
+        for (unsigned int i = first; i < first + second; ++i) { //second row
+            std::cout << *tiles[i] << "  ";
+        }
+        std::cout << "\n           ";
+        for (unsigned int i = first + second; i < first + second + third; ++i) { //third row
+            std::cout << *tiles[i] << "  ";
+        }
+        std::cout << "\n      ";
+        for (unsigned int i = first + second + third; i < first + second + third + fourth; ++i) { //fourth row
+            std::cout << *tiles[i] << "  ";
+        }
+        std::cout << "\n           ";
+        for (unsigned int i = first + second + third + fourth;
+             i < first + second + third + fourth + fifth; ++i) { //fifth row
+            std::cout << *tiles[i] << "  ";
+        }
+        std::cout << "\n               ";
+        for (unsigned int i = first + second + third + fourth + fifth;
+             i < first + second + third + fourth + fifth + sixth; ++i) { //sixth row
+            std::cout << *tiles[i] << "  ";
+        }
+        std::cout << "\n                       ";
+        for (unsigned int i = first + second + third + fourth + fifth + sixth;
+             i < first + second + third + fourth + fifth + sixth + seventh; ++i) { //seventh row
+            std::cout << *tiles[i] << "  ";
+        }
+        std::cout<<"\n             **************************************\n\n";
     }
 
     Tile *Board::findTile(int numTile, int resourceTile) {

@@ -8,9 +8,9 @@
 namespace ariel {
     Catan::Catan(Player &p1, Player &p2, Player &p3) {
         playerTurn = (unsigned int) myChooseStartingPlayer();
-        p1.gameManager = this;
-        p2.gameManager = this;
-        p3.gameManager = this;
+        p1.joinGame(this);
+        p2.joinGame(this);
+        p3.joinGame(this);
         players.push_back(&p1);
         players.push_back(&p2);
         players.push_back(&p3);
@@ -108,15 +108,15 @@ namespace ariel {
     void Catan::nextTurn() {
         std::cout << players[playerTurn]->name << " done with his turn. \n";
         playerTurn = ((playerTurn + 1) % players.size());
-        std::cout <<"it's  "<< players[playerTurn]->name << " turn now, roll the dice!\n";
+        std::cout << "it's  " << players[playerTurn]->name << " turn now, roll the dice!\n";
     }
 
-    Player * Catan::getPlayerTurn() {
+    Player *Catan::getPlayerTurn() {
         return players[playerTurn];
     }
 
     void Catan::win(Player &p) {
-        std::cout<< p.getName() << " is the WINNER!!!\n";
+        std::cout << p.getName() << " is the WINNER!!!\n";
         //todo: call destructor and end the game;
     }
 }

@@ -10,11 +10,10 @@ namespace ariel {
 
 
 
-    Player::Player(Catan *gm) {
+    Player::Player() {
         // default name
         name = "Player " + std::to_string(Player::playerNum);
         Player::playerNum++;
-        gameManager = gm;
         VictoryPoints = 0;
         numOfKnights = 0;
         playedDevelopmentCard = false;
@@ -40,11 +39,10 @@ namespace ariel {
 
     }
 
-    Player::Player(Catan *gm, std::string name) {
+    Player::Player( std::string name) {
         // default name
         this->name = name;
         Player::playerNum++;
-        gameManager = gm;
         VictoryPoints = 0;
         numOfKnights = 0;
         playedDevelopmentCard = false;
@@ -67,6 +65,10 @@ namespace ariel {
         for (int i = 0; i < 5; ++i) {
             resources[i] = 0;
         }
+    }
+
+    void Player::joinGame(Catan *gm) {
+        gameManager = gm;
     }
 
     int Player::rollDice() {
