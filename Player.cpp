@@ -15,6 +15,7 @@ namespace ariel {
         VictoryPoints = 0;
         numOfKnights = 0;
         playedDevelopmentCard = false;
+        rolledDiceThisTurn = false;
 
         //settlements:
         for (int i = 0; i < 5; ++i) {
@@ -44,6 +45,7 @@ namespace ariel {
         VictoryPoints = 0;
         numOfKnights = 0;
         playedDevelopmentCard = false;
+        rolledDiceThisTurn = false;
 
         //settlements:
         for (int i = 0; i < 5; ++i) {
@@ -67,30 +69,29 @@ namespace ariel {
 
     Player::~Player() {
         // Deallocate settlements
-        for (Settlement* s : unusedSettlements) {
+        for (Settlement *s: unusedSettlements) {
             delete s;
         }
         // Deallocate cities
-        for (City* c : unusedCities) {
+        for (City *c: unusedCities) {
             delete c;
         }
         // Deallocate roads
-        for (Road* r : unusedRoads) {
+        for (Road *r: unusedRoads) {
             delete r;
         }
 
-        for (Road* r : usedRoads) {
+        for (Road *r: usedRoads) {
             delete r;
         }
 
-        for (UrbanEntity* u : usedUrbanEntities) {
+        for (UrbanEntity *u: usedUrbanEntities) {
             delete u;
         }
 
-        for (DevelopmentCard* dc : developmentCards) {
+        for (DevelopmentCard *dc: developmentCards) {
             delete dc;
         }
-
 
 
     }
@@ -115,8 +116,9 @@ namespace ariel {
         int d1 = (rand() % 5) + 1;
         int d2 = (rand() % 5) + 1;
 
+        std::cout << name << " rolled " << d1 + d2 << "\n";
         gameManager->diceRoll(d1 + d2);
-
+        rolledDiceThisTurn = true;
         return d1 + d2;
     }
 
@@ -505,7 +507,16 @@ namespace ariel {
             gameManager->win(*this);
         } else {
             gameManager->nextTurn();
+            rolledDiceThisTurn = false;
         }
+    }
+
+    Catan *Player::getGameManager() {
+        return gameManager;
+    }
+
+    bool Player::getRolledDice() {
+        return rolledDiceThisTurn;
     }
 
 

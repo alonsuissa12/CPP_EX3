@@ -7,22 +7,65 @@
 #include <stdexcept>
 #include <vector>
 #include "Resources.hpp"
+
 using namespace ariel;
 using namespace std;
 
-int main()
-{
+#define ROLL_DICE 1
+#define PLACE_ROAD 2
+#define PLACE_SETTLEMENT 3
+#define PLACE_CITY 4
+#define BUY_DEVELOPMENT_CARD 5
+#define SEE_YOUR_DEVELOPMENT_CARD 6
+#define USE_DEVELOPMENT_CARD 7
+#define SEE_YOUR_RESOURCES 8 //todo: add this option to player
+#define TRADE_WITH_PLAYERS 9
+#define TRADE_WITH_THE_BANK 10
+#define END_YOUR_TURN 11
+//todo: add print board option
+
+void printOptions();
+
+Tile *chooseTile(Catan *gameManager);
+
+int doAction(int action, Player *p);
+
+int main() {
     Player p1("Amit");
     Player p2("Yossi");
     Player p3("Dana");
     Catan catan(p1, p2, p3);
 
+
     // Starting of the game. Every player places two settlements and two roads.
-    Player* p = catan.chooseStartingPlayer();   // should print the name of the starting player
-    cout << "starting player: " <<  p->getName() <<"\n";
-    Board * board = catan.getBoard(); // get the board of the game.
+    Player *p = catan.chooseStartingPlayer();   // should print the name of the starting player
+    cout << "starting player: " << p->getName() << "\n";
+    Board *board = catan.getBoard(); // get the board of the game.
     board->printBoard();
-    p3.getDevelopmentCards();
+
+    // todo: add start game phase!
+
+
+    bool gameOver = catan.isGameOver();
+
+
+
+    while (!gameOver) {
+        int playing = 1;
+        int action = 0;
+
+        while (playing) {
+            cout <<"\n"<< p->getName() << ", what would you like to do on your turn?(type the number to choose)\n";
+            printOptions();
+            cin >> action;
+            int playing = doAction(action, p);
+        }
+
+    }
+
+
+
+
 //    p1.placeSettelemnut(places, placesNum);
 //    p1.placeRoad(places, placesNum, board);
 //    vector<string> places = {"Agricultural Land", "Desert"};
@@ -89,4 +132,90 @@ int main()
 //    p3.printPoints(); // p3 has 2 points because it has two settelments.
 //
 //    catan.printWinner(); // Should print None because no player reached 10 points.
+}
+
+
+
+
+void printOptions() {
+    std::cout << "Options:" << std::endl;
+    std::cout << "1. Roll the dice" << std::endl;
+    std::cout << "2. Place a road" << std::endl;
+    std::cout << "3. Place a settlement" << std::endl;
+    std::cout << "4. Place a city" << std::endl;
+    std::cout << "5. Buy a development card" << std::endl;
+    std::cout << "6. See your development cards" << std::endl;
+    std::cout << "7. Use a development card" << std::endl;
+    std::cout << "8. See your resources" << std::endl;
+    std::cout << "9. Trade with other players" << std::endl;
+    std::cout << "10. Trade with the bank" << std::endl;
+    std::cout << "11. End your turn" << std::endl;
+}
+
+Tile *chooseTile(Catan *gameManager) {
+    int resource = -1;
+    int tileNumber = -1;
+    bool validTile = false;
+    Tile *t;
+    std::cout << "----please choose a tile by choosing a resource and a number" << std::endl;
+    while (!validTile) {
+        std::cout
+                << "----Enter the resource of the tile (0 for brick, 1 for iron, 2 for wheat, 3 for wood, 4 for wool):\n";
+        std::cin >> resource;
+
+        std::cout << "----Enter the dice number of the tile:\n";
+        std::cin >> tileNumber;
+        t = gameManager->findTile(tileNumber, resource);
+        validTile = (resource >= 0 && resource <= 4) && (tileNumber >= 2 && tileNumber <= 12) && (t != nullptr);
+
+        if (!validTile) {
+            std::cout << "Invalid tile. Please try again.\n";
+            std::cin.clear(); // Clear error flags
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
+        }
+    }
+    return t;
+}
+
+int doAction(int action, Player *p) {
+
+
+    if (action == ROLL_DICE) {
+        if (p->getRolledDice()) { // todo: pass rolled
+            std::cout << "You can roll the dice only once per turn!." << std::endl;
+            return 1;
+        }
+        std::cout << "You chose to roll the dice." << std::endl;
+        p->rollDice();
+    } else if (action == PLACE_ROAD) {
+        std::cout << "You chose to place a road." << std::endl;
+        std::cout << "chose two tiles to place between them." << std::endl;
+        Tile *t1 = chooseTile(p->getGameManager());
+        Tile *t2 = chooseTile(p->getGameManager());
+        p->placeRoad(t1, t2);
+    } else if (action == PLACE_SETTLEMENT) {
+        std::cout << "You chose to place a settlement." << std::endl;
+    } else if (action == PLACE_CITY) {
+        std::cout << "You chose to place a city." << std::endl;
+
+    } else if (action == BUY_DEVELOPMENT_CARD) {
+        std::cout << "You chose to buy a development card." << std::endl;
+    } else if (action == SEE_YOUR_DEVELOPMENT_CARD) {
+        std::cout << "You chose to see your development cards." << std::endl;
+    } else if (action == USE_DEVELOPMENT_CARD) {
+        std::cout << "You chose to use a development card." << std::endl;
+    } else if (action == SEE_YOUR_RESOURCES) {
+        std::cout << "You chose to see your resources." << std::endl;
+    } else if (action == TRADE_WITH_PLAYERS) {
+        std::cout << "You chose to trade with other players." << std::endl;
+    } else if (action == TRADE_WITH_THE_BANK) {
+        std::cout << "You chose to trade with the bank." << std::endl;
+    } else if (action == END_YOUR_TURN) {
+        std::cout << "You chose to end your turn." << std::endl;
+    } else {
+        std::cout << "Invalid choice. Please choose a number between 1 and 11." << std::endl;
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
+    return 0;
 }

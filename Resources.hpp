@@ -97,11 +97,13 @@ namespace ariel {
         Tile *neighborTileRight;
         Tile *neighborTileLeft;
         Tile *neighborTileDown;
-        virtual ~UrbanEntity();
+
 
         friend class Catan;
 
     public:
+        virtual ~UrbanEntity();
+
         Player *getOwner();
 
         std::string getOwnerName();
@@ -239,6 +241,7 @@ namespace ariel {
         Board *board;
         std::vector<Player *> players;
         unsigned int playerTurn;
+        bool gameOver;
 
 
     private:
@@ -271,6 +274,8 @@ namespace ariel {
 
         void win(Player &p);
 
+        bool isGameOver();
+
 
         friend class Monopole;
 
@@ -295,6 +300,7 @@ namespace ariel {
         int VictoryPoints;
         int numOfKnights;
         bool playedDevelopmentCard;
+        bool rolledDiceThisTurn;
         std::vector<DevelopmentCard *> developmentCards;
         std::vector<Settlement *> unusedSettlements;
         std::vector<City *> unusedCities;
@@ -369,7 +375,10 @@ namespace ariel {
 
         std::string getName();
 
+        bool getRolledDice();
         void endTurn();
+
+        Catan * getGameManager();
 
     };
 

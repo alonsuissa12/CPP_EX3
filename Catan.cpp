@@ -17,6 +17,8 @@ namespace ariel {
 
         this->board = new Board();
 
+        gameOver = false;
+
     }
 
     Catan::~Catan() {
@@ -121,7 +123,8 @@ namespace ariel {
 
     void Catan::win(Player &p) {
         std::cout << p.getName() << " is the WINNER!!!\n";
-        std::cout << p.getName() << " (this object will not be available for another game. in order to play another game ,please crate a new object of catan)\n";
-        delete this;
+        gameOver = true;
     }
+
+    bool Catan::isGameOver() {return gameOver;}
 }
