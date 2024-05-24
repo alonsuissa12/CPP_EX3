@@ -15,13 +15,13 @@
 #include <functional>
 
 
-#ifndef BRICK
 #define BRICK 0
 #define IRON 1
 #define WHEAT 2
 #define WOOD 3
 #define WOOL 4
-#endif
+#define DESERT 5
+#define SEA 6
 
 #define DEBUG(x) std::cout << x << std::endl;
 
@@ -196,6 +196,7 @@ namespace ariel {
         Road *roads[6];
 
         friend class Catan;
+        friend class Board;
 
     private:
         Settlement &removeSettlement(Settlement &settlement);

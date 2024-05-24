@@ -30,6 +30,10 @@ namespace ariel {
             resNum = 3;
         if (resourceTile1 == "wool" || resourceTile1 == "WOOL")
             resNum = 4;
+        if (resourceTile1 == "desert" || resourceTile1 == "DESERT")
+            resNum = 5;
+        if(resourceTile1 == "sea" || resourceTile1 == "SEA" )
+            resNum = 6;
         return resNum;
     }
 
@@ -407,7 +411,7 @@ namespace ariel {
             while (!validTile1) {
                 std::cout << "Tile 1:\n";
                 std::cout
-                        << "----Enter the resource of the tile (0 for brick, 1 for iron, 2 for wheat, 3 for wood, 4 for wool):\n";
+                        << "----Enter the resource of the tile (0 - brick, 1-iron, 2- wheat, 3-wood, 4-wool,5-desert,6-sea):\n";
                 std::cin >> resource1;
 
                 std::cout << "----Enter the dice number of the tile:\n";
@@ -431,7 +435,7 @@ namespace ariel {
             while (!validTile2) {
                 std::cout << "Tile 2:\n";
                 std::cout
-                        << "----Enter the resource of the tile (0 for brick, 1 for iron, 2 for wheat, 3 for wood, 4 for wool):\n";
+                        << "----Enter the resource of the tile (0 - brick, 1-iron, 2- wheat, 3-wood, 4-wool,5-desert,6-sea):\n";
                 std::cin >> resource2;
 
                 std::cout << "----Enter the dice number of the tile:\n";
@@ -565,9 +569,9 @@ namespace ariel {
 
     std::ostream &operator<<(std::ostream &os, const Tile &tile) {
         if (tile.isSea)
-            os << "sea";
+            os << "sea" <<tile.number;
         else if (tile.isDesert)
-            os << "desert";
+            os << "desert ";
         else {
             os << tile.resource << " " << std::to_string(tile.number);
         }
@@ -613,9 +617,27 @@ namespace ariel {
             Tile *tile = new Tile(numbers[i + 14], "wheat");
             tiles.push_back(tile);
         }
+        //check if there are two tiles with same resource and number
+        bool done = false;
+        while (!done) {
+            done = true;
+            for (unsigned int i = 0; i < tiles.size() && done; ++i) {
+                for (unsigned int j = i + 1; j < tiles.size() && done; ++j) {
+                    if (tiles[i]->getNumber() == tiles[j]->getNumber() &&
+                        tiles[i]->getResource() == tiles[j]->getResource()){ // if there are two same tiles
+                        // swap one tile's number with his neighbor (and we will check again)
+                        done = false;
+                        int temp = tiles[j]->getNumber();
+                        tiles[j]->number = tiles[(j+1)%tiles.size()]->getNumber();
+                        tiles[(j+1)%tiles.size()]->number = temp;
+                    }
+                }
+
+            }
+        }
 
         // desert tile
-        Tile *desert = new Tile(0, "nothing", false, true);
+        Tile *desert = new Tile(5, "desert", false, true);
         tiles.push_back(desert);
         //shuffle the tiles
         std::shuffle(tiles.begin(), tiles.end(), std::default_random_engine((unsigned long) std::time(nullptr)));
@@ -626,7 +648,7 @@ namespace ariel {
         unsigned int shift = 0;
 
         for (unsigned int i = 0; i < 18; ++i) {
-            Tile *tile = new Tile(0, "nothing", true, false);
+            Tile *tile = new Tile((int)i, "sea", true, false);
             tiles.insert(tiles.begin() + locationsForSea[i], tile);
             shift++;
 
@@ -637,17 +659,26 @@ namespace ariel {
         unsigned int rowSize[] = {4, 5, 6, 7, 6, 5, 4};
         int rowSizeLength = 7;
         shift = 0;
-        unsigned int secondHalPlus = 0;
-        unsigned int firstHalfPlus = 1;
+        // updating extra shift for the up/down half of the board
+        // (because sometimes the row we go to is longer than row i by one and sometimes shorter by one)
+        unsigned int leftUpMinus = 0;
+        unsigned int rightUpPlus = 1;
+        unsigned int downRightPlus = 1;
+        unsigned int downLeftMinus = 0;
 
-
-        for (unsigned int i = 0; i < rowSizeLength; ++i) { // todo: fix the neighbors update!
+        // updating the neighbors of all the tiles
+        for (unsigned int i = 0; i < rowSizeLength; ++i) {
             if (i != 0)
                 shift += rowSize[i - 1];
-            if (i == 3) {
-                secondHalPlus = 1;
-                firstHalfPlus = 0;
+            if (i == 4) {
+                leftUpMinus = 1;
+                rightUpPlus = 0;
             }
+            if (i == 3) {
+                downRightPlus = 0;
+                downLeftMinus = 1;
+            }
+            // updating the neighbors of the tiles on row i
             for (unsigned int j = 0; j < rowSize[i]; ++j) {
                 if (j != 0)
                     tiles[j + shift]->UpdateNeighbor(*tiles[shift + j - 1], LeftEdge);
@@ -655,14 +686,14 @@ namespace ariel {
                     tiles[j + shift]->UpdateNeighbor(*tiles[shift + j + 1], RightEdge);
 
                 if (i != 0 && (j != 0 || i >= 4))
-                    tiles[j + shift]->UpdateNeighbor(*tiles[shift + j - rowSize[i] - secondHalPlus], UpLeftEdge);
+                    tiles[j + shift]->UpdateNeighbor(*tiles[shift + j - rowSize[i] - leftUpMinus], UpLeftEdge);
                 if (i != 0 && (i >= 4 || j + 1 != rowSize[i]))
-                    tiles[j + shift]->UpdateNeighbor(*tiles[shift + j - rowSize[i] + firstHalfPlus], UpRightEdge);
+                    tiles[j + shift]->UpdateNeighbor(*tiles[shift + j - rowSize[i] + rightUpPlus], UpRightEdge);
 
                 if (i + 1 != rowSizeLength && (i < 4 || j + 1 != rowSize[i]))
-                    tiles[j + shift]->UpdateNeighbor(*tiles[shift + j + rowSize[i] + firstHalfPlus], DownRightEdge);
+                    tiles[j + shift]->UpdateNeighbor(*tiles[shift + j + rowSize[i] + downRightPlus], DownRightEdge);
                 if (i + 1 != rowSizeLength && (i < 4 || j != 0))
-                    tiles[j + shift]->UpdateNeighbor(*tiles[shift + j + rowSize[i] - secondHalPlus], DownLeftEdge);
+                    tiles[j + shift]->UpdateNeighbor(*tiles[shift + j + rowSize[i] - downLeftMinus], DownLeftEdge);
 
             }
         }
@@ -688,9 +719,9 @@ namespace ariel {
         unsigned int sixth = 5;
         unsigned int seventh = 4;
         std::cout << "\n              ************ CATAN BOARD ************\n";
-        std::cout << "                       ";
+        std::cout << "                   ";
         for (unsigned int i = 0; i < first; ++i) { // first row
-            std::cout << *tiles[i] << "  ";
+            std::cout << *tiles[i] << "   ";
         }
         std::cout << "\n               ";
         for (unsigned int i = first; i < first + second; ++i) { //second row
@@ -700,7 +731,7 @@ namespace ariel {
         for (unsigned int i = first + second; i < first + second + third; ++i) { //third row
             std::cout << *tiles[i] << "  ";
         }
-        std::cout << "\n      ";
+        std::cout << "\n       ";
         for (unsigned int i = first + second + third; i < first + second + third + fourth; ++i) { //fourth row
             std::cout << *tiles[i] << "  ";
         }
@@ -714,10 +745,10 @@ namespace ariel {
              i < first + second + third + fourth + fifth + sixth; ++i) { //sixth row
             std::cout << *tiles[i] << "  ";
         }
-        std::cout << "\n                       ";
+        std::cout << "\n                   ";
         for (unsigned int i = first + second + third + fourth + fifth + sixth;
              i < first + second + third + fourth + fifth + sixth + seventh; ++i) { //seventh row
-            std::cout << *tiles[i] << "  ";
+            std::cout << *tiles[i] << "   ";
         }
         std::cout << "\n             **************************************\n\n";
     }

@@ -22,7 +22,7 @@ using namespace std;
 #define TRADE_WITH_PLAYERS 9
 #define TRADE_WITH_THE_BANK 10
 #define END_YOUR_TURN 11
-//todo: add print board option
+#define PRINT_BOARD 12
 
 void printOptions();
 
@@ -46,7 +46,7 @@ int main() {
     Board *board = catan.getBoard(); // get the board of the game.
     board->printBoard();
 
-    board->printNeighbors();
+//    board->printNeighbors();
 
 
     startGame(&catan, 3);
@@ -153,6 +153,7 @@ void printOptions() {
     std::cout << "9. Trade with other players" << std::endl;
     std::cout << "10. Trade with the bank" << std::endl;
     std::cout << "11. End your turn" << std::endl;
+    std::cout << "11. print the board" << std::endl;
 }
 
 // a function to ask for the player to choose a tile. the function will return a pointer to that tile
@@ -164,13 +165,13 @@ Tile *chooseTile(Catan *gameManager) {
     std::cout << "----please choose a tile by choosing a resource and a number" << std::endl;
     while (!validTile) { // while the choice is invalid
         std::cout
-                << "----Enter the resource of the tile (0 for brick, 1 for iron, 2 for wheat, 3 for wood, 4 for wool):\n";
+                << "----Enter the resource of the tile (0 - brick, 1-iron, 2- wheat, 3-wood, 4-wool,5-desert,6-sea):\n";
         std::cin >> resource;
 
-        std::cout << "----Enter the dice number of the tile:\n";
+        std::cout << "----Enter the dice number of the tile: (5 for desert, index of sea for sea)\n";
         std::cin >> tileNumber;
         t = gameManager->findTile(tileNumber, resource); // find this tile and return a pointer to it
-        validTile = (resource >= 0 && resource <= 4) && (tileNumber >= 2 && tileNumber <= 12) && (t != nullptr);
+        validTile = (resource >= 0 && resource <= 6) && (tileNumber >= 0 && tileNumber <= 17) && (t != nullptr);
 
         if (!validTile) {
             std::cout << "Invalid tile. Please try again.\n";
@@ -217,7 +218,11 @@ int doAction(int action, Player *p) {
         std::cout << "You chose to trade with the bank." << std::endl;
     } else if (action == END_YOUR_TURN) {
         std::cout << "You chose to end your turn." << std::endl;
-    } else {
+    } else if(action == PRINT_BOARD ) {
+        std::cout << "You chose to print the board." << std::endl;
+        p->getGameManager()->getBoard()->printBoard();
+    }
+    else {
         std::cout << "Invalid choice. Please choose a number between 1 and 11." << std::endl;
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -227,7 +232,7 @@ int doAction(int action, Player *p) {
 
 // a function to place the starting set up of the board presents of the players
 void startGame(Catan *gm, int numOfPlayers) {
-    for (int i = 0; i < numOfPlayers * 2; ++i) { // twice for each player place a settlement and a road
+    for (int i = 0; i < numOfPlayers * 1; ++i) { // twice for each player place a settlement and a road todo: *2 again!
         Player *p = gm->getPlayerTurn();
 
         //place a settlement
