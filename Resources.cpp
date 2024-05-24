@@ -32,7 +32,7 @@ namespace ariel {
             resNum = 4;
         if (resourceTile1 == "desert" || resourceTile1 == "DESERT")
             resNum = 5;
-        if(resourceTile1 == "sea" || resourceTile1 == "SEA" )
+        if (resourceTile1 == "sea" || resourceTile1 == "SEA")
             resNum = 6;
         return resNum;
     }
@@ -554,6 +554,14 @@ namespace ariel {
         return convertResourceToInt(resource);
     }
 
+    int Tile::getNumber() {
+        return number;
+    }
+
+    bool Tile::getIsSea() { return isSea; }
+
+    bool Tile::getIsDesert() { return isDesert; }
+
 
     bool operator==(const Tile &t1, const Tile &t2) {
         return (&t1 == &t2);
@@ -563,13 +571,10 @@ namespace ariel {
         return &t1 != &t2;
     }
 
-    int Tile::getNumber() {
-        return number;
-    }
 
     std::ostream &operator<<(std::ostream &os, const Tile &tile) {
         if (tile.isSea)
-            os << "sea" <<tile.number;
+            os << "sea" << tile.number;
         else if (tile.isDesert)
             os << "desert ";
         else {
@@ -624,12 +629,12 @@ namespace ariel {
             for (unsigned int i = 0; i < tiles.size() && done; ++i) {
                 for (unsigned int j = i + 1; j < tiles.size() && done; ++j) {
                     if (tiles[i]->getNumber() == tiles[j]->getNumber() &&
-                        tiles[i]->getResource() == tiles[j]->getResource()){ // if there are two same tiles
+                        tiles[i]->getResource() == tiles[j]->getResource()) { // if there are two same tiles
                         // swap one tile's number with his neighbor (and we will check again)
                         done = false;
                         int temp = tiles[j]->getNumber();
-                        tiles[j]->number = tiles[(j+1)%tiles.size()]->getNumber();
-                        tiles[(j+1)%tiles.size()]->number = temp;
+                        tiles[j]->number = tiles[(j + 1) % tiles.size()]->getNumber();
+                        tiles[(j + 1) % tiles.size()]->number = temp;
                     }
                 }
 
@@ -648,7 +653,7 @@ namespace ariel {
         unsigned int shift = 0;
 
         for (unsigned int i = 0; i < 18; ++i) {
-            Tile *tile = new Tile((int)i, "sea", true, false);
+            Tile *tile = new Tile((int) i, "sea", true, false);
             tiles.insert(tiles.begin() + locationsForSea[i], tile);
             shift++;
 

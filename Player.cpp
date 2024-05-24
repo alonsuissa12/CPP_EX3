@@ -204,6 +204,11 @@ namespace ariel {
             return -1;
         }
 
+        if(t1->getIsSea() && t2->getIsSea()){
+            std::cout << " cant place a road between two sea tiles" << std::endl;
+            return -1;
+        }
+
         Road *r1 = unusedRoads.back();
 
         int ans = r1->place(*t1, *t2);
@@ -432,16 +437,21 @@ namespace ariel {
             return std::vector<DevelopmentCard *>(); // Return an empty vector;
         }
         std::cout << "development cards you (" << name << ") have: ";
-        for (unsigned int i = 0; i < developmentCards.size() - 1; ++i) {
-            std::cout << developmentCards[i]->getName() << ", ";
+        if(!developmentCards.empty()) {
+            for (unsigned int i = 0; i < developmentCards.size() - 1; ++i) {
+                std::cout << developmentCards[i]->getName() << ", ";
+            }
+            if (developmentCards.size() - 1 >= 0)
+                std::cout << developmentCards[developmentCards.size() - 1]->getName();
+            std::cout << "\n";
         }
-        if (developmentCards.size() - 1 >= 0)
-            std::cout << developmentCards[developmentCards.size() - 1]->getName();
-        std::cout << "\n";
+        else{
+            std::cout << "none \n";
+        }
         return developmentCards;
     }
 
-    int Player::trade(Player other, int wantedResource, int wantedAmount, int givenResource, int givenAmount) {
+    int Player::trade(Player* other, int wantedResource, int wantedAmount, int givenResource, int givenAmount) {
         if (*gameManager->getPlayerTurn() != *this) {
             std::cout << name << ", its not your turn! \n";
             return -1;
@@ -450,7 +460,7 @@ namespace ariel {
             std::cout << "Invalid resource numbers\n";
             return -1;
         }
-        if (other.resources[wantedResource] < wantedAmount || resources[givenResource] < givenAmount) {
+        if (other->resources[wantedResource] < wantedAmount || resources[givenResource] < givenAmount) {
             std::cout << "not enough resources!\n";
             return -1;
         }
@@ -459,24 +469,24 @@ namespace ariel {
         int agree = 3;
         std::string wantedResourceString = convertResourceToString(wantedResource);
         std::string givenResourceString = convertResourceToString(givenResource);
-        std::cout << "trade offer from " << name << " to " << other.name << " :\n";
+        std::cout << "trade offer from " << name << " to " << other->name << " :\n";
         std::cout << "offers " << givenAmount << " " << givenResourceString << " in return for: " << wantedAmount << " "
-                  << wantedResource << " \n";
+                  << wantedResourceString << " \n";
         while (agree != 0 && agree != 1) {
-            std::cout << other.name << " do you accept this offer? (enter 1/0 for yes/no)\n";
+            std::cout << other->name << " do you accept this offer? (enter 1/0 for yes/no)\n";
             agree++;
             std::cin >> agree;
             std::cin.clear(); // Clear error flags
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
         }
         if (agree == 1) {
-            std::cout << other.name << " accepts your offer\n";
-            other.resources[givenResource] += givenAmount;
-            other.resources[wantedResource] -= wantedAmount;
+            std::cout << other->name << " accepts your offer\n";
+            other->resources[givenResource] += givenAmount;
+            other->resources[wantedResource] -= wantedAmount;
             resources[wantedResource] += wantedAmount;
             resources[givenResource] -= givenAmount;
         } else {
-            std::cout << other.name << " declined your offer\n";
+            std::cout << other->name << " declined your offer\n";
         }
         return 0;
 
@@ -523,6 +533,14 @@ namespace ariel {
 
     Catan *Player::getGameManager() {
         return gameManager;
+    }
+    void Player::printResources() {
+        std::cout << "resources of " << name << ": \n";
+        std::cout << "      bricks- " << resources[BRICK] << "\n";
+        std::cout << "      iron- " << resources[IRON] << "\n";
+        std::cout << "      wheat- " << resources[WHEAT] << "\n";
+        std::cout << "      wood- " << resources[WOOD] << "\n";
+        std::cout << "      wool- " << resources[WOOL] << "\n";
     }
 
     bool Player::getRolledDice() {

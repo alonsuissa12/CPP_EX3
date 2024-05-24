@@ -26,7 +26,6 @@
 #define DEBUG(x) std::cout << x << std::endl;
 
 
-
 #define RightEdge 0
 #define UpRightEdge 1
 #define UpLeftEdge 2
@@ -143,6 +142,7 @@ namespace ariel {
         Catan *gameManager;
     public:
         virtual void playCard(Player &p) = 0;
+
         virtual ~DevelopmentCard();
 
         std::string getName();
@@ -196,6 +196,7 @@ namespace ariel {
         Road *roads[6];
 
         friend class Catan;
+
         friend class Board;
 
     private:
@@ -220,8 +221,11 @@ namespace ariel {
 
         int getNumber();
 
-        friend std::ostream& operator<<(std::ostream& os, const Tile& tile);
+        bool  getIsSea();
 
+        bool getIsDesert();
+
+        friend std::ostream &operator<<(std::ostream &os, const Tile &tile);
 
 
     };
@@ -231,6 +235,7 @@ namespace ariel {
         std::vector<Tile *> tiles;
     public:
         Board();
+
         ~Board();
 
         void printBoard();
@@ -281,6 +286,12 @@ namespace ariel {
 
         bool isGameOver();
 
+        void addResourcesTO(Player * p,Tile* t);
+
+        void printPlayers();
+
+        Player * getPlayer(int x);
+
 
         friend class Monopole;
 
@@ -292,8 +303,6 @@ namespace ariel {
     bool operator==(const Tile &t1, const Tile &t2);
 
     bool operator!=(const Tile &t1, const Tile &t2);
-
-
 
 
     class Player {
@@ -329,13 +338,14 @@ namespace ariel {
         friend class Catan;
 
         friend class Tile;
+
     private:
-        void takeBackSettlement(Settlement * ps);
+        void takeBackSettlement(Settlement *ps);
 
     public:
         Player();
 
-        Player( std::string name);
+        Player(std::string name);
 
         ~Player();
 
@@ -372,7 +382,7 @@ namespace ariel {
 
         int useDevelopmentCard(DevelopmentCard *dc);
 
-        int trade(Player other, int wantedResource, int wantedAmount, int givenResource, int givenAmount);
+        int trade(Player* other, int wantedResource, int wantedAmount, int givenResource, int givenAmount);
 
         int tradeWithTheBank(int wantedResource, int givenResource);
 
@@ -385,9 +395,12 @@ namespace ariel {
         std::string getName();
 
         bool getRolledDice();
+
         void endTurn();
 
-        Catan * getGameManager();
+        Catan *getGameManager();
+
+        void printResources();
 
     };
 

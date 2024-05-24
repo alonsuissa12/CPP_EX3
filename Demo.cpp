@@ -18,11 +18,16 @@ using namespace std;
 #define BUY_DEVELOPMENT_CARD 5
 #define SEE_YOUR_DEVELOPMENT_CARD 6
 #define USE_DEVELOPMENT_CARD 7
-#define SEE_YOUR_RESOURCES 8 //todo: add this option to player
+#define SEE_YOUR_RESOURCES 8
 #define TRADE_WITH_PLAYERS 9
 #define TRADE_WITH_THE_BANK 10
 #define END_YOUR_TURN 11
 #define PRINT_BOARD 12
+
+
+#define NEXT_TURN 2
+#define GAME_OVER 3
+
 
 void printOptions();
 
@@ -49,24 +54,26 @@ int main() {
 //    board->printNeighbors();
 
 
-    startGame(&catan, 3);
+//    startGame(&catan, 3);
 
 
     bool gameOver = catan.isGameOver();
 
 
     while (!gameOver) {
-        int playing = 1;
         int action = 0;
 
-        while (playing) {
-            cout << "\n" << p->getName() << ", what would you like to do on your turn?(type the number to choose)\n";
-            printOptions();
-            cin >> action;
-            int playing = doAction(action, p);
-        }
 
+        cout << "\n" << p->getName() << ", what would you like to do on your turn?(type the number to choose)\n";
+        printOptions();
+        cin >> action;
+         int result = doAction(action, p);
+         if(result == GAME_OVER)
+             gameOver = true;
+         else if(result == NEXT_TURN)
+             p = catan.getPlayerTurn();
     }
+    //todo: handle end game (delete!)
 
 
 
@@ -153,7 +160,7 @@ void printOptions() {
     std::cout << "9. Trade with other players" << std::endl;
     std::cout << "10. Trade with the bank" << std::endl;
     std::cout << "11. End your turn" << std::endl;
-    std::cout << "11. print the board" << std::endl;
+    std::cout << "12. print the board" << std::endl;
 }
 
 // a function to ask for the player to choose a tile. the function will return a pointer to that tile
@@ -187,9 +194,8 @@ int doAction(int action, Player *p) {
 
 
     if (action == ROLL_DICE) {
-        if (p->getRolledDice()) { // todo: pass rolled
+        if (p->getRolledDice()) {
             std::cout << "You can roll the dice only once per turn!." << std::endl;
-            return 1;
         }
         std::cout << "You chose to roll the dice." << std::endl;
         p->rollDice();
@@ -199,31 +205,91 @@ int doAction(int action, Player *p) {
         Tile *t1 = chooseTile(p->getGameManager());
         Tile *t2 = chooseTile(p->getGameManager());
         p->placeRoad(t1, t2);
-    } else if (action == PLACE_SETTLEMENT) {
-        std::cout << "You chose to place a settlement." << std::endl;
-    } else if (action == PLACE_CITY) {
-        std::cout << "You chose to place a city." << std::endl;
 
+    } else if (action == PLACE_SETTLEMENT) {
+        cout << p->getName() << " for placing a settlement please chose 3 tiles (to place between them)\n ";
+        Tile *t1 = chooseTile(p->getGameManager());
+        Tile *t2 = chooseTile(p->getGameManager());
+        Tile *t3 = chooseTile(p->getGameManager());
+        p->placeSettlement(t1, t2, t3, false);
+
+    } else if (action == PLACE_CITY) {
+        cout << p->getName() << " for placing a city please chose 3 tiles (to place between them)\n ";
+        Tile *t1 = chooseTile(p->getGameManager());
+        Tile *t2 = chooseTile(p->getGameManager());
+        Tile *t3 = chooseTile(p->getGameManager());
+        p->placeCity(t1, t2, t3, false);
     } else if (action == BUY_DEVELOPMENT_CARD) {
         std::cout << "You chose to buy a development card." << std::endl;
+        p->buyDevelopmentCard();
+
     } else if (action == SEE_YOUR_DEVELOPMENT_CARD) {
         std::cout << "You chose to see your development cards." << std::endl;
+        p->getDevelopmentCards();
+
     } else if (action == USE_DEVELOPMENT_CARD) {
         std::cout << "You chose to use a development card." << std::endl;
+        std::cout << "please choose a development card to use:\n";
+        vector<DevelopmentCard *> devCards = p->getDevelopmentCards();
+        if (devCards.empty())
+            cout << "you dont own any development cards" << endl;
+        else {
+            for (unsigned int i = 0; i < devCards.size(); ++i) {
+                cout << "[" << i << "]: " << devCards[i]->getName() << endl;
+            }
+            int index = -1;
+            cout << "enter thre development card index\n";
+            cin >> index;
+            if (index < 0 || index > devCards.size())
+                cout << "invalid index\n";
+            else
+                p->useDevelopmentCard(devCards[(unsigned int) index]);
+        }
     } else if (action == SEE_YOUR_RESOURCES) {
         std::cout << "You chose to see your resources." << std::endl;
+        p->printResources();
     } else if (action == TRADE_WITH_PLAYERS) {
         std::cout << "You chose to trade with other players." << std::endl;
+        int rToGive = -1;
+        int hardToGet = -1;
+        cout << "chose a resource to give(0 - brick, 1-iron, 2- wheat, 3-wood, 4-wool) " << endl;
+        cin >> rToGive;
+        cout << "chose a resource to get(0 - brick, 1-iron, 2- wheat, 3-wood, 4-wool) " << endl;
+        cin >> hardToGet;
+        int playerIndex = -1;
+        cout << "chose a player to trade with (enter an index):\n";
+        p->getGameManager()->printPlayers();
+        cin >> playerIndex;
+
+        Player *other = p->getGameManager()->getPlayer(playerIndex);
+
+        if (other != nullptr && other != p) {
+            p->trade(other, hardToGet, 1, rToGive, 1);
+        } else {
+            cout << "can't make that trade\n";
+        }
+
     } else if (action == TRADE_WITH_THE_BANK) {
-        std::cout << "You chose to trade with the bank." << std::endl;
+        cout << "You chose to trade with the bank." << std::endl;
+        int rToGive = -1;
+        int hardToGet = -1;
+        cout << "chose a resource to give(0 - brick, 1-iron, 2- wheat, 3-wood, 4-wool) " << endl;
+        cin >> rToGive;
+        cout << "chose a resource to get(0 - brick, 1-iron, 2- wheat, 3-wood, 4-wool) " << endl;
+        cin >> hardToGet;
+        p->tradeWithTheBank(hardToGet, rToGive);
+
     } else if (action == END_YOUR_TURN) {
         std::cout << "You chose to end your turn." << std::endl;
-    } else if(action == PRINT_BOARD ) {
+        p->endTurn();
+        if(p->getGameManager()->isGameOver())
+            return GAME_OVER;
+        return NEXT_TURN;
+    } else if (action == PRINT_BOARD) {
         std::cout << "You chose to print the board." << std::endl;
         p->getGameManager()->getBoard()->printBoard();
-    }
-    else {
-        std::cout << "Invalid choice. Please choose a number between 1 and 11." << std::endl;
+    } else {
+        std::cout << "Invalid choice. Please choose a number between 1 and 12." << std::endl;
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
@@ -236,25 +302,32 @@ void startGame(Catan *gm, int numOfPlayers) {
         Player *p = gm->getPlayerTurn();
 
         //place a settlement
-        int placed =-1;
-        while (placed== -1) {
+        int placed = -1;
+        while (placed == -1) {
             cout << p->getName() << " for placing a settlement please chose 3 tiles (to place between them)\n ";
             Tile *t1 = chooseTile(gm);
             Tile *t2 = chooseTile(gm);
             Tile *t3 = chooseTile(gm);
             placed = p->placeSettlement(t1, t2, t3, true);
-            if(placed == -1)
+            if (placed == -1)
                 cout << "please try again\n";
+            else {
+                gm->addResourcesTO(p, t1);
+                gm->addResourcesTO(p, t2);
+                gm->addResourcesTO(p, t3);
+            }
         }
+
+
         placed = -1;
         //place a road
-        while (placed== -1) {
+        while (placed == -1) {
             cout << p->getName() << " for placing a road please chose 2 tiles (to place between them)\n ";
             cout << p->getName() << " pay attention that the road have to be continues to your board present\n";
             Tile *t1 = chooseTile(gm);
             Tile *t2 = chooseTile(gm);
             placed = p->placeRoad(t1, t2);
-            if(placed == -1)
+            if (placed == -1)
                 cout << "please try again\n";
         }
 
