@@ -345,7 +345,7 @@ namespace ariel {
     public:
         Player();
 
-        Player(std::string name);
+        explicit Player(std::string name);
 
         ~Player();
 

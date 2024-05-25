@@ -54,7 +54,7 @@ int main() {
 //    board->printNeighbors();
 
 
-//    startGame(&catan, 3);
+    startGame(&catan, 3);
 
 
     bool gameOver = catan.isGameOver();
@@ -196,6 +196,7 @@ int doAction(int action, Player *p) {
     if (action == ROLL_DICE) {
         if (p->getRolledDice()) {
             std::cout << "You can roll the dice only once per turn!." << std::endl;
+            return 0;
         }
         std::cout << "You chose to roll the dice." << std::endl;
         p->rollDice();

@@ -63,19 +63,44 @@ namespace ariel {
 
     // updates the players resourced according to the dice roll
     void Catan::diceRoll(int diceRoll) {
+        DEBUG("in dice roll catan");
         if (diceRoll != 7) {
             for (Player *pp: players) {
                 for (unsigned int i = 0; i < pp->usedUrbanEntities.size(); ++i) {
+                    DEBUG("in for for player: " << pp->name << " i: " << i << " from " << pp->usedUrbanEntities.size());
+                    DEBUG( "is pp null? " << (pp == nullptr));
+                    DEBUG("pp->usedUrbanEntities[i]: " << pp->usedUrbanEntities[i]);
+                    DEBUG(pp->usedUrbanEntities[i]->neighborTileRight);
+                    DEBUG(pp->usedUrbanEntities[i]->neighborTileRight->getResource());
+                    DEBUG(pp->usedUrbanEntities[i]->numOfResources);
 
-                    if (pp->usedUrbanEntities[i]->neighborTileRight->number == diceRoll) {
-                        pp->resources[pp->usedUrbanEntities[i]->neighborTileRight->getResource()] += pp->usedUrbanEntities[i]->numOfResources;
-                    }
+
+                    if (!pp->usedUrbanEntities[i]->neighborTileRight->isSea &&
+                        !pp->usedUrbanEntities[i]->neighborTileRight->isDesert) // if its a resource tile
+                        if (pp->usedUrbanEntities[i]->neighborTileRight->number == diceRoll) { // if the tile number is rolled
+                            // add the generated resources to the owner
+                            DEBUG("0");
+                            pp->resources[pp->usedUrbanEntities[i]->neighborTileRight->getResource()] += pp->usedUrbanEntities[i]->numOfResources;
+                            DEBUG("1");
+                        }
+                    DEBUG("2");
+                    if (!pp->usedUrbanEntities[i]->neighborTileLeft->isSea &&
+                        !pp->usedUrbanEntities[i]->neighborTileLeft->isDesert) // if its a resource tile
                     if (pp->usedUrbanEntities[i]->neighborTileLeft->number == diceRoll) {
+                        DEBUG("3");
                         pp->resources[pp->usedUrbanEntities[i]->neighborTileLeft->getResource()] += pp->usedUrbanEntities[i]->numOfResources;
+                        DEBUG("4");
                     }
+                    DEBUG("5");
+
+                    if (!pp->usedUrbanEntities[i]->neighborTileDown->isSea &&
+                        !pp->usedUrbanEntities[i]->neighborTileDown->isDesert) // if its a resource tile
                     if (pp->usedUrbanEntities[i]->neighborTileDown->number == diceRoll) {
+                        DEBUG("6");
                         pp->resources[pp->usedUrbanEntities[i]->neighborTileDown->getResource()] += pp->usedUrbanEntities[i]->numOfResources;
+                        DEBUG("7");
                     }
+                    DEBUG("8");
                 }
             }
         } else { //rolled 7
@@ -179,7 +204,7 @@ namespace ariel {
         if (x < 0 || x >= players.size())
             std::cout << "invalid player index\n";
         else
-            return players[(unsigned int)x];
+            return players[(unsigned int) x];
         return nullptr;
     }
 }

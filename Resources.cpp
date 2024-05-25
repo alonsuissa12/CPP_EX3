@@ -251,6 +251,37 @@ namespace ariel {
             std::cout << "Invalid location! \n";
             return -1;
         }
+
+        //update neighbors tiles
+        // find mid tile
+        if ((edgeSideOfN1ToN3 == DownRightEdge && edgeSideOfN1ToN2 == DownLeftEdge) ||
+            edgeSideOfN1ToN3 == UpRightEdge && edgeSideOfN1ToN2 == UpLeftEdge)
+            neighborTileDown = &n1;
+        else if ((edgeSideOfN2ToN3 == DownRightEdge && edgeSideOfN2ToN1 == DownLeftEdge) ||
+                 edgeSideOfN2ToN3 == UpRightEdge && edgeSideOfN2ToN1 == UpLeftEdge)
+            neighborTileDown = &n2;
+        else
+            neighborTileDown = &n3;
+        // find right edge
+        if ((edgeSideOfN1ToN3 == DownLeftEdge && edgeSideOfN1ToN2 == LeftEdge) ||
+            edgeSideOfN1ToN3 == UpLeftEdge && edgeSideOfN1ToN2 == LeftEdge)
+            neighborTileLeft = &n1;
+        else if ((edgeSideOfN2ToN3 == DownLeftEdge && edgeSideOfN2ToN1 == LeftEdge) ||
+                 edgeSideOfN2ToN3 == UpLeftEdge && edgeSideOfN2ToN1 == LeftEdge)
+            neighborTileLeft = &n2;
+        else
+            neighborTileLeft = &n3;
+        // find left edge
+        if ((edgeSideOfN1ToN3 == DownRightEdge && edgeSideOfN1ToN2 == RightEdge) ||
+            edgeSideOfN1ToN3 == UpRightEdge && edgeSideOfN1ToN2 == RightEdge)
+            neighborTileRight = &n1;
+        else if ((edgeSideOfN2ToN3 == DownRightEdge && edgeSideOfN2ToN1 == RightEdge) ||
+                 edgeSideOfN2ToN3 == UpRightEdge && edgeSideOfN2ToN1 == RightEdge)
+            neighborTileRight = &n2;
+        else
+            neighborTileRight = &n3;
+
+
         return 0;
 
     }
