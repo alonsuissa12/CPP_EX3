@@ -8,8 +8,13 @@
 namespace ariel {
 
 //###################################    FUNCTIONS   ###################################
-    //find the edge side from n1 to n2
-    int edgeSide(Tile &n1, Tile &n2) {
+    // Finds the edge side from tile n1 to tile n2.
+    // Parameters:
+    // - n1: Reference to the first tile.
+    // - n2: Reference to the second tile.
+    // Returns:
+    // - The index of the edge side of tile n1 that connects to tile n2, or -1 if not found.
+    int edgeSide(Tile &n1, Tile &n2);    int edgeSide(Tile &n1, Tile &n2) {
         int edgeSideOfN1 = -1;
         for (int i = 0; i < 6; ++i) {
             if (*n1.getNeighbor(i) == n2)
@@ -18,6 +23,11 @@ namespace ariel {
         return edgeSideOfN1;
     }
 
+    // Converts a resource name string to its corresponding integer representation.
+    // Parameters:
+    // - resourceTile1: The resource name string to be converted.
+    // Returns:
+    // - The integer representation of the resource: 0 for brick, 1 for iron, 2 for wheat, 3 for wood, 4 for wool, 5 for desert, 6 for sea.
     int convertResourceToInt(std::string resourceTile1) {
         int resNum = -1;
         if (resourceTile1 == "brick" || resourceTile1 == "BRICK")
@@ -37,6 +47,11 @@ namespace ariel {
         return resNum;
     }
 
+    // Converts an integer representation of a resource to its corresponding string representation.
+    // Parameters:
+    // - resource: The integer representation of the resource.
+    // Returns:
+    // - The string representation of the resource.
     std::string convertResourceToString(int resource) {
         if (resource == 0)
             return "brick";

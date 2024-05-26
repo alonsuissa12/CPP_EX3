@@ -221,7 +221,7 @@ namespace ariel {
 
         int getNumber();
 
-        bool  getIsSea();
+        bool getIsSea();
 
         bool getIsDesert();
 
@@ -286,11 +286,11 @@ namespace ariel {
 
         bool isGameOver();
 
-        void addResourcesTO(Player * p,Tile* t);
+        void addResourcesTO(Player *p, Tile *t);
 
         void printPlayers();
 
-        Player * getPlayer(int x);
+        Player *getPlayer(int x);
 
 
         friend class Monopole;
@@ -343,75 +343,104 @@ namespace ariel {
         void takeBackSettlement(Settlement *ps);
 
     public:
+        // This function constructs a Player object with default attributes and initializes resources and urban entities.
+        // It assigns a default name and increments the player number.
         Player();
+
+        // This function constructs a Player object with a specified name and initializes resources and urban entities.
+        // It increments the player number.
 
         explicit Player(std::string name);
 
+        // Destructor for the Player class.
+        // It deallocates all settlements, cities, roads, and development cards.
         ~Player();
+
+        // Assigns the Catan game manager to the player.
 
         void joinGame(Catan *gm);
 
+        // Simulates rolling two dice and returns their sum.
+        // It also updates the game manager with the dice roll result, which will resolve the result for all players.
         int rollDice();
 
+        // Places a road between two specified tiles on the board.
         int placeRoad(int numTile1, int resourceTile1, int numTile2, int resourceTile2);
 
+        // Places a road between two specified tiles on the board.
         int placeRoad(int numTile1, std::string resourceTile1, int numTile2, std::string resourceTile2);
 
+        // Places a road between two specified tiles on the board.
         int placeRoad(Tile *t1, Tile *t2);
 
-
+        // Places a settlement at the intersection of three specified tiles on the board.
         int placeSettlement(int numTile1, std::string resourceTile1, int numTile2, std::string resourceTile2,
                             int numTile3, std::string resourceTile3, bool start);
 
+        // Places a settlement at the intersection of three specified tiles on the board.
         int placeSettlement(Tile *t1, Tile *t2, Tile *t3, bool start);
 
+        // Places a settlement at the intersection of three specified tiles on the board.
         int placeSettlement(int numTile1, int resourceTile1, int numTile2, int resourceTile2, int numTile3,
                             int resourceTile3, bool start);
 
+        // Places a city at the intersection of three specified tiles on the board.
         int placeCity(int numTile1, std::string resourceTile1, int numTile2, std::string resourceTile2, int numTile3,
                       std::string resourceTile3, bool start);
 
+        // Places a city at the intersection of three specified tiles on the board.
         int placeCity(int numTile1, int resourceTile1, int numTile2, int resourceTile2, int numTile3, int resourceTile3,
                       bool start);
 
+        // Places a city at the intersection of three specified tiles on the board.
         int placeCity(Tile *t1, Tile *t2, Tile *t3, bool start);
 
+        // Buys a development card from the game manager.
         int buyDevelopmentCard();
 
+        // Retrieves the development cards owned by the player and prints them.
         std::vector<DevelopmentCard *> getDevelopmentCards();
 
+        // Uses a development card.
         int useDevelopmentCard(DevelopmentCard *dc);
 
-        int trade(Player* other, int wantedResource, int wantedAmount, int givenResource, int givenAmount);
+        // Initiates a trade with another player.
+        int trade(Player *other, int wantedResource, int wantedAmount, int givenResource, int givenAmount);
 
+        // Trade with the bank 4 resources for one resource
         int tradeWithTheBank(int wantedResource, int givenResource);
 
-        //int takeResources(int brick, int iron, int wheat, int wood, int wool);
-
-//        int useResources(int brick, int iron, int wheat, int wood, int wool);
-
+        // Retrieves the player's victory points.
         int getVictoryPoints();
 
+        // Retrieves the player's name.
         std::string getName();
 
+        // Retrieves whether the player has rolled the dice during their turn.
         bool getRolledDice();
 
+        // Ends the player's turn by resetting the played development card flag and checking for victory conditions.
         void endTurn();
 
+        // Retrieves the game manager associated with the player.
         Catan *getGameManager();
 
+        // Prints the resources owned by the player.
         void printResources();
 
     };
 
 
-    // converting the resource name to the resource int.
+    // Converts a resource name string to its corresponding integer representation.
     int convertResourceToInt(std::string resourceTile1);
 
+    // Converts an integer representation of a resource to its corresponding string representation.
     std::string convertResourceToString(int resource);
 
+    // Overloaded equality operator for comparing two Player objects.
     bool operator==(const Player &p1, const Player &p2);
 
+    // Overloaded inequality operator for comparing two Player objects.
     bool operator!=(const Player &p1, const Player &p2);
 
 

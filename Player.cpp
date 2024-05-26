@@ -7,7 +7,8 @@
 namespace ariel {
     int Player::playerNum = 0;
 
-
+    // This function constructs a Player object with default attributes and initializes resources and urban entities.
+    // It assigns a default name and increments the player number.
     Player::Player() {
         // default name
         name = "Player " + std::to_string(Player::playerNum);
@@ -41,6 +42,10 @@ namespace ariel {
 
     }
 
+    // This function constructs a Player object with a specified name and initializes resources and urban entities.
+    // It increments the player number.
+    // Parameter:
+    // - name: The name of the player.
     Player::Player(std::string name) {
         // default name
         this->name = name;
@@ -75,6 +80,8 @@ namespace ariel {
 
     }
 
+    // Destructor for the Player class.
+    // It deallocates all settlements, cities, roads, and development cards.
     Player::~Player() {
         // Deallocate settlements
         for (Settlement *s: unusedSettlements) {
@@ -104,11 +111,17 @@ namespace ariel {
 
     }
 
-
+    // Assigns the Catan game manager to the player.
+    // Parameter:
+    // - gm: Pointer to the Catan game manager.
     void Player::joinGame(Catan *gm) {
         gameManager = gm;
     }
 
+    // Simulates rolling two dice and returns their sum.
+    // It also updates the game manager with the dice roll result, which will resolve the result for all players.
+    // Returns:
+    // - The sum of the two dice.
     int Player::rollDice() {
         if (*gameManager->getPlayerTurn() != *this) {
             std::cout << name << ", its not your turn! \n";
@@ -130,15 +143,23 @@ namespace ariel {
         return d1 + d2;
     }
 
-
-    bool operator==(Player &p1, Player &p2) {
+    // Overloaded equality operator for comparing two Player objects.
+    bool operator==(const Player &p1, const Player &p2)
+{
         return (&p1 == &p2);
     }
 
+    // Overloaded inequality operator for comparing two Player objects.
     bool operator!=(const Player &p1, const Player &p2) {
         return &p1 != &p2;;
     }
 
+    // Places a road between two specified tiles on the board.
+    // Parameters:
+    // - numTile1, resourceTile1: Location of the first tile.
+    // - numTile2, resourceTile2: Location of the second tile.
+    // Returns:
+    // - 0 if successful, -1 otherwise.
     int Player::placeRoad(int numTile1, int resourceTile1, int numTile2, int resourceTile2) {
         if (*gameManager->getPlayerTurn() != *this) {
             std::cout << name << ", its not your turn! \n";
@@ -161,6 +182,12 @@ namespace ariel {
         return 0;
     }
 
+    // Places a road between two specified tiles on the board.
+    // Parameters:
+    // - numTile1, resourceTile1: Location of the first tile.
+    // - numTile2, resourceTile2: Location of the second tile.
+    // Returns:
+    // - 0 if successful, -1 otherwise.
     int Player::placeRoad(int numTile1, std::string resourceTile1, int numTile2, std::string resourceTile2) {
         if (*gameManager->getPlayerTurn() != *this) {
             std::cout << name << ", its not your turn! \n";
@@ -189,6 +216,11 @@ namespace ariel {
 
     }
 
+    // Places a road between two specified tiles on the board.
+    // Parameters:
+    // - t1, t2: Pointers to the first and second tiles.
+    // Returns:
+    // - 0 if successful, -1 otherwise.
     int Player::placeRoad(Tile *t1, Tile *t2) {
         if (*gameManager->getPlayerTurn() != *this) {
             std::cout << name << ", its not your turn! \n";
@@ -204,7 +236,7 @@ namespace ariel {
             return -1;
         }
 
-        if(t1->getIsSea() && t2->getIsSea()){
+        if (t1->getIsSea() && t2->getIsSea()) {
             std::cout << " cant place a road between two sea tiles" << std::endl;
             return -1;
         }
@@ -221,7 +253,14 @@ namespace ariel {
         return ans;
     }
 
-
+    // Places a settlement at the intersection of three specified tiles on the board.
+    // Parameters:
+    // - numTile1, resourceTile1: Location of the first tile.
+    // - numTile2, resourceTile2: Location of the second tile.
+    // - numTile3, resourceTile3: Location of the third tile.
+    // - start: Flag indicating if it's the start of the game.
+    // Returns:
+    // - 0 if successful, -1 otherwise
     int Player::placeSettlement(int numTile1, std::string resourceTile1, int numTile2, std::string resourceTile2,
                                 int numTile3, std::string resourceTile3, bool start = false) {
         if (*gameManager->getPlayerTurn() != *this) {
@@ -232,7 +271,7 @@ namespace ariel {
             std::cout << " no more settlements to use!" << std::endl;
             return -1;
         }
-        if ((resources[WOOD] < 1 || resources[BRICK] < 1 || resources[WHEAT] < 1 || resources[WOOL] < 1)&&!start) {
+        if ((resources[WOOD] < 1 || resources[BRICK] < 1 || resources[WHEAT] < 1 || resources[WOOL] < 1) && !start) {
             std::cout << " not enough resources!" << std::endl;
             return -1;
         }
@@ -249,6 +288,14 @@ namespace ariel {
         return placeSettlement(numTile1, resNum1, numTile2, resNum2, numTile3, resNum3, start);
     }
 
+    // Places a settlement at the intersection of three specified tiles on the board.
+    // Parameters:
+    // - numTile1, resourceTile1: Location of the first tile.
+    // - numTile2, resourceTile2: Location of the second tile.
+    // - numTile3, resourceTile3: Location of the third tile.
+    // - start: Flag indicating if it's the start of the game.
+    // Returns:
+    // - 0 if successful, -1 otherwise.
     int Player::placeSettlement(int numTile1, int resourceTile1, int numTile2, int resourceTile2, int numTile3,
                                 int resourceTile3, bool start = false) {
         if (*gameManager->getPlayerTurn() != *this) {
@@ -276,6 +323,12 @@ namespace ariel {
         return placeSettlement(t1, t2, t3, start);
     }
 
+    // Places a settlement at the intersection of three specified tiles on the board.
+    // Parameters:
+    // - t1, t2, t3: Pointers to the three tiles.
+    // - start: Flag indicating if it's the start of the game.
+    // Returns:
+    // - 0 if successful, -1 otherwise.
     int Player::placeSettlement(Tile *t1, Tile *t2, Tile *t3, bool start) {
         if (*gameManager->getPlayerTurn() != *this) {
             std::cout << name << ", its not your turn! \n";
@@ -306,9 +359,16 @@ namespace ariel {
         return ans;
     }
 
-    int
-    Player::placeCity(int numTile1, std::string resourceTile1, int numTile2, std::string resourceTile2, int numTile3,
-                      std::string resourceTile3, bool start = false) {
+    // Places a city at the intersection of three specified tiles on the board.
+    // Parameters:
+    // - numTile1, resourceTile1: Location of the first tile.
+    // - numTile2, resourceTile2: Location of the second tile.
+    // - numTile3, resourceTile3: Location of the third tile.
+    // - start: Flag indicating if it's the start of the game.
+    // Returns:
+    // - 0 if successful, -1 otherwise.
+    int Player::placeCity(int numTile1, std::string resourceTile1, int numTile2, std::string resourceTile2,
+                          int numTile3, std::string resourceTile3, bool start = false) {
         if (*gameManager->getPlayerTurn() != *this) {
             std::cout << name << ", its not your turn! \n";
             return -1;
@@ -334,6 +394,15 @@ namespace ariel {
         return placeCity(numTile1, resNum1, numTile2, resNum2, numTile3, resNum3, start);
     }
 
+
+    // Places a city at the intersection of three specified tiles on the board.
+    // Parameters:
+    // - numTile1, resourceTile1: Location of the first tile.
+    // - numTile2, resourceTile2: Location of the second tile.
+    // - numTile3, resourceTile3: Location of the third tile.
+    // - start: Flag indicating if it's the start of the game.
+    // Returns:
+    // - 0 if successful, -1 otherwise.
     int Player::placeCity(int numTile1, int resourceTile1, int numTile2, int resourceTile2, int numTile3,
                           int resourceTile3, bool start = false) {
         if (*gameManager->getPlayerTurn() != *this) {
@@ -360,6 +429,12 @@ namespace ariel {
         return placeCity(t1, t2, t3, start);
     }
 
+    // Places a city at the intersection of three specified tiles on the board.
+    // Parameters:
+    // - t1, t2, t3: Pointers to the three tiles.
+    // - start: Flag indicating if it's the start of the game.
+    // Returns:
+    // - 0 if successful, -1 otherwise.
     int Player::placeCity(Tile *t1, Tile *t2, Tile *t3, bool start) {
         if (*gameManager->getPlayerTurn() != *this) {
             std::cout << name << ", its not your turn! \n";
@@ -380,8 +455,11 @@ namespace ariel {
             resources[IRON] -= 3;
         }
         return ans;
-    }
+    } //todo: update neighbors
 
+    // Buys a development card from the game manager.
+    // Returns:
+    // - 0 if successful, -1 otherwise.
     int Player::buyDevelopmentCard() {
         if (*gameManager->getPlayerTurn() != *this) {
             std::cout << name << ", its not your turn! \n";
@@ -405,6 +483,11 @@ namespace ariel {
         return -1;
     }
 
+    // Uses a development card.
+    // Parameter:
+    // - dc: Pointer to the development card to be used.
+    // Returns:
+    // - 0 if successful, -1 otherwise.
     int Player::useDevelopmentCard(DevelopmentCard *dc) {
         if (*gameManager->getPlayerTurn() != *this) {
             std::cout << name << ", its not your turn! \n";
@@ -431,27 +514,38 @@ namespace ariel {
         }
     }
 
+    // Retrieves the development cards owned by the player and prints them.
+    // Returns:
+    // - A vector containing pointers to the development cards.
     std::vector<DevelopmentCard *> Player::getDevelopmentCards() {
         if (*gameManager->getPlayerTurn() != *this) {
             std::cout << name << ", its not your turn! \n";
             return std::vector<DevelopmentCard *>(); // Return an empty vector;
         }
         std::cout << "development cards you (" << name << ") have: ";
-        if(!developmentCards.empty()) {
+        if (!developmentCards.empty()) {
             for (unsigned int i = 0; i < developmentCards.size() - 1; ++i) {
                 std::cout << developmentCards[i]->getName() << ", ";
             }
             if (developmentCards.size() - 1 >= 0)
                 std::cout << developmentCards[developmentCards.size() - 1]->getName();
             std::cout << "\n";
-        }
-        else{
+        } else {
             std::cout << "none \n";
         }
         return developmentCards;
     }
 
-    int Player::trade(Player* other, int wantedResource, int wantedAmount, int givenResource, int givenAmount) {
+    // Initiates a trade with another player.
+    // Parameters:
+    // - other: Pointer to the player to trade with.
+    // - wantedResource: The type of resource wanted by the other player.
+    // - wantedAmount: The amount of wanted resource.
+    // - givenResource: The type of resource offered by the player initiating the trade.
+    // - givenAmount: The amount of offered resource.
+    // Returns:
+    // - 0 if successful, -1 otherwise.
+    int Player::trade(Player *other, int wantedResource, int wantedAmount, int givenResource, int givenAmount) {
         if (*gameManager->getPlayerTurn() != *this) {
             std::cout << name << ", its not your turn! \n";
             return -1;
@@ -492,7 +586,12 @@ namespace ariel {
 
     }
 
-    // trade with the bank 4 resources for one resource
+    // Trade with the bank 4 resources for one resource
+    // Parameters:
+    // - wantedResource: The type of resource wanted from the bank.
+    // - givenResource: The type of resource offered to the bank.
+    // Returns:
+    // - 0 if successful, -1 otherwise.
     int Player::tradeWithTheBank(int wantedResource, int givenResource) {
         if (*gameManager->getPlayerTurn() != *this) {
             std::cout << name << ", its not your turn! \n";
@@ -517,10 +616,17 @@ namespace ariel {
 
     }
 
+    // Retrieves the player's victory points.
+    // Returns:
+    // - The number of victory points.
     int Player::getVictoryPoints() { return VictoryPoints; }
 
+    // Retrieves the player's name.
+    // Returns:
+    // - The name of the player.
     std::string Player::getName() { return name; }
 
+    // Ends the player's turn by resetting the played development card flag and checking for victory conditions.
     void Player::endTurn() {
         playedDevelopmentCard = false;
         if (VictoryPoints >= 10) { //win game
@@ -531,9 +637,14 @@ namespace ariel {
         }
     }
 
+    // Retrieves the game manager associated with the player.
+    // Returns:
+    // - Pointer to the Catan game manager.
     Catan *Player::getGameManager() {
         return gameManager;
     }
+
+    // Prints the resources owned by the player.
     void Player::printResources() {
         std::cout << "resources of " << name << ": \n";
         std::cout << "      bricks- " << resources[BRICK] << "\n";
@@ -542,14 +653,20 @@ namespace ariel {
         std::cout << "      wood- " << resources[WOOD] << "\n";
         std::cout << "      wool- " << resources[WOOL] << "\n";
     }
-
+    // Retrieves whether the player has rolled the dice during their turn.
+    // Returns:
+    // - True if the player has rolled the dice, false otherwise.
     bool Player::getRolledDice() {
         return rolledDiceThisTurn;
     }
-    void Player::takeBackSettlement(Settlement * ps) {
+
+    // Moves a settlement from the usedUrbanEntities vector back to the unusedSettlements vector.
+    // Parameter:
+    // - ps: Pointer to the settlement to be taken back.
+    void Player::takeBackSettlement(Settlement *ps) {
         for (unsigned int i = 0; i < usedUrbanEntities.size(); ++i) {
-            if(usedUrbanEntities[i] == ps){
-                usedUrbanEntities.erase(usedUrbanEntities.begin()+i);
+            if (usedUrbanEntities[i] == ps) {
+                usedUrbanEntities.erase(usedUrbanEntities.begin() + i);
                 unusedSettlements.push_back(ps);
             }
         }
