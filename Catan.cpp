@@ -6,6 +6,7 @@
 #include "Resources.hpp"
 
 namespace ariel {
+    // Constructor for the Catan game class
     Catan::Catan(Player &p1, Player &p2, Player &p3) {
         playerTurn = (unsigned int) myChooseStartingPlayer();
         p1.joinGame(this);
@@ -21,10 +22,12 @@ namespace ariel {
 
     }
 
+    // Destructor for the Catan game class
     Catan::~Catan() {
         delete board; // board allocated dynamically
     }
 
+    // Implements the "Monopoly" action
     void Catan::monopole(Player *p, int resource) {
         int sum = 0;
         for (Player *playerOther: players) {
@@ -36,10 +39,12 @@ namespace ariel {
         p->resources[resource] += sum;
     }
 
+    // Returns a pointer to the game board
     Board *Catan::getBoard() {
         return board;
     }
 
+    // Prints the name of the player who has won
     void Catan::printWinner() {
         for (Player *pp: players) {
             if (pp->VictoryPoints >= 10)
@@ -47,6 +52,7 @@ namespace ariel {
         }
     }
 
+    // Helper function to randomly select the starting player index
     int Catan::myChooseStartingPlayer() {
         // Seed the random number generator
         srand(static_cast<unsigned int>(time(0)));
@@ -57,6 +63,7 @@ namespace ariel {
         return randomInt;
     }
 
+    // Returns a pointer to the current starting player
     Player *Catan::chooseStartingPlayer() {
         return players[playerTurn];
     }
@@ -69,22 +76,23 @@ namespace ariel {
 
                     if (!pp->usedUrbanEntities[i]->neighborTileRight->isSea &&
                         !pp->usedUrbanEntities[i]->neighborTileRight->isDesert) // if its a resource tile
-                        if (pp->usedUrbanEntities[i]->neighborTileRight->number == diceRoll) { // if the tile number is rolled
+                        if (pp->usedUrbanEntities[i]->neighborTileRight->number ==
+                            diceRoll) { // if the tile number is rolled
                             // add the generated resources to the owner
                             pp->resources[pp->usedUrbanEntities[i]->neighborTileRight->getResource()] += pp->usedUrbanEntities[i]->numOfResources;
                         }
                     if (!pp->usedUrbanEntities[i]->neighborTileLeft->isSea &&
                         !pp->usedUrbanEntities[i]->neighborTileLeft->isDesert) // if its a resource tile
-                    if (pp->usedUrbanEntities[i]->neighborTileLeft->number == diceRoll) {
-                        pp->resources[pp->usedUrbanEntities[i]->neighborTileLeft->getResource()] += pp->usedUrbanEntities[i]->numOfResources;
-                    }
+                        if (pp->usedUrbanEntities[i]->neighborTileLeft->number == diceRoll) {
+                            pp->resources[pp->usedUrbanEntities[i]->neighborTileLeft->getResource()] += pp->usedUrbanEntities[i]->numOfResources;
+                        }
 
                     if (!pp->usedUrbanEntities[i]->neighborTileDown->isSea &&
                         !pp->usedUrbanEntities[i]->neighborTileDown->isDesert) // if its a resource tile
-                    if (pp->usedUrbanEntities[i]->neighborTileDown->number == diceRoll) {
-                        pp->resources[pp->usedUrbanEntities[i]->neighborTileDown->getResource()] += pp->usedUrbanEntities[i]->numOfResources;
+                        if (pp->usedUrbanEntities[i]->neighborTileDown->number == diceRoll) {
+                            pp->resources[pp->usedUrbanEntities[i]->neighborTileDown->getResource()] += pp->usedUrbanEntities[i]->numOfResources;
 
-                    }
+                        }
                 }
             }
         } else { //rolled 7
@@ -120,6 +128,7 @@ namespace ariel {
         }
     }
 
+    // Adds resources to a player based on a tile
     void Catan::addResourcesTO(Player *p, Tile *t) {
         if (!t->getIsSea() && !t->getIsDesert()) {
             int resource = t->getResource();
@@ -129,11 +138,13 @@ namespace ariel {
 
     }
 
+    // Finds a tile on the game board by number and resource type
     Tile *Catan::findTile(int numTile, int resourceTile) {
         Tile *pt = board->findTile(numTile, resourceTile);
         return pt;
     }
 
+    // Allows a player to buy a random development card
     DevelopmentCard *Catan::buyDevelopmentCard() {
         DevelopmentCard *pdc;
 
@@ -161,29 +172,35 @@ namespace ariel {
         return pdc;
     }
 
+    // Moves to the next turn in the game
     void Catan::nextTurn() {
         std::cout << players[playerTurn]->name << " done with his turn. \n";
         playerTurn = ((playerTurn + 1) % players.size());
         std::cout << "it's  " << players[playerTurn]->name << " turn now, roll the dice!\n";
     }
 
+    // Returns the player whose turn it is
     Player *Catan::getPlayerTurn() {
         return players[playerTurn];
     }
 
+    // Declares a winner and updates that the game is over
     void Catan::win(Player &p) {
         std::cout << p.getName() << " is the WINNER!!!\n";
         gameOver = true;
     }
 
+    // Returns true if the game is over
     bool Catan::isGameOver() { return gameOver; }
 
+    // Prints the names of all players in the game
     void Catan::printPlayers() {
         for (unsigned int i = 0; i < players.size(); ++i) {
             std::cout << "[" << i << "]: " << players[i]->name << "\n";
         }
     }
 
+    // Returns the player at the specified index
     Player *Catan::getPlayer(int x) {
         if (x < 0 || x >= players.size())
             std::cout << "invalid player index\n";

@@ -57,8 +57,6 @@ namespace ariel {
 
     class City;
 
-    class Road;
-
     class UrbanEntity;
 
     class Player;
@@ -79,12 +77,16 @@ namespace ariel {
         Tile *neighborTile2;
 
     public:
-        Road(Player *owner);
+        // Constructor for Road class
+        explicit Road(Player *owner);
 
+        // Function to place the road between two tiles
         int place(Tile &n1, Tile &n2);
 
+        // Function to get the owner's name of the road
         std::string getOwnerName();
 
+        // Function to get the owner of the road
         Player *getOwner();
 
     };
@@ -99,22 +101,27 @@ namespace ariel {
         Tile *neighborTileLeft;
         Tile *neighborTileDown;
 
-
         friend class Catan;
-
     public:
+        // Destructor for UrbanEntity
         virtual ~UrbanEntity();
 
+        // Getter for the owner of the UrbanEntity
         Player *getOwner();
 
+        // Getter for the name of the owner of the UrbanEntity
         std::string getOwnerName();
 
+        // Getter for the number of resources this urban entity generates
         int getNumOfResources();
 
+        // Getter for the number of victory points this urban entity is worth
         int getNumOfVictoryPoints();
 
+        // Getter for the neighboring Tile of this urban entity
         Tile *getNeighbor(int num);
 
+        // Getter for the type of the urban entity
         int getType();
 
         virtual int place(Tile &n1, Tile &n2, Tile &n3, bool start = false) = 0;
@@ -124,15 +131,19 @@ namespace ariel {
 
     class Settlement : public UrbanEntity {
     public:
+        // Constructor for Settlement
         explicit Settlement(Player *);
 
+        // Function to place a Settlement on the board
         int place(Tile &n1, Tile &n2, Tile &n3, bool start) override;
     };
 
     class City : public UrbanEntity {
     public:
+        // Constructor for City
         explicit City(Player *);
 
+        // Function to place a City on the board
         int place(Tile &n1, Tile &n2, Tile &n3, bool start) override;
     };
 
@@ -145,42 +156,54 @@ namespace ariel {
 
         virtual ~DevelopmentCard();
 
+        // returns the name of the card
         std::string getName();
 
     };
 
     class VictoryPoint : public DevelopmentCard {
     public:
-        VictoryPoint(Catan *);
+        // a constructor for victor point development card
+        explicit VictoryPoint(Catan *);
 
+        // activate the card's effect - add 1 VP to the player
         void playCard(Player &p) override;
     };
 
     class Knight : public DevelopmentCard {
     public:
-        Knight(Catan *);
+        // a constructor for knight point development card
+        explicit Knight(Catan *);
 
+        // activate the card's effect - add 1 Knight to the player (the players with most knights gets 2 VP)
         void playCard(Player &p) override;
     };
 
     class Monopole : public DevelopmentCard {
     public:
-        Monopole(Catan *);
+        // a constructor for monopoly development card
+        explicit Monopole(Catan *);
 
+        // activate the card's effect - takes from all the other players
+        // all the resources of one type and gives it to the activating player
         void playCard(Player &p) override;
     };
 
     class RoadsBuild : public DevelopmentCard {
     public:
-        RoadsBuild(Catan *);
+        // a constructor for roads build development card
+        explicit RoadsBuild(Catan *);
 
+        // activate the card's effect - lets the activating player place 2 roads
         void playCard(Player &p) override;
     };
 
     class YearOfPlenty : public DevelopmentCard {
     public:
-        YearOfPlenty(Catan *);
+        // a constructor for year of plenty development card
+        explicit YearOfPlenty(Catan *);
 
+        // activate the card's effect - lets the activating player get 2 resources of his choice
         void playCard(Player &p) override;
     };
 
@@ -199,49 +222,69 @@ namespace ariel {
 
         friend class Board;
 
-    private:
-        Settlement &removeSettlement(Settlement &settlement);
-
     public:
+        // Constructor for the Tile class.
         Tile(int dieNum, std::string resource, bool issea, bool isDesert);
 
+        // Updates the neighbor of the current tile on a specific side.
         void UpdateNeighbor(Tile &neighbor, int side);
 
+        // Places an urban entity (Settlement or City) on the specified side of the tile.
         int placeUrbanEntity(UrbanEntity *UrbanEntity, int side);
 
+        // Places a road on the specified side of the tile.
         int placeRoad(Road *road, int side);
 
+        // Retrieves the neighbor of the current tile on a specific side.
         Tile *getNeighbor(int side);
 
+        // Retrieves the road on the specified side of the tile.
         Road *getRoad(int side);
 
+        // Retrieves the urban entity (Settlement or City) on the specified side of the tile.
         UrbanEntity *getUrbanEntity(int side);
 
+        // Retrieves the resource type of the tile.
         int getResource();
 
+        // Retrieves the number associated with the tile.
         int getNumber();
 
+        // Retrieves whether the tile is a sea tile.
         bool getIsSea();
 
+        // Retrieves whether the tile is a desert tile.
         bool getIsDesert();
 
+        // Overloaded stream insertion operator to print a tile.
         friend std::ostream &operator<<(std::ostream &os, const Tile &tile);
 
 
     };
 
+    // Overloaded equality operator for comparing two tiles.
+    bool operator==(const Tile &t1, const Tile &t2);
+
+    // Overloaded inequality operator for comparing two tiles.
+    bool operator!=(const Tile &t1, const Tile &t2);
+
     class Board {
     private:
         std::vector<Tile *> tiles;
     public:
+        // Constructor for the Board class.
         Board();
 
+        // Destructor for the Board class.
         ~Board();
 
+        // Prints the Catan game board with tiles arranged in a hexagonal pattern.
         void printBoard();
 
+        // Finds a tile with a specific number and resource type.
         Tile *findTile(int numTile, int resourceTile);
 
+        // Prints the neighbors of each tile on the board.
         void printNeighbors();
 
     };
@@ -255,41 +298,56 @@ namespace ariel {
 
 
     private:
+        // Implements the "Monopoly" action
         void monopole(Player *p, int resource);
 
+        // Helper function to randomly select the starting player index
         int myChooseStartingPlayer();
 
     public:
+        // Constructor for the Catan game class
         Catan(Player &p1, Player &p2, Player &p3);
 
+        // Destructor for the Catan game class
         ~Catan();
 
+        // Returns a pointer to the game board
         Board *getBoard();
 
+        // Prints the name of the player who has won
         void printWinner();
 
+        // Returns a pointer to the current starting player
         Player *chooseStartingPlayer();
 
         // updates the players resourced according to the dice roll
         void diceRoll(int);
 
+        // Finds a tile on the game board by number and resource type
         Tile *findTile(int numTile, int resourceTile);
 
+        // Returns the player whose turn it is
         Player *getPlayerTurn();
 
+        // Moves to the next turn in the game
         void nextTurn();
 
+        // Allows a player to buy a random development card
         DevelopmentCard *buyDevelopmentCard();
 
-
+        // Declares a winner and updates that the game is over
         void win(Player &p);
 
+        // Returns true if the game is over
         bool isGameOver();
 
+        // Adds resources to a player based on a tile
         void addResourcesTO(Player *p, Tile *t);
 
+        // Prints the names of all players in the game
         void printPlayers();
 
+        // Returns the player at the specified index
         Player *getPlayer(int x);
 
 
@@ -299,10 +357,6 @@ namespace ariel {
 
         friend class YearOfPlenty;
     };
-
-    bool operator==(const Tile &t1, const Tile &t2);
-
-    bool operator!=(const Tile &t1, const Tile &t2);
 
 
     class Player {

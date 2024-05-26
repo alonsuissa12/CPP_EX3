@@ -455,7 +455,7 @@ namespace ariel {
             resources[IRON] -= 3;
         }
         return ans;
-    } //todo: update neighbors
+    }
 
     // Buys a development card from the game manager.
     // Returns:
