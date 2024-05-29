@@ -7,7 +7,7 @@
 
 namespace ariel {
     // Constructor for the Catan game class
-    Catan::Catan(Player &p1, Player &p2, Player &p3) {
+    Catan::Catan(Player &p1, Player &p2, Player &p3,bool contBoard) {
         playerTurn = (unsigned int) myChooseStartingPlayer();
         p1.joinGame(this);
         p2.joinGame(this);
@@ -16,7 +16,7 @@ namespace ariel {
         players.push_back(&p2);
         players.push_back(&p3);
 
-        this->board = new Board();
+        this->board = new Board(contBoard);
 
         gameOver = false;
 
@@ -207,5 +207,11 @@ namespace ariel {
         else
             return players[(unsigned int) x];
         return nullptr;
+    }
+
+    void Catan::printBoardPresent(){
+        for (Player * p:players) {
+            p->printBoardPresent();
+        }
     }
 }

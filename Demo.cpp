@@ -23,6 +23,8 @@ using namespace std;
 #define TRADE_WITH_THE_BANK 10
 #define END_YOUR_TURN 11
 #define PRINT_BOARD 12
+#define SEE_YOUR_BOARD_PRESENT 13
+#define SEE_EVERYONE_BOARD_PRESENT 14
 
 
 #define NEXT_TURN 2
@@ -42,7 +44,7 @@ int main() {
     Player p1("Amit");
     Player p2("Yossi");
     Player p3("Dana");
-    Catan catan(p1, p2, p3);
+    Catan catan(p1, p2, p3, false);
 
 
     // Starting of the game. Every player places two settlements and two roads.
@@ -88,6 +90,8 @@ void printOptions() {
     std::cout << "10. Trade with the bank" << std::endl;
     std::cout << "11. End your turn" << std::endl;
     std::cout << "12. print the board" << std::endl;
+    std::cout << "13. see your board present" << std::endl;
+    std::cout << "14. see everyone's board present" << std::endl;
 }
 
 // a function to ask for the player to choose a tile. the function will return a pointer to that tile
@@ -216,7 +220,14 @@ int doAction(int action, Player *p) {
     } else if (action == PRINT_BOARD) {
         std::cout << "You chose to print the board." << std::endl;
         p->getGameManager()->getBoard()->printBoard();
-    } else {
+    }
+    else if(action == SEE_YOUR_BOARD_PRESENT){
+        p->printBoardPresent();
+    }
+    else if(action == SEE_EVERYONE_BOARD_PRESENT){
+        p->getGameManager()->printBoardPresent();
+    }
+    else {
         std::cout << "Invalid choice. Please choose a number between 1 and 12." << std::endl;
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -226,7 +237,7 @@ int doAction(int action, Player *p) {
 
 // a function to place the starting set up of the board presents of the players
 void startGame(Catan *gm, int numOfPlayers) {
-    for (int i = 0; i < numOfPlayers * 1; ++i) { // twice for each player place a settlement and a road todo: *2 again!
+    for (int i = 0; i < numOfPlayers * StartingPlacing; ++i) { // twice for each player place a settlement and a road
         Player *p = gm->getPlayerTurn();
 
         //place a settlement

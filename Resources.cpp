@@ -118,7 +118,7 @@ namespace ariel {
             (ppnextn1 != nullptr && ppnextn1->owner == this->owner))
             continues = true;
 
-        // if one of the adjacent urban entities belongs to this player
+            // if one of the adjacent urban entities belongs to this player
         if ((urbanEntity1 != nullptr && urbanEntity1->getOwner() == this->owner) ||
             (urbanEntity2 != nullptr && urbanEntity2->getOwner() == this->owner))
             continues = true;
@@ -147,6 +147,14 @@ namespace ariel {
     // Function to get the owner of the road
     Player *Road::getOwner() {
         return owner;
+    }
+
+    Tile* Road::getNeighbor(int side){
+        if(side == 0)
+            return neighborTile1;
+        if(side == 1)
+            return neighborTile2;
+        return nullptr;
     }
 
 //###################################   URBAN ENTITIES   ###################################
@@ -493,7 +501,7 @@ namespace ariel {
         p.numOfKnights++;
         if (p.numOfKnights >= 3)
             p.VictoryPoints += 2;
-    } // todo: update vp if have the most knights
+    }
 
     // a constructor for monopoly development card
     Monopole::Monopole(Catan *gm) {
@@ -541,78 +549,92 @@ namespace ariel {
             int tileNumber2 = -1;
             bool validTile1 = false;
             bool validTile2 = false;
+            int place = -1;
 
-            std::cout << " choose where u want to place your road:\n";
-            std::cout << " (choose two tiles and the road will build between them)\n";
-
-
-            std::cout << "Choose where you want to place your road:\n"
-                      << "(choose two tiles and the road will be built between them)\n";
-
-            while (!validTile1) {
-                std::cout << "Tile 1:\n";
-                std::cout
-                        << "----Enter the resource of the tile (0 - brick, 1-iron, 2- wheat, 3-wood, 4-wool,5-desert,6-sea):\n";
-                std::cin >> resource1;
-
-                std::cout << "----Enter the dice number of the tile:\n";
-                std::cin >> tileNumber1;
-
-                validTile1 = (resource1 >= 0 && resource1 <= 4) &&
-                             (tileNumber1 >= 2 && tileNumber1 <= 12) &&
-                             (gameManager->findTile(tileNumber1, resource1) != nullptr);
-
-                if (!validTile1) {
-                    std::cout << "Invalid tile. Please try again.\n";
-                    std::cin.clear(); // Clear error flags
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
-                }
+            while (place != 1 && place != 0) {
+                std::cin.clear(); // Clear error flags
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
+                std::cout << "you have " << roadsToGet
+                          << " to place. would you like to place the next road? (or pass) enter 1 to place, 0 to pass \n";
+                std::cin >> place;
             }
-            // tile 2
-
-            std::cout << "Choose where you want to place your road:\n"
-                      << "(choose two tiles and the road will be built between them)\n";
-
-            while (!validTile2) {
-                std::cout << "Tile 2:\n";
-                std::cout
-                        << "----Enter the resource of the tile (0 - brick, 1-iron, 2- wheat, 3-wood, 4-wool,5-desert,6-sea):\n";
-                std::cin >> resource2;
-
-                std::cout << "----Enter the dice number of the tile:\n";
-                std::cin >> tileNumber2;
-
-                validTile2 = (resource2 >= 0 && resource2 <= 4) &&
-                             (tileNumber2 >= 2 && tileNumber2 <= 12) &&
-                             (gameManager->findTile(tileNumber2, resource2) != nullptr);
-
-                if (!validTile2) {
-                    std::cout << "Invalid tile. Please try again.\n";
-                    std::cin.clear(); // Clear error flags
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
-                }
-            }
-
-            p.resources[BRICK]++;
-            p.resources[WOOD]++;
-            int placed = p.placeRoad(tileNumber1, resource1, tileNumber2, resource2);
-            if (placed == 0) {
+            if( place == 0) {// pass
+                std::cout <<"passed 1 road\n";
                 roadsToGet--;
-                std::cout << " first road build successfully\n";
-            } else {
-                std::cout << " there was a problem with building this road, pleas try again\n";
-                p.resources[BRICK]--;
-                p.resources[WOOD]--;
-                resource1 = -1;
-                tileNumber1 = -1;
-                resource2 = -1;
-                tileNumber2 = -1;
-                validTile1 = false;
-                validTile2 = false;
+            }
+            else {
+
+                std::cout << " choose where u want to place your road:\n";
+                std::cout << " (choose two tiles and the road will build between them)\n";
+
+
+                std::cout << "Choose where you want to place your road:\n"
+                          << "(choose two tiles and the road will be built between them)\n";
+
+                while (!validTile1) {
+                    std::cout << "Tile 1:\n";
+                    std::cout
+                            << "----Enter the resource of the tile (0 - brick, 1-iron, 2- wheat, 3-wood, 4-wool,5-desert,6-sea):\n";
+                    std::cin >> resource1;
+
+                    std::cout << "----Enter the dice number of the tile:\n";
+                    std::cin >> tileNumber1;
+
+                    validTile1 = (resource1 >= 0 && resource1 <= 4) &&
+                                 (tileNumber1 >= 2 && tileNumber1 <= 12) &&
+                                 (gameManager->findTile(tileNumber1, resource1) != nullptr);
+
+                    if (!validTile1) {
+                        std::cout << "Invalid tile. Please try again.\n";
+                        std::cin.clear(); // Clear error flags
+                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
+                    }
+                }
+                // tile 2
+
+                std::cout << "Choose where you want to place your road:\n"
+                          << "(choose two tiles and the road will be built between them)\n";
+
+                while (!validTile2) {
+                    std::cout << "Tile 2:\n";
+                    std::cout
+                            << "----Enter the resource of the tile (0 - brick, 1-iron, 2- wheat, 3-wood, 4-wool,5-desert,6-sea):\n";
+                    std::cin >> resource2;
+
+                    std::cout << "----Enter the dice number of the tile:\n";
+                    std::cin >> tileNumber2;
+
+                    validTile2 = (resource2 >= 0 && resource2 <= 4) &&
+                                 (tileNumber2 >= 2 && tileNumber2 <= 12) &&
+                                 (gameManager->findTile(tileNumber2, resource2) != nullptr);
+
+                    if (!validTile2) {
+                        std::cout << "Invalid tile. Please try again.\n";
+                        std::cin.clear(); // Clear error flags
+                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
+                    }
+                }
+
+                p.resources[BRICK]++;
+                p.resources[WOOD]++;
+                int placed = p.placeRoad(tileNumber1, resource1, tileNumber2, resource2);
+                if (placed == 0) {
+                    roadsToGet--;
+                    std::cout << " first road build successfully\n";
+                } else {
+                    std::cout << " there was a problem with building this road, pleas try again\n";
+                    p.resources[BRICK]--;
+                    p.resources[WOOD]--;
+                    resource1 = -1;
+                    tileNumber1 = -1;
+                    resource2 = -1;
+                    tileNumber2 = -1;
+                    validTile1 = false;
+                    validTile2 = false;
+                }
             }
         }
-    } //todo: add "pass" option
-
+    }
     // a constructor for year of plenty development card
     YearOfPlenty::YearOfPlenty(Catan *gm) {
         name = "YearOfPlenty";
@@ -752,7 +774,7 @@ namespace ariel {
     // Initializes the game board by placing tiles with resources and numbers, shuffling them,
     // ensuring no two tiles have the same resource and number combination,
     // placing a desert tile, adding sea tiles around the board, and updating tile neighbors.
-    Board::Board() {
+    Board::Board(bool constant) {
         // Seed the random number generator
         std::srand(static_cast<unsigned int>(std::time(nullptr)));
 
@@ -760,8 +782,10 @@ namespace ariel {
         std::vector<int> numbers = {2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12};
 
         // Shuffle the vector
-        std::shuffle(numbers.begin(), numbers.end(), std::default_random_engine((unsigned long) std::time(nullptr)));
-
+        if(!constant) {
+            std::shuffle(numbers.begin(), numbers.end(),
+                         std::default_random_engine((unsigned long) std::time(nullptr)));
+        }
         // 18 yielding tiles:
         // 3 iron tiles
         for (unsigned int i = 0; i < 3; ++i) {
@@ -813,8 +837,9 @@ namespace ariel {
         Tile *desert = new Tile(5, "desert", false, true);
         tiles.push_back(desert);
         //shuffle the tiles
-        std::shuffle(tiles.begin(), tiles.end(), std::default_random_engine((unsigned long) std::time(nullptr)));
-
+        if(!constant) {
+            std::shuffle(tiles.begin(), tiles.end(), std::default_random_engine((unsigned long) std::time(nullptr)));
+        }
         // 18 sea tiles
         unsigned int locationsForSea[18] = {0, 1, 2, 3, 4, 8, 9, 14, 15, 21, 22, 27,
                                             28, 32, 33, 34, 35, 36};
@@ -870,8 +895,6 @@ namespace ariel {
 
             }
         }
-
-
     }
 
     // Destructor for the Board class.

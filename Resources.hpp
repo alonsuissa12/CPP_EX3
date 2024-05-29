@@ -47,6 +47,8 @@
 
 #define SETTLEMENT 1
 #define CITY 2
+// todo: make it 2
+#define StartingPlacing 1
 
 namespace ariel {
     class Catan;
@@ -88,6 +90,8 @@ namespace ariel {
 
         // Function to get the owner of the road
         Player *getOwner();
+
+        Tile* getNeighbor(int side);
 
     };
 
@@ -268,12 +272,12 @@ namespace ariel {
     // Overloaded inequality operator for comparing two tiles.
     bool operator!=(const Tile &t1, const Tile &t2);
 
-    class Board {
+    class Board { // todo add non-random board
     private:
         std::vector<Tile *> tiles;
     public:
         // Constructor for the Board class.
-        Board();
+        explicit Board(bool constant);
 
         // Destructor for the Board class.
         ~Board();
@@ -306,7 +310,7 @@ namespace ariel {
 
     public:
         // Constructor for the Catan game class
-        Catan(Player &p1, Player &p2, Player &p3);
+        Catan(Player &p1, Player &p2, Player &p3,bool contBoard);
 
         // Destructor for the Catan game class
         ~Catan();
@@ -349,6 +353,8 @@ namespace ariel {
 
         // Returns the player at the specified index
         Player *getPlayer(int x);
+
+        void printBoardPresent();
 
 
         friend class Monopole;
@@ -482,6 +488,11 @@ namespace ariel {
         // Prints the resources owned by the player.
         void printResources();
 
+        // print your board presents
+        void printBoardPresent();
+
+        bool canPlaceSettlement(){return resources[BRICK] >0 && resources[WHEAT] >0 && resources[WOOD] > 0 && resources[WOOL]>0;}
+
     };
 
 
@@ -496,6 +507,7 @@ namespace ariel {
 
     // Overloaded inequality operator for comparing two Player objects.
     bool operator!=(const Player &p1, const Player &p2);
+
 
 
 }

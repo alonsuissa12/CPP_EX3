@@ -37,8 +37,8 @@ namespace ariel {
             resources[i] = 0;
         }
         //for placing the roads at the start of the game
-        resources[WOOD] = 2;
-        resources[BRICK] = 2;
+        resources[WOOD] = StartingPlacing;
+        resources[BRICK] = StartingPlacing;
 
     }
 
@@ -144,8 +144,7 @@ namespace ariel {
     }
 
     // Overloaded equality operator for comparing two Player objects.
-    bool operator==(const Player &p1, const Player &p2)
-{
+    bool operator==(const Player &p1, const Player &p2) {
         return (&p1 == &p2);
     }
 
@@ -653,6 +652,7 @@ namespace ariel {
         std::cout << "      wood- " << resources[WOOD] << "\n";
         std::cout << "      wool- " << resources[WOOL] << "\n";
     }
+
     // Retrieves whether the player has rolled the dice during their turn.
     // Returns:
     // - True if the player has rolled the dice, false otherwise.
@@ -671,6 +671,34 @@ namespace ariel {
             }
         }
     }
+
+    void Player::printBoardPresent() {
+
+        std::cout << "----- " << name << " ----- \n";
+        std::cout << "--settlements:\n";
+        for (unsigned int i = 0; i < usedUrbanEntities.size(); ++i) {
+            if (usedUrbanEntities[i]->getType() == SETTLEMENT) {
+                std::cout << *(usedUrbanEntities[i]->getNeighbor(0)) << ", ";
+                std::cout << *(usedUrbanEntities[i]->getNeighbor(1)) << ", ";
+                std::cout << *(usedUrbanEntities[i]->getNeighbor(2))  << "\n ";
+            }
+        }
+        std::cout << "--cities:\n";
+        for (unsigned int i = 0; i < usedUrbanEntities.size(); ++i) {
+            if (usedUrbanEntities[i]->getType() == CITY) {
+                std::cout << *(usedUrbanEntities[i]->getNeighbor(0)) << ", ";
+                std::cout << *(usedUrbanEntities[i]->getNeighbor(1)) << ", ";
+                std::cout << *(usedUrbanEntities[i]->getNeighbor(2)) << "\n ";
+            }
+        }
+        std::cout << "--roads:\n";
+        for (unsigned int i = 0; i < usedRoads.size(); ++i) {
+            std::cout << *(usedRoads[i]->getNeighbor(0)) << ", ";
+            std::cout << *(usedRoads[i]->getNeighbor(1)) << "\n";
+        }
+
+    }
+
 
 }
 
