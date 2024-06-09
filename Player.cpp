@@ -314,7 +314,6 @@ namespace ariel {
         Tile *t2 = gameManager->findTile(numTile2, resourceTile2);
         Tile *t3 = gameManager->findTile(numTile3, resourceTile3);
 
-
         if (t1 == nullptr || t2 == nullptr || t3 == nullptr) {
             std::cout << " location doesn't exist\n";
             return -1;
@@ -488,6 +487,10 @@ namespace ariel {
     // Returns:
     // - 0 if successful, -1 otherwise.
     int Player::useDevelopmentCard(DevelopmentCard *dc) {
+        if(dc == nullptr){
+            std::cout << name << "no card left \n";
+            return -1;
+        }
         if (*gameManager->getPlayerTurn() != *this) {
             std::cout << name << ", its not your turn! \n";
             return -1;
@@ -533,6 +536,10 @@ namespace ariel {
             std::cout << "none \n";
         }
         return developmentCards;
+    }
+
+    int Player::getNumOfKnights() {
+        return numOfKnights;
     }
 
     // Initiates a trade with another player.
@@ -680,7 +687,7 @@ namespace ariel {
             if (usedUrbanEntities[i]->getType() == SETTLEMENT) {
                 std::cout << *(usedUrbanEntities[i]->getNeighbor(0)) << ", ";
                 std::cout << *(usedUrbanEntities[i]->getNeighbor(1)) << ", ";
-                std::cout << *(usedUrbanEntities[i]->getNeighbor(2))  << "\n ";
+                std::cout << *(usedUrbanEntities[i]->getNeighbor(2)) << "\n ";
             }
         }
         std::cout << "--cities:\n";
@@ -699,6 +706,49 @@ namespace ariel {
 
     }
 
+    int Player::tradeDevelopmentCardForDevelopmentCard(
+            std::string wantedDC, Player *other, std::string givedDC) {
+        int agree = -1;
+        for (unsigned int otherIndex = 0; otherIndex < other->developmentCards.size(); ++otherIndex) {
+            DevelopmentCard *dcp = other->developmentCards[otherIndex];
+            if (dcp->getName() == wantedDC) {
+                for (unsigned int myIndex = 0; myIndex < developmentCards.size(); ++myIndex) {
+                    DevelopmentCard *myDcp = this->developmentCards[myIndex];
+                    if (myDcp->getName() == givedDC) {
+                        std::cout << other->name << ", would you like to trade your " << wantedDC
+                                  << " development card, for " << name << "'s " << givedDC
+                                  << " development card? (type 1/0)\n";
+                        std::cin >> agree;
+                        while (agree != 0 && agree != 1) {
+                            std::cin.clear(); // Clear error flags
+                            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
+                            std::cout << " invailed answer please try again\n";
+                            std::cout << other->name << ", would you like to trade your " << wantedDC
+                                      << " development card, for " << name << "'s " << givedDC
+                                      << " development card? (type 1/0)\n";
+                        }
+                        if (agree) {
+                            // make trade
+                            other->developmentCards.erase(other->developmentCards.begin() + otherIndex);
+                            other->developmentCards.push_back(myDcp);
 
+                            this->developmentCards.erase(this->developmentCards.begin() + myIndex);
+                            this->developmentCards.push_back(dcp);
+                            return 0;
+                        } else {
+                            std::cout << other->name << " has decline your offer \n";
+                            return 1;
+                        }
+                    }
+                }
+                break;
+            }
+        }
+        std::cout << "Don't have the right cards. cannot make the trade\n";
+        return 0;
+    }
 }
+
+
+
 

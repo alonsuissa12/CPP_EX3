@@ -11,7 +11,7 @@
 using namespace ariel;
 using namespace std;
 
-#define ROLL_DICE 1
+#define ROLL_DICE 1 // todo: tests!
 #define PLACE_ROAD 2
 #define PLACE_SETTLEMENT 3
 #define PLACE_CITY 4
@@ -19,12 +19,13 @@ using namespace std;
 #define SEE_YOUR_DEVELOPMENT_CARD 6
 #define USE_DEVELOPMENT_CARD 7
 #define SEE_YOUR_RESOURCES 8
-#define TRADE_WITH_PLAYERS 9
-#define TRADE_WITH_THE_BANK 10
-#define END_YOUR_TURN 11
-#define PRINT_BOARD 12
-#define SEE_YOUR_BOARD_PRESENT 13
-#define SEE_EVERYONE_BOARD_PRESENT 14
+#define TRADE_WITH_PLAYERS 9// todo: tests!
+#define TRADE_WITH_THE_BANK 10// todo: tests!
+#define TRADE_DEVELOPMENT_CARDS 11// todo: tests!
+#define END_YOUR_TURN 12// todo: tests!
+#define PRINT_BOARD 13// todo: tests!
+#define SEE_YOUR_BOARD_PRESENT 14// todo: tests!
+#define SEE_EVERYONE_BOARD_PRESENT 15// todo: tests!
 
 
 #define NEXT_TURN 2
@@ -65,11 +66,11 @@ int main() {
         cout << "\n" << p->getName() << ", what would you like to do on your turn?(type the number to choose)\n";
         printOptions();
         cin >> action;
-         int result = doAction(action, p);
-         if(result == GAME_OVER)
-             gameOver = true;
-         else if(result == NEXT_TURN)
-             p = catan.getPlayerTurn();
+        int result = doAction(action, p);
+        if (result == GAME_OVER)
+            gameOver = true;
+        else if (result == NEXT_TURN)
+            p = catan.getPlayerTurn();
     }
     //todo: handle end game (delete!)
 
@@ -211,23 +212,38 @@ int doAction(int action, Player *p) {
         cin >> hardToGet;
         p->tradeWithTheBank(hardToGet, rToGive);
 
+    } else if (action == TRADE_DEVELOPMENT_CARDS) {
+        std::string wantedDC;
+        std::string givenDC;
+        int playerToTradeWith = -1;
+
+        std::cout << "what development card would you like to GET? \n";
+        std::cin >> wantedDC;
+        std::cout << "what development card would you like to GIVE? \n";
+        std::cin >> givenDC;
+
+        cout << "who would you like to trade with? \n";
+        p->getGameManager()->printPlayers();
+        cin >> playerToTradeWith;
+        Player * other = p->getGameManager()->getPlayer(playerToTradeWith);
+
+        p->tradeDevelopmentCardForDevelopmentCard(wantedDC,other,givenDC);
+
+
     } else if (action == END_YOUR_TURN) {
         std::cout << "You chose to end your turn." << std::endl;
         p->endTurn();
-        if(p->getGameManager()->isGameOver())
+        if (p->getGameManager()->isGameOver())
             return GAME_OVER;
         return NEXT_TURN;
     } else if (action == PRINT_BOARD) {
         std::cout << "You chose to print the board." << std::endl;
         p->getGameManager()->getBoard()->printBoard();
-    }
-    else if(action == SEE_YOUR_BOARD_PRESENT){
+    } else if (action == SEE_YOUR_BOARD_PRESENT) {
         p->printBoardPresent();
-    }
-    else if(action == SEE_EVERYONE_BOARD_PRESENT){
+    } else if (action == SEE_EVERYONE_BOARD_PRESENT) {
         p->getGameManager()->printBoardPresent();
-    }
-    else {
+    } else {
         std::cout << "Invalid choice. Please choose a number between 1 and 12." << std::endl;
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');

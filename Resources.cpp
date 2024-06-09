@@ -271,6 +271,7 @@ namespace ariel {
                     n3Vertex = i;
 
         }
+
         if (n1Vertex == -1 || n2Vertex == -1 || n3Vertex == -1) {
             std::cout << "the tiles are not adjacent(1)\n";
             return -1;
@@ -291,6 +292,8 @@ namespace ariel {
             Road *proadn1n2 = n1.getRoad(edgeSideOfN1ToN2);
             Road *proadn1n3 = n1.getRoad(edgeSideOfN1ToN3);
             Road *proadn2n3 = n2.getRoad(edgeSideOfN2ToN3);
+
+
 
             if ((proadn1n2 == nullptr || proadn1n2->getOwner() != owner) &&
                 (proadn1n3 == nullptr || proadn1n3->getOwner() != owner) &&
@@ -352,7 +355,7 @@ namespace ariel {
     // Parameters:
     // - owner: Pointer to the owner of the City
     City::City(Player *p) {
-        this->owner = owner;
+        this->owner = p;
         type = CITY;
         numOfResources = 2;
         numOfVictoryPoints = 2;
@@ -980,6 +983,7 @@ namespace ariel {
                 std::cout << "---------------------------------------------------------------\n";
         }
     }
+
 
 
 }

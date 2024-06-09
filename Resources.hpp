@@ -63,7 +63,6 @@ namespace ariel {
 
     class Player;
 
-    class DevelopmentCardsDeck;
 
     class Tile;
 
@@ -467,11 +466,17 @@ namespace ariel {
         // Initiates a trade with another player.
         int trade(Player *other, int wantedResource, int wantedAmount, int givenResource, int givenAmount);
 
+        // trade a development card of yours with another player's development card
+        int tradeDevelopmentCardForDevelopmentCard(std::string wantedDC ,Player *other, std::string givedDC );
+
         // Trade with the bank 4 resources for one resource
         int tradeWithTheBank(int wantedResource, int givenResource);
 
         // Retrieves the player's victory points.
         int getVictoryPoints();
+
+        // Retrieves the player's number of knights.
+        int getNumOfKnights();
 
         // Retrieves the player's name.
         std::string getName();
