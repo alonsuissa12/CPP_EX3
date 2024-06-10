@@ -65,3 +65,69 @@ To interact with the program and play the game, follow these steps:
 ### Running the Program
 1. **Compile and run the Program**: type in terminal the command: make catan
 2. **note!** somtimes the command compile the files and fail to run it if thats the case close it with CTRL + C and try again
+
+### During Gameplay
+
+1. It is a interactive well explain itself gameplay. if you know the ruls of the game (above) you can just run it and start playing!
+   even though, if you want more explenation about how the program works here it is: 
+
+2. **Starting the Game**:
+   - The program will prompt the first player to place a settlement and a road. Follow the instructions by entering the tile resources and numbers around the vertex where you want to place your settlement.
+   - Repeat the process for the second and third players.
+
+3. **Turn Actions**:
+   - On your turn, you will be presented with a list of actions. Choose an action by typing the corresponding number.
+
+#### Example Actions:
+
+**Placing a Settlement**:
+   - Select the option to place a settlement (usually option 3).
+   - Enter the resources and numbers of the three tiles around the vertex where you want to place your settlement. For example, if you want to place a settlement at the intersection of a brick, wheat, and wood tile, you might enter:
+     ```
+     Enter the resource of the tile (0 - brick, 1 - iron, 2 - wheat, 3 - wood, 4 - wool, 5 - desert, 6 - sea):
+     0
+     Enter the dice number of the tile: 
+     8
+     Enter the resource of the tile (0 - brick, 1 - iron, 2 - wheat, 3 - wood, 4 - wool, 5 - desert, 6 - sea):
+     2
+     Enter the dice number of the tile: 
+     4
+     Enter the resource of the tile (0 - brick, 1 - iron, 2 - wheat, 3 - wood, 4 - wool, 5 - desert, 6 - sea):
+     3
+     Enter the dice number of the tile: 
+     5
+     ```
+
+**Rolling the Dice**:
+   - Choose the option to roll the dice (usually option 1). This will determine which hexes produce resources.
+
+**Building a Road**:
+   - Select the option to place a road (usually option 2).
+   - Enter the resources and numbers of the two tiles between which you want to place your road.
+
+**Buying a Development Card**:
+   - Choose the option to buy a development card (usually option 5).
+
+**Using a Development Card**:
+   - Select the option to use a development card (usually option 7).
+   - Enter the index of the development card you want to use.
+
+**Trading Resources**:
+   - Choose the option to trade with players (usually option 9) or the bank (usually option 10).
+   - Follow the prompts to specify the resources you want to give and receive.
+
+**Ending Your Turn**:
+   - Choose the option to end your turn (usually option 11). The next player will then take their turn.
+
+3. **Viewing Information**:
+   - You can view your resources, development cards, and the current state of the board by selecting the appropriate options from the list of actions.
+
+4. **Winning the Game**:
+   - The game will automatically end and declare a winner once a player reaches 10 Victory Points.
+
+### Notes:
+- Ensure you enter valid and accurate information when prompted. if u failed to do so the program will let you to try again
+- The game follows the sequence of actions as described, and players must adhere to the rules for building and trading.
+
+Enjoy playing Settlers of Catan with your friends!
+
