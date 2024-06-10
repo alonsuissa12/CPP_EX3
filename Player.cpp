@@ -520,10 +520,7 @@ namespace ariel {
     // Returns:
     // - A vector containing pointers to the development cards.
     std::vector<DevelopmentCard *> Player::getDevelopmentCards() {
-        if (*gameManager->getPlayerTurn() != *this) {
-            std::cout << name << ", its not your turn! \n";
-            return std::vector<DevelopmentCard *>(); // Return an empty vector;
-        }
+
         std::cout << "development cards you (" << name << ") have: ";
         if (!developmentCards.empty()) {
             for (unsigned int i = 0; i < developmentCards.size() - 1; ++i) {
@@ -542,6 +539,10 @@ namespace ariel {
         return numOfKnights;
     }
 
+    const int *Player::getResources() const {
+        return resources;
+    }
+
     // Initiates a trade with another player.
     // Parameters:
     // - other: Pointer to the player to trade with.
@@ -551,7 +552,7 @@ namespace ariel {
     // - givenAmount: The amount of offered resource.
     // Returns:
     // - 0 if successful, -1 otherwise.
-    int Player::trade(Player *other, int wantedResource, int wantedAmount, int givenResource, int givenAmount) {
+    int Player::trade(Player *other, int wantedResource, int wantedAmount, int givenResource, int givenAmount,bool askForAccept ) {
         if (*gameManager->getPlayerTurn() != *this) {
             std::cout << name << ", its not your turn! \n";
             return -1;
@@ -567,6 +568,8 @@ namespace ariel {
 
 
         int agree = 3;
+        if(!askForAccept)
+            agree = 1;
         std::string wantedResourceString = convertResourceToString(wantedResource);
         std::string givenResourceString = convertResourceToString(givenResource);
         std::cout << "trade offer from " << name << " to " << other->name << " :\n";
@@ -706,37 +709,46 @@ namespace ariel {
 
     }
 
-    int Player::tradeDevelopmentCardForDevelopmentCard(
-            std::string wantedDC, Player *other, std::string givedDC) {
+    int Player::tradeDevelopmentCardForDevelopmentCard(std::string wantedDC, Player *other, std::string givedDC, bool askForAccept) {
         int agree = -1;
+        if (!askForAccept)
+            agree = 1;
+
         for (unsigned int otherIndex = 0; otherIndex < other->developmentCards.size(); ++otherIndex) {
             DevelopmentCard *dcp = other->developmentCards[otherIndex];
             if (dcp->getName() == wantedDC) {
                 for (unsigned int myIndex = 0; myIndex < developmentCards.size(); ++myIndex) {
                     DevelopmentCard *myDcp = this->developmentCards[myIndex];
                     if (myDcp->getName() == givedDC) {
-                        std::cout << other->name << ", would you like to trade your " << wantedDC
-                                  << " development card, for " << name << "'s " << givedDC
-                                  << " development card? (type 1/0)\n";
-                        std::cin >> agree;
-                        while (agree != 0 && agree != 1) {
-                            std::cin.clear(); // Clear error flags
-                            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
-                            std::cout << " invailed answer please try again\n";
+                        if (askForAccept && agree == -1) {
                             std::cout << other->name << ", would you like to trade your " << wantedDC
                                       << " development card, for " << name << "'s " << givedDC
-                                      << " development card? (type 1/0)\n";
-                        }
-                        if (agree) {
-                            // make trade
-                            other->developmentCards.erase(other->developmentCards.begin() + otherIndex);
-                            other->developmentCards.push_back(myDcp);
+                                      << " development card? (type 1 for yes, 0 for no): ";
+                            std::cin >> agree;
 
+                            while (std::cin.fail() || (agree != 0 && agree != 1)) {
+                                std::cin.clear(); // Clear error flags
+                                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
+                                std::cout << "Invalid answer, please try again.\n";
+                                std::cout << other->name << ", would you like to trade your " << wantedDC
+                                          << " development card, for " << name << "'s " << givedDC
+                                          << " development card? (type 1 for yes, 0 for no): ";
+                                std::cin >> agree;
+                            }
+                        }
+
+                        if (agree == 1) {
+                            // Make the trade
                             this->developmentCards.erase(this->developmentCards.begin() + myIndex);
+                            other->developmentCards.erase(other->developmentCards.begin() + otherIndex);
+
+                            other->developmentCards.push_back(myDcp);
                             this->developmentCards.push_back(dcp);
+
+                            std::cout << "Trade successful!\n";
                             return 0;
                         } else {
-                            std::cout << other->name << " has decline your offer \n";
+                            std::cout << other->name << " has declined your offer.\n";
                             return 1;
                         }
                     }
@@ -744,8 +756,8 @@ namespace ariel {
                 break;
             }
         }
-        std::cout << "Don't have the right cards. cannot make the trade\n";
-        return 0;
+        std::cout << "Don't have the right cards. Cannot make the trade.\n";
+        return 1;
     }
 }
 

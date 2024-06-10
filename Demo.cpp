@@ -19,9 +19,9 @@ using namespace std;
 #define SEE_YOUR_DEVELOPMENT_CARD 6
 #define USE_DEVELOPMENT_CARD 7
 #define SEE_YOUR_RESOURCES 8
-#define TRADE_WITH_PLAYERS 9// todo: tests!
-#define TRADE_WITH_THE_BANK 10// todo: tests!
-#define TRADE_DEVELOPMENT_CARDS 11// todo: tests!
+#define TRADE_WITH_PLAYERS 9
+#define TRADE_WITH_THE_BANK 10
+#define TRADE_DEVELOPMENT_CARDS 11
 #define END_YOUR_TURN 12// todo: tests!
 #define PRINT_BOARD 13// todo: tests!
 #define SEE_YOUR_BOARD_PRESENT 14// todo: tests!
@@ -197,7 +197,7 @@ int doAction(int action, Player *p) {
         Player *other = p->getGameManager()->getPlayer(playerIndex);
 
         if (other != nullptr && other != p) {
-            p->trade(other, hardToGet, 1, rToGive, 1);
+            p->trade(other, hardToGet, 1, rToGive, 1, true);
         } else {
             cout << "can't make that trade\n";
         }
@@ -227,7 +227,7 @@ int doAction(int action, Player *p) {
         cin >> playerToTradeWith;
         Player * other = p->getGameManager()->getPlayer(playerToTradeWith);
 
-        p->tradeDevelopmentCardForDevelopmentCard(wantedDC,other,givenDC);
+        p->tradeDevelopmentCardForDevelopmentCard(wantedDC,other,givenDC, true);
 
 
     } else if (action == END_YOUR_TURN) {

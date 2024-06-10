@@ -90,7 +90,7 @@ namespace ariel {
         // Function to get the owner of the road
         Player *getOwner();
 
-        Tile* getNeighbor(int side);
+        Tile *getNeighbor(int side);
 
     };
 
@@ -105,6 +105,7 @@ namespace ariel {
         Tile *neighborTileDown;
 
         friend class Catan;
+
     public:
         // Destructor for UrbanEntity
         virtual ~UrbanEntity();
@@ -309,7 +310,7 @@ namespace ariel {
 
     public:
         // Constructor for the Catan game class
-        Catan(Player &p1, Player &p2, Player &p3,bool contBoard);
+        Catan(Player &p1, Player &p2, Player &p3, bool contBoard);
 
         // Destructor for the Catan game class
         ~Catan();
@@ -464,10 +465,12 @@ namespace ariel {
         int useDevelopmentCard(DevelopmentCard *dc);
 
         // Initiates a trade with another player.
-        int trade(Player *other, int wantedResource, int wantedAmount, int givenResource, int givenAmount);
+        int trade(Player *other, int wantedResource, int wantedAmount, int givenResource, int givenAmount,
+                  bool askForAccept = true);
 
         // trade a development card of yours with another player's development card
-        int tradeDevelopmentCardForDevelopmentCard(std::string wantedDC ,Player *other, std::string givedDC );
+        int tradeDevelopmentCardForDevelopmentCard(std::string wantedDC, Player *other, std::string givedDC,
+                                                   bool askForAccept);
 
         // Trade with the bank 4 resources for one resource
         int tradeWithTheBank(int wantedResource, int givenResource);
@@ -490,13 +493,17 @@ namespace ariel {
         // Retrieves the game manager associated with the player.
         Catan *getGameManager();
 
+        const int *getResources() const;
+
         // Prints the resources owned by the player.
         void printResources();
 
         // print your board presents
         void printBoardPresent();
 
-        bool canPlaceSettlement(){return resources[BRICK] >0 && resources[WHEAT] >0 && resources[WOOD] > 0 && resources[WOOL]>0;}
+        bool canPlaceSettlement() {
+            return resources[BRICK] > 0 && resources[WHEAT] > 0 && resources[WOOD] > 0 && resources[WOOL] > 0;
+        }
 
     };
 
@@ -512,7 +519,6 @@ namespace ariel {
 
     // Overloaded inequality operator for comparing two Player objects.
     bool operator!=(const Player &p1, const Player &p2);
-
 
 
 }

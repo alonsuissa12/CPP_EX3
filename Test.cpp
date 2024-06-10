@@ -149,11 +149,11 @@ TEST_CASE("use your development cards") {
     }
 
     // use knight
-    DevelopmentCard * toUse = curPlayer->getDevelopmentCards().back();
-    CHECK((curPlayer->useDevelopmentCard(toUse)==0));
+    DevelopmentCard *toUse = curPlayer->getDevelopmentCards().back();
+    CHECK((curPlayer->useDevelopmentCard(toUse) == 0));
     CHECK((curPlayer->getNumOfKnights() == 1));
 
-    i=0;
+    i = 0;
     while (cardName != "VictoryPoint") { // doesn't want the test to ask for input
         catan.addResourcesTO(curPlayer, catan.getBoard()->findTile(10, WHEAT));// add wheat to the current player
         catan.addResourcesTO(curPlayer, catan.getBoard()->findTile(6, WOOL));  // add wool to the current player
@@ -164,16 +164,102 @@ TEST_CASE("use your development cards") {
         std::this_thread::sleep_for(std::chrono::milliseconds(567));
     }
     toUse = curPlayer->getDevelopmentCards().back();
-    CHECK((curPlayer->useDevelopmentCard(toUse)==0));
+    CHECK((curPlayer->useDevelopmentCard(toUse) == 0));
     CHECK((curPlayer->getVictoryPoints() == 1));
 
 }
 //
-//TEST_CASE(){}
-//
-//TEST_CASE(){}
-//
-//TEST_CASE(){}
-//
+TEST_CASE("trade resources with players") {
+    Player p1("Amit");
+    Player p2("Yossi");
+    Player p3("Dana");
+    Catan catan(p1, p2, p3, true); // constant board
+    catan.chooseStartingPlayer();
+    Player *wasCurPlayer = catan.getPlayerTurn();
+    wasCurPlayer->endTurn();
+    Player *curPlayer = catan.getPlayerTurn();
+
+    // give resources to the players
+    catan.addResourcesTO(wasCurPlayer, catan.getBoard()->findTile(6, WOOL));  // add wool to the current player
+    catan.addResourcesTO(curPlayer, catan.getBoard()->findTile(11, IRON)); // add iron to the current player
+
+    // trade in a good way
+    CHECK((curPlayer->trade(wasCurPlayer, WOOL, 1, IRON, 1, false) == 0));
+    CHECK((curPlayer->getResources()[WOOL] == 1));
+    CHECK((curPlayer->getResources()[IRON] == 0));
+    CHECK((wasCurPlayer->getResources()[WOOL] == 0));
+    CHECK((wasCurPlayer->getResources()[IRON] == 1));
+
+    //try to trade without enough resources
+    CHECK((curPlayer->trade(wasCurPlayer, WHEAT, 1, IRON, 1, false) == -1));
+    CHECK((curPlayer->getResources()[WHEAT] == 0));
+    CHECK((curPlayer->getResources()[IRON] == 0));
+    CHECK((wasCurPlayer->getResources()[WHEAT] == 0));
+    CHECK((wasCurPlayer->getResources()[IRON] == 1));
+
+
+}
+
+TEST_CASE("trade with the bank") {
+    Player p1("Amit");
+    Player p2("Yossi");
+    Player p3("Dana");
+    Catan catan(p1, p2, p3, true); // constant board
+    catan.chooseStartingPlayer();
+    Player *curPlayer = catan.getPlayerTurn();
+
+    // give resources to the players
+    catan.addResourcesTO(curPlayer, catan.getBoard()->findTile(11, IRON)); // add iron to the current player
+    catan.addResourcesTO(curPlayer, catan.getBoard()->findTile(11, IRON)); // add iron to the current player
+    catan.addResourcesTO(curPlayer, catan.getBoard()->findTile(11, IRON)); // add iron to the current player
+    catan.addResourcesTO(curPlayer, catan.getBoard()->findTile(11, IRON)); // add iron to the current player
+
+    CHECK((curPlayer->tradeWithTheBank(WOOL, IRON) == 0));
+    CHECK((curPlayer->getResources()[IRON] == 0));
+    CHECK((curPlayer->getResources()[WOOL] == 1));
+
+    // try to trade without enough(4) resources
+    CHECK((curPlayer->tradeWithTheBank(IRON, WHEAT) == -1));
+    CHECK((curPlayer->getResources()[IRON] == 0));
+
+}
+
+TEST_CASE("trade development cards") {
+    Player p1("Amit");
+    Player p2("Yossi");
+    Player p3("Dana");
+    Catan catan(p1, p2, p3, true); // constant board
+    catan.chooseStartingPlayer();
+    Player *wasCurPlayer = catan.getPlayerTurn();
+
+    string prevCardName = "";
+
+    // prev player buying a development card
+    catan.addResourcesTO(wasCurPlayer, catan.getBoard()->findTile(10, WHEAT));// add wheat to the current player
+    catan.addResourcesTO(wasCurPlayer, catan.getBoard()->findTile(6, WOOL));  // add wool to the current player
+    catan.addResourcesTO(wasCurPlayer, catan.getBoard()->findTile(11, IRON)); // add iron to the current player
+    wasCurPlayer->buyDevelopmentCard();
+    prevCardName = wasCurPlayer->getDevelopmentCards().front()->getName();
+
+    wasCurPlayer->endTurn();
+    Player *curPlayer = catan.getPlayerTurn();
+    // current player buying a development card
+    catan.addResourcesTO(curPlayer, catan.getBoard()->findTile(10, WHEAT));// add wheat to the current player
+    catan.addResourcesTO(curPlayer, catan.getBoard()->findTile(6, WOOL));  // add wool to the current player
+    catan.addResourcesTO(curPlayer, catan.getBoard()->findTile(11, IRON)); // add iron to the current player
+    curPlayer->buyDevelopmentCard();
+    string curCardName = curPlayer->getDevelopmentCards().front()->getName();
+
+
+    CHECK((curPlayer->tradeDevelopmentCardForDevelopmentCard(prevCardName, wasCurPlayer, curCardName, false) == 0));
+    auto curDevCards = curPlayer->getDevelopmentCards();
+    auto prevDevCards = wasCurPlayer->getDevelopmentCards();
+    CHECK((curDevCards.size() == 1));
+    CHECK((prevDevCards.size() == 1));
+    CHECK_EQ(prevCardName,curDevCards.front()->getName());
+    CHECK_EQ( curCardName, prevDevCards.front()->getName());
+
+}
+
 //TEST_CASE(){}
 
