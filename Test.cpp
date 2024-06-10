@@ -1,7 +1,6 @@
 // 211344015 alonsuissa12@gmail.com
 // Created by alon on 5/28/24.
 //
-// todo: tests!
 #include "doctest.h"
 #include "Resources.hpp"
 #include <thread>       // For std::this_thread::sleep_for

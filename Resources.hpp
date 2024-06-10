@@ -47,8 +47,7 @@
 
 #define SETTLEMENT 1
 #define CITY 2
-// todo: make it 2
-#define StartingPlacing 1
+#define StartingPlacing 2
 
 namespace ariel {
     class Catan;
@@ -272,7 +271,7 @@ namespace ariel {
     // Overloaded inequality operator for comparing two tiles.
     bool operator!=(const Tile &t1, const Tile &t2);
 
-    class Board { // todo add non-random board
+    class Board {
     private:
         std::vector<Tile *> tiles;
     public:
