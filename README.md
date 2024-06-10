@@ -57,3 +57,11 @@ The goal of the game is to be the first player to reach 10 Victory Points.
 3. **Three Players**: The game is exclusively for three players.
 4. **Development Card Trading**: Players can trade development cards as long as they have not been played yet.
 5. **No Ports**: There are no port trades available.
+
+## How to Work with the Program
+
+To interact with the program and play the game, follow these steps:
+
+### Running the Program
+1. **Compile and run the Program**: type in terminal the command: make catan
+2. **note!** somtimes the command compile the files and fail to run it if thats the case close it with CTRL + C and try again
