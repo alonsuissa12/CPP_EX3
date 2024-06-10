@@ -11,7 +11,7 @@
 using namespace ariel;
 using namespace std;
 
-#define ROLL_DICE 1 // todo: tests!
+#define ROLL_DICE 1
 #define PLACE_ROAD 2
 #define PLACE_SETTLEMENT 3
 #define PLACE_CITY 4
@@ -22,10 +22,10 @@ using namespace std;
 #define TRADE_WITH_PLAYERS 9
 #define TRADE_WITH_THE_BANK 10
 #define TRADE_DEVELOPMENT_CARDS 11
-#define END_YOUR_TURN 12// todo: tests!
-#define PRINT_BOARD 13// todo: tests!
-#define SEE_YOUR_BOARD_PRESENT 14// todo: tests!
-#define SEE_EVERYONE_BOARD_PRESENT 15// todo: tests!
+#define END_YOUR_TURN 12
+#define PRINT_BOARD 13//
+#define SEE_YOUR_BOARD_PRESENT 14
+#define SEE_EVERYONE_BOARD_PRESENT 15
 
 
 #define NEXT_TURN 2

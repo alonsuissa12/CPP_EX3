@@ -118,7 +118,7 @@ namespace ariel {
             (ppnextn1 != nullptr && ppnextn1->owner == this->owner))
             continues = true;
 
-            // if one of the adjacent urban entities belongs to this player
+        // if one of the adjacent urban entities belongs to this player
         if ((urbanEntity1 != nullptr && urbanEntity1->getOwner() == this->owner) ||
             (urbanEntity2 != nullptr && urbanEntity2->getOwner() == this->owner))
             continues = true;
@@ -149,10 +149,10 @@ namespace ariel {
         return owner;
     }
 
-    Tile* Road::getNeighbor(int side){
-        if(side == 0)
+    Tile *Road::getNeighbor(int side) {
+        if (side == 0)
             return neighborTile1;
-        if(side == 1)
+        if (side == 1)
             return neighborTile2;
         return nullptr;
     }
@@ -294,7 +294,6 @@ namespace ariel {
             Road *proadn2n3 = n2.getRoad(edgeSideOfN2ToN3);
 
 
-
             if ((proadn1n2 == nullptr || proadn1n2->getOwner() != owner) &&
                 (proadn1n3 == nullptr || proadn1n3->getOwner() != owner) &&
                 (proadn2n3 == nullptr || proadn2n3->getOwner() != owner)) {
@@ -320,28 +319,41 @@ namespace ariel {
         //update neighbors tiles
         // find mid tile
         if ((edgeSideOfN1ToN3 == DownRightEdge && edgeSideOfN1ToN2 == DownLeftEdge) ||
-            edgeSideOfN1ToN3 == UpRightEdge && edgeSideOfN1ToN2 == UpLeftEdge)
+            (edgeSideOfN1ToN3 == DownLeftEdge && edgeSideOfN1ToN2 == DownRightEdge) ||
+            (edgeSideOfN1ToN3 == UpRightEdge && edgeSideOfN1ToN2 == UpLeftEdge) ||
+            (edgeSideOfN1ToN3 == UpLeftEdge && edgeSideOfN1ToN2 == UpRightEdge))
             neighborTileDown = &n1;
+
         else if ((edgeSideOfN2ToN3 == DownRightEdge && edgeSideOfN2ToN1 == DownLeftEdge) ||
-                 edgeSideOfN2ToN3 == UpRightEdge && edgeSideOfN2ToN1 == UpLeftEdge)
+                 (edgeSideOfN2ToN3 == DownLeftEdge && edgeSideOfN2ToN1 == DownRightEdge) ||
+                 (edgeSideOfN2ToN3 == UpRightEdge && edgeSideOfN2ToN1 == UpLeftEdge) ||
+                 (edgeSideOfN2ToN3 == UpLeftEdge && edgeSideOfN2ToN1 == UpRightEdge))
             neighborTileDown = &n2;
         else
             neighborTileDown = &n3;
         // find right edge
         if ((edgeSideOfN1ToN3 == DownLeftEdge && edgeSideOfN1ToN2 == LeftEdge) ||
-            edgeSideOfN1ToN3 == UpLeftEdge && edgeSideOfN1ToN2 == LeftEdge)
+            (edgeSideOfN1ToN3 == LeftEdge && edgeSideOfN1ToN2 == DownLeftEdge) ||
+            (edgeSideOfN1ToN3 == UpLeftEdge && edgeSideOfN1ToN2 == LeftEdge) ||
+            (edgeSideOfN1ToN3 == LeftEdge && edgeSideOfN1ToN2 == UpLeftEdge))
             neighborTileLeft = &n1;
         else if ((edgeSideOfN2ToN3 == DownLeftEdge && edgeSideOfN2ToN1 == LeftEdge) ||
-                 edgeSideOfN2ToN3 == UpLeftEdge && edgeSideOfN2ToN1 == LeftEdge)
+                 (edgeSideOfN2ToN3 == LeftEdge && edgeSideOfN2ToN1 == DownLeftEdge) ||
+                 (edgeSideOfN2ToN3 == UpLeftEdge && edgeSideOfN2ToN1 == LeftEdge) ||
+                 (edgeSideOfN2ToN3 == LeftEdge && edgeSideOfN2ToN1 == UpLeftEdge))
             neighborTileLeft = &n2;
         else
             neighborTileLeft = &n3;
         // find left edge
         if ((edgeSideOfN1ToN3 == DownRightEdge && edgeSideOfN1ToN2 == RightEdge) ||
-            edgeSideOfN1ToN3 == UpRightEdge && edgeSideOfN1ToN2 == RightEdge)
+            (edgeSideOfN1ToN3 == RightEdge && edgeSideOfN1ToN2 == DownRightEdge) ||
+            (edgeSideOfN1ToN3 == UpRightEdge && edgeSideOfN1ToN2 == RightEdge) ||
+            (edgeSideOfN1ToN3 == RightEdge && edgeSideOfN1ToN2 == UpRightEdge))
             neighborTileRight = &n1;
         else if ((edgeSideOfN2ToN3 == DownRightEdge && edgeSideOfN2ToN1 == RightEdge) ||
-                 edgeSideOfN2ToN3 == UpRightEdge && edgeSideOfN2ToN1 == RightEdge)
+                 (edgeSideOfN2ToN3 == RightEdge && edgeSideOfN2ToN1 == DownRightEdge) ||
+                 (edgeSideOfN2ToN3 == UpRightEdge && edgeSideOfN2ToN1 == RightEdge) ||
+                 (edgeSideOfN2ToN3 == RightEdge && edgeSideOfN2ToN1 == UpRightEdge))
             neighborTileRight = &n2;
         else
             neighborTileRight = &n3;
@@ -561,11 +573,10 @@ namespace ariel {
                           << " to place. would you like to place the next road? (or pass) enter 1 to place, 0 to pass \n";
                 std::cin >> place;
             }
-            if( place == 0) {// pass
-                std::cout <<"passed 1 road\n";
+            if (place == 0) {// pass
+                std::cout << "passed 1 road\n";
                 roadsToGet--;
-            }
-            else {
+            } else {
 
                 std::cout << " choose where u want to place your road:\n";
                 std::cout << " (choose two tiles and the road will build between them)\n";
@@ -638,6 +649,7 @@ namespace ariel {
             }
         }
     }
+
     // a constructor for year of plenty development card
     YearOfPlenty::YearOfPlenty(Catan *gm) {
         name = "YearOfPlenty";
@@ -785,7 +797,7 @@ namespace ariel {
         std::vector<int> numbers = {2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12};
 
         // Shuffle the vector
-        if(!constant) {
+        if (!constant) {
             std::shuffle(numbers.begin(), numbers.end(),
                          std::default_random_engine((unsigned long) std::time(nullptr)));
         }
@@ -840,7 +852,7 @@ namespace ariel {
         Tile *desert = new Tile(5, "desert", false, true);
         tiles.push_back(desert);
         //shuffle the tiles
-        if(!constant) {
+        if (!constant) {
             std::shuffle(tiles.begin(), tiles.end(), std::default_random_engine((unsigned long) std::time(nullptr)));
         }
         // 18 sea tiles
