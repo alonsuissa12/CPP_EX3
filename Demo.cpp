@@ -40,7 +40,6 @@ int doAction(int action, Player *p);
 
 void startGame(Catan *gm, int numOfPlayers);
 
-
 int main() {
     Player p1("Amit");
     Player p2("Yossi");
@@ -92,11 +91,13 @@ void printOptions() {
     std::cout << "8. See your resources" << std::endl;
     std::cout << "9. Trade with other players" << std::endl;
     std::cout << "10. Trade with the bank" << std::endl;
-    std::cout << "11. End your turn" << std::endl;
-    std::cout << "12. print the board" << std::endl;
-    std::cout << "13. see your board present" << std::endl;
-    std::cout << "14. see everyone's board present" << std::endl;
+    std::cout << "11. Trade development card" << std::endl;
+    std::cout << "12. End your turn" << std::endl;
+    std::cout << "13. print the board" << std::endl;
+    std::cout << "14. see your board present" << std::endl;
+    std::cout << "15. see everyone's board present" << std::endl;
 }
+
 
 // a function to ask for the player to choose a tile. the function will return a pointer to that tile
 Tile *chooseTile(Catan *gameManager) {
