@@ -94,7 +94,7 @@ namespace ariel {
         }
 
         if (n1.getRoad(edgeSideOfN1) != nullptr) {
-            throw std::invalid_argument("the place is already taken!");
+            std:: cout << "the place is already taken!" << std::endl;
             return -1;
         }
 

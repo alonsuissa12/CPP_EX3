@@ -40,11 +40,13 @@ int doAction(int action, Player *p);
 
 void startGame(Catan *gm, int numOfPlayers);
 
+// quick setup on fixed board: 6 0 6 1 1 11 6 1 1 11 6 6 3 3 4 5 3 3 4 5 3 4 4 6 4 8 4 6 4 8 2 10 2 2 5 5 2 2 5 5 0 9 0 10 2 12 0 9 0 10 1 4 3 6 6 5 1 4 3 6
+//1,1,1,2,2,2
 int main() {
     Player p1("Amit");
     Player p2("Yossi");
     Player p3("Dana");
-    Catan catan(p1, p2, p3, false);
+    Catan catan(p1, p2, p3, true);
 
 
     // Starting of the game. Every player places two settlements and two roads.

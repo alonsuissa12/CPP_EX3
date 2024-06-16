@@ -739,7 +739,6 @@ namespace ariel {
                                 std::cin >> agree;
                             }
                         }
-
                         if (agree == 1) {
                                 // Make the trade
                                 this->developmentCards.erase(this->developmentCards.begin() + myIndex);
