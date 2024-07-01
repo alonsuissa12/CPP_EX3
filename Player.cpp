@@ -636,6 +636,8 @@ namespace ariel {
     // - The name of the player.
     std::string Player::getName() { return name; }
 
+    bool Player::hasPlayedDevelopmentCard(){return playedDevelopmentCard;}
+
     // Ends the player's turn by resetting the played development card flag and checking for victory conditions.
     void Player::endTurn() {
         playedDevelopmentCard = false;

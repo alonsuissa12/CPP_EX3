@@ -285,6 +285,7 @@ namespace ariel {
         }
 
         if (n1.getUrbanEntity(n1Vertex) != nullptr) {
+            std::cout << n1.getUrbanEntity(n1Vertex) << " \n";
             std::cout << "the place is already taken!\n";
             return -1;
         }
@@ -687,6 +688,11 @@ namespace ariel {
         this->isDesert = isDesert;
         this->resource = resource;
         number = dieNum;
+        for (int i = 0; i < 6; ++i) {
+            neighbors[i] = nullptr;
+            urbanEntities[i] = nullptr;
+            roads[i] = nullptr;
+        }
     };
 
     // Updates the neighbor of the current tile on a specific side.

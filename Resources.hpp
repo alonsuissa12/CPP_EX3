@@ -309,7 +309,7 @@ namespace ariel {
 
     public:
         // Constructor for the Catan game class
-        Catan(Player &p1, Player &p2, Player &p3, bool contBoard);
+        Catan(Player &p1, Player &p2, Player &p3, bool constBoard);
 
         // Destructor for the Catan game class
         ~Catan();
@@ -482,6 +482,9 @@ namespace ariel {
 
         // Retrieves the player's name.
         std::string getName();
+
+        // Retrieves playedDevelopment card
+        bool hasPlayedDevelopmentCard();
 
         // Retrieves whether the player has rolled the dice during their turn.
         bool getRolledDice();

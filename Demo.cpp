@@ -31,6 +31,8 @@ using namespace std;
 #define NEXT_TURN 2
 #define GAME_OVER 3
 
+#define CONST_BOARD true
+
 
 void printOptions();
 
@@ -41,12 +43,13 @@ int doAction(int action, Player *p);
 void startGame(Catan *gm, int numOfPlayers);
 
 // quick setup on fixed board:
-//1,1,1,2,2,2
+// 1 11 1 3 6 1 1 11 1 3 6 4 1 11 3 3 1 11 3 3 4 5 0 9 6 10 4 5 0 9 6 10 4 5 0 9
+// 4 9 0 8 2 11 4 9 0 8 0 10 2 10 2 2 0 10 2 10 1 4 3 5 3 6 1 4 3 5
 int main() {
     Player p1("Amit");
     Player p2("Yossi");
     Player p3("Dana");
-    Catan catan(p1, p2, p3, false);
+    Catan catan(p1, p2, p3, CONST_BOARD);
 
 
     // Starting of the game. Every player places two settlements and two roads.
