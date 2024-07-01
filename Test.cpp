@@ -806,6 +806,47 @@ TEST_CASE("rollDice") {
     CHECK((roll <= 12));
 }
 
+TEST_CASE("print board"){
+    cout << "==================== print board =====================\n";
+    ariel::Player player1;
+    ariel::Player player2;
+    ariel::Player player3;
+
+    ariel::Catan gameManager(player1, player2, player3, true);
+    std::ostringstream oss;
+    std::streambuf* oldCoutBuf = std::cout.rdbuf(oss.rdbuf());
+
+    // Call the function
+    gameManager.getBoard()->printBoard();
+
+    // Restore the original std::cout buffer
+    std::cout.rdbuf(oldCoutBuf);
+
+    string result ="\n              ************ CATAN BOARD ************\n                   sea0   sea1   sea2   sea3   \n               sea4  iron 11  iron 3  iron 4  sea5  \n           sea6  wood 3  wood 4  wood 5  wood 6  sea7  \n       sea8  wool 5  wool 6  wool 8  wool 9  brick 8  sea9  \n           sea10  brick 9  brick 10  wheat 10  wheat 11  sea11  \n               sea12  wheat 12  wheat 2  desert   sea13  \n                   sea14   sea15   sea16   sea17   \n             **************************************\n\n";
+
+    // Check the output
+    CHECK(oss.str() == result);
+}
+
+TEST_CASE("print players") {
+    cout << "==================== print players =====================\n";
+    ariel::Player player1("a");
+    ariel::Player player2("b");
+    ariel::Player player3("c");
+
+    ariel::Catan gameManager(player1, player2, player3, true);
+    std::ostringstream oss;
+    std::streambuf *oldCoutBuf = std::cout.rdbuf(oss.rdbuf());
+
+    // Call the function
+    gameManager.printPlayers();
+
+    // Restore the original std::cout buffer
+    std::cout.rdbuf(oldCoutBuf);
+
+    string result = "[0]: a\n[1]: b\n[2]: c\n";
+    CHECK(oss.str() == result);
+}
 
 
 
